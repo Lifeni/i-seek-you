@@ -1,7 +1,8 @@
 {
   "name": "i-seek-you",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A WebRTC-based cross-platform data transfer application.",
+  "private": "true",
   "scripts": {
     "start": "vite --host --port=8080",
     "dev": "vite --host --port=8080",
@@ -12,7 +13,20 @@
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
     "posttest": "npm run format"
   },
+  "author": {
+    "name": "Lifeni",
+    "email": "liangfengning@foxmail.com"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Lifeni/i-seek-you.git"
+  },
+  "homepage": "https://github.com/Lifeni/i-seek-you#readme",
+  "bugs": {
+    "url": "https://github.com/Lifeni/i-seek-you/issues",
+    "email": "liangfengning@foxmail.com"
+  },
   "devDependencies": {
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
