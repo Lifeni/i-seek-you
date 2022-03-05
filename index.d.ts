@@ -17,6 +17,8 @@ declare module 'solid-js' {
       items?: string
       justify?: string
       select?: string
+      place?: string
+      underline?: string
     }
   }
 }

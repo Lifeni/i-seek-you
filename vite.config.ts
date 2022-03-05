@@ -9,7 +9,20 @@ export default defineConfig({
   plugins: [
     solidPlugin(),
     UnoCss({
-      theme: { fontFamily: { sans: ['Inter', 'sans-serif'] } },
+      theme: {
+        extend: {
+          width: { fit: 'fit-content' },
+        },
+        fontFamily: { sans: ['Inter', 'sans-serif'] },
+      },
+      shortcuts: {
+        'display-center': 'flex flex-col items-center justify-center',
+        'display-screen': 'w-screen h-screen',
+        'text-link':
+          'w-fit text-blue-500 dark:text-blue-400 no-underline hover:underline',
+        'text-primary': 'text-black dark:text-light-800 font-sans',
+        'bg-primary': 'bg-white dark:bg-dark-800',
+      },
       presets: [presetUno(), presetAttributify(), presetIcons()],
     }),
   ],
