@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@iconify-json/ic': ^1.1.1
+  '@unocss/inspector': ^0.27.2
   '@unocss/preset-attributify': ^0.27.2
   '@unocss/preset-icons': ^0.27.2
   '@unocss/preset-uno': ^0.27.2
@@ -25,6 +26,7 @@ dependencies:
 
 devDependencies:
   '@iconify-json/ic': 1.1.1
+  '@unocss/inspector': 0.27.2
   '@unocss/preset-attributify': 0.27.2
   '@unocss/preset-icons': 0.27.2
   '@unocss/preset-uno': 0.27.2

@@ -17,10 +17,12 @@ declare module 'solid-js' {
       border?: string
       items?: string
       justify?: string
+      align?: string
       gap?: string
       select?: string
       place?: string
       underline?: string
+      decoration?: string
       rounded?: string
       shadow?: string
       cursor?: string
