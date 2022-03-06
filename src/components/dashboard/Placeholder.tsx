@@ -1,5 +1,5 @@
 export const Placeholder = () => (
-  <div flex="center col 1" gap="4">
+  <div flex="center col 1" gap="4" z="10">
     <span text="xl secondary none">
       Open
       <a
@@ -7,7 +7,6 @@ export const Placeholder = () => (
         target="_blank"
         mx="2"
         text="link"
-        align="middle"
         font="bold"
       >
         I Seek You
@@ -18,7 +17,7 @@ export const Placeholder = () => (
         name="connect-id"
         id="connect-id"
         placeholder="Enter an ID"
-        class="placeholder-current"
+        class="placeholder-current placeholder-opacity-100"
         w="32"
         mx="2"
         px="3"

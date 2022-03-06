@@ -7,7 +7,7 @@ export const Toolbar = () => {
   const iconStyle = () => `${BackgroundMap[status()]} ${SignalMap[status()]}`
 
   return (
-    <header w="full" flex="between" px="12" py="6" gap="8">
+    <header w="full" flex="between" px="12" py="6" gap="8" z="10">
       <div flex="start 1">
         <span class={`${iconStyle()} icon-base`} />
       </div>

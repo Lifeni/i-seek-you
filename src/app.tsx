@@ -2,6 +2,7 @@ import { Route, Router, Routes } from 'solid-app-router'
 import { lazy } from 'solid-js'
 import { render } from 'solid-js/web'
 import { MetaProvider } from 'solid-meta'
+
 import 'uno.css'
 import './app.css'
 

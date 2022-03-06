@@ -20,7 +20,8 @@ export const shortcuts = {
   'bg-secondary': 'bg-light-400 dark:bg-dark-600',
 
   // input
-  'border-input': 'border-1 border-light-800 dark:border-dark-800',
+  'border-input':
+    'border-1 border-light-800 dark:border-dark-200 hover:border-rose-500 transition-border',
   'ring-input':
     'outline-none ring-4 ring-rose-500 ring-opacity-75 transition-shadow',
 
