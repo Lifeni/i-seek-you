@@ -10,18 +10,20 @@ export default defineConfig({
     solidPlugin(),
     UnoCss({
       theme: {
-        extend: {
-          width: { fit: 'fit-content' },
-        },
+        extend: { width: { fit: 'fit-content' } },
         fontFamily: { sans: ['Inter', 'sans-serif'] },
       },
       shortcuts: {
         'display-center': 'flex flex-col items-center justify-center',
         'display-screen': 'w-screen h-screen',
         'text-link':
-          'w-fit text-blue-500 dark:text-blue-400 no-underline hover:underline',
-        'text-primary': 'text-black dark:text-light-800 font-sans',
-        'bg-primary': 'bg-white dark:bg-dark-800',
+          'w-fit text-rose-500 dark:text-rose-400 no-underline hover:underline',
+        'text-primary': 'text-black dark:text-gray-200',
+        'text-secondary': 'text-gray-600 dark:text-gray-400',
+        'bg-primary': 'bg-white dark:bg-dark-400',
+        'bg-secondary': 'bg-light-400 dark:bg-dark-600',
+        'ring-auto':
+          'outline-none ring-4 ring-rose-500 ring-opacity-75 transition-shadow',
       },
       presets: [presetUno(), presetAttributify(), presetIcons()],
     }),

@@ -7,6 +7,7 @@ declare module 'solid-js' {
       w?: string
       h?: string
       display?: string
+      flex?: string
       p?: string
       px?: string
       py?: string
@@ -16,9 +17,16 @@ declare module 'solid-js' {
       border?: string
       items?: string
       justify?: string
+      gap?: string
       select?: string
       place?: string
       underline?: string
+      rounded?: string
+      shadow?: string
+      cursor?: string
+      transition?: string | boolean
+      focus?: string
+      overflow?: string
     }
   }
 }

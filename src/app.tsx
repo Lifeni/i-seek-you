@@ -3,6 +3,7 @@ import { lazy } from 'solid-js'
 import { render } from 'solid-js/web'
 import { MetaProvider } from 'solid-meta'
 import 'uno.css'
+import './app.css'
 
 const Home = lazy(() => import('./pages/index'))
 const NotFound = lazy(() => import('./pages/[...all]'))

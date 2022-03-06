@@ -28,7 +28,7 @@
     "email": "liangfengning@foxmail.com"
   },
   "devDependencies": {
-    "@iconify-json/ri": "^1.1.1",
+    "@iconify-json/ic": "^1.1.1",
     "@unocss/preset-attributify": "^0.27.2",
     "@unocss/preset-icons": "^0.27.2",
     "@unocss/preset-uno": "^0.27.2",

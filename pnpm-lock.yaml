@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@iconify-json/ri': ^1.1.1
+  '@iconify-json/ic': ^1.1.1
   '@unocss/preset-attributify': ^0.27.2
   '@unocss/preset-icons': ^0.27.2
   '@unocss/preset-uno': ^0.27.2
@@ -24,7 +24,7 @@ dependencies:
   solid-meta: 0.27.3_solid-js@1.3.9
 
 devDependencies:
-  '@iconify-json/ri': 1.1.1
+  '@iconify-json/ic': 1.1.1
   '@unocss/preset-attributify': 0.27.2
   '@unocss/preset-icons': 0.27.2
   '@unocss/preset-uno': 0.27.2
@@ -436,8 +436,8 @@ packages:
     dev: true
     optional: true
 
-  /@iconify-json/ri/1.1.1:
-    resolution: {integrity: sha512-H2Bvtew65rCw275lZaLk5sxTmmxa9kpd2i2FOVncDLa/Wpn9L6AnTZhR1NzzPb6iqK2D8HE4Y/wcVr6o0KjMlw==}
+  /@iconify-json/ic/1.1.1:
+    resolution: {integrity: sha512-HR2m3Rsel5Zp3T98Vsai+tw6ip7DKYq9xLUv3NXgZE0aSHlQw9MpQdzdW0xkdfZEnX8gfIOpW2XZy1p2YAwxSA==}
     dependencies:
       '@iconify/types': 1.0.12
     dev: true
