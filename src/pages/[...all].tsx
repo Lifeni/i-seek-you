@@ -1,4 +1,4 @@
-import type { Component } from 'solid-js'
+import { type Component } from 'solid-js'
 import { Title } from 'solid-meta'
 import { Link } from '../components/Link'
 

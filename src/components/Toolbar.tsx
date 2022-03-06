@@ -9,16 +9,29 @@ export const Toolbar = () => {
   return (
     <header w="full" flex="between" px="12" py="6" gap="8" z="10">
       <div flex="start 1">
-        <span class={`${iconStyle()} icon-base`} />
+        <span class="tooltip tooltip-left" data-label={TextMap[status()]}>
+          <span class={`${iconStyle()} icon-base`} />
+        </span>
       </div>
       <h1 text="xl center none" flex="1">
         I Seek You
       </h1>
       <div flex="end 1">
-        <button class="i-ic-round-settings icon-button">Settings</button>
+        <span class="tooltip tooltip-right" data-label="Settings">
+          <button class="i-ic-round-settings icon-button" onClick={console.log}>
+            Settings
+          </button>
+        </span>
       </div>
     </header>
   )
+}
+
+const TextMap = {
+  success: 'Connected',
+  error: 'Lost Connection',
+  warning: 'Slow Connection',
+  loading: 'Connecting ...',
 }
 
 const BackgroundMap = {

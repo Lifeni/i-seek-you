@@ -6,6 +6,7 @@ specifiers:
   '@unocss/preset-attributify': ^0.27.2
   '@unocss/preset-icons': ^0.27.2
   '@unocss/preset-uno': ^0.27.2
+  '@unocss/transformer-directives': ^0.27.2
   commitizen: ^4.2.4
   cz-conventional-changelog: ^3.3.0
   husky: ^7.0.4
@@ -30,6 +31,7 @@ devDependencies:
   '@unocss/preset-attributify': 0.27.2
   '@unocss/preset-icons': 0.27.2
   '@unocss/preset-uno': 0.27.2
+  '@unocss/transformer-directives': 0.27.2
   commitizen: 4.2.4
   cz-conventional-changelog: 3.3.0
   husky: 7.0.4

@@ -11,6 +11,10 @@ declare module 'solid-js' {
       flex?: string
       p?: string
       px?: string
+      pt?: string
+      pb?: string
+      pl?: string
+      pr?: string
       py?: string
       m?: string
       mx?: string

@@ -1,3 +1,5 @@
+@import url(./libs/ripple.css);
+
 * {
   box-sizing: border-box;
 }
@@ -17,66 +19,6 @@ input[type='number'] {
   -moz-appearance: textfield;
 }
 
-.ripple {
-  --color-0: #ffffff;
-  --color-1: #fafafa;
-  --color-2: #f6f6f6;
-  --color-3: #f2f2f2;
-  --color-4: #eeeeee;
-  --color-5: #eaeaea;
-
-  --radius: calc(max(100vh, 100vw) / 2);
-  --line-width: 2px;
-
-  --round-0: 0;
-  --round-1: calc(var(--radius) * 0.2);
-  --round-2: calc(var(--radius) * 0.4);
-  --round-3: calc(var(--radius) * 0.6);
-  --round-4: calc(var(--radius) * 0.8);
-  --round-5: calc(var(--radius) * 1);
-
-  --round-0-line: var(--line-width);
-  --round-1-line: calc(var(--round-1) + var(--line-width));
-  --round-2-line: calc(var(--round-2) + var(--line-width));
-  --round-3-line: calc(var(--round-3) + var(--line-width));
-  --round-4-line: calc(var(--round-4) + var(--line-width));
-  --round-5-line: calc(var(--round-5) + var(--line-width));
-
-  animation: ripple 1.5s linear infinite;
-}
-
-.dark .ripple {
-  --color-0: #222222;
-  --color-1: #2d2d2d;
-  --color-2: #323232;
-  --color-3: #3c3c3c;
-  --color-4: #4a4a4a;
-  --color-5: #404040;
-}
-
-@keyframes ripple {
-  0% {
-    box-shadow: 0 0 0 var(--round-0) var(--color-0),
-      0 0 0 var(--round-0-line) var(--color-5),
-      0 0 0 var(--round-1) var(--color-0),
-      0 0 0 var(--round-1-line) var(--color-4),
-      0 0 0 var(--round-2) var(--color-0),
-      0 0 0 var(--round-2-line) var(--color-3),
-      0 0 0 var(--round-3) var(--color-0),
-      0 0 0 var(--round-3-line) var(--color-2),
-      0 0 0 var(--round-4) var(--color-0),
-      0 0 0 var(--round-4-line) var(--color-1);
-  }
-  100% {
-    box-shadow: 0 0 0 var(--round-1) var(--color-0),
-      0 0 0 var(--round-1-line) var(--color-4),
-      0 0 0 var(--round-2) var(--color-0),
-      0 0 0 var(--round-2-line) var(--color-3),
-      0 0 0 var(--round-3) var(--color-0),
-      0 0 0 var(--round-3-line) var(--color-2),
-      0 0 0 var(--round-4) var(--color-0),
-      0 0 0 var(--round-4-line) var(--color-1),
-      0 0 0 var(--round-5) var(--color-0),
-      0 0 0 var(--round-5-line) var(--color-0);
-  }
+.tooltip::before {
+  content: attr(data-label);
 }
