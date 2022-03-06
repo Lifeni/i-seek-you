@@ -22,6 +22,7 @@ export default defineConfig({
         'text-secondary': 'text-gray-600 dark:text-gray-400',
         'bg-primary': 'bg-white dark:bg-dark-400',
         'bg-secondary': 'bg-light-400 dark:bg-dark-600',
+        'border-primary': 'border-1 border-light-800 dark:border-dark-800',
         'ring-auto':
           'outline-none ring-4 ring-rose-500 ring-opacity-75 transition-shadow',
       },

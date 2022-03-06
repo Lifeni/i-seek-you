@@ -4,7 +4,7 @@ import { Link } from '../components/Link'
 
 const NotFound: Component = () => {
   return (
-    <div display="center screen" bg="primary" text="primary">
+    <div display="center screen" bg="primary" text="primary" font="sans">
       <Title>404 Not Found</Title>
       <h1 text="xl" font="normal">
         <code font="sans bold">404</code>

@@ -26,7 +26,10 @@ declare module 'solid-js' {
       cursor?: string
       transition?: string | boolean
       focus?: string
+      filter?: string
       overflow?: string
+      pointer?: string
+      leading?: string
     }
   }
 }

@@ -31,7 +31,7 @@ const TextMap = {
 }
 
 const Status = ({ type = 'loading' }: StatusProps) => (
-  <div display="flex" items="center" justify="start" flex="1" font="sans">
+  <div display="flex" items="center" justify="start" flex="1">
     <span
       class={`${BackgroundMap[type]} ${SignalMap[type]}`}
       w="6"
