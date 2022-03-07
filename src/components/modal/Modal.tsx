@@ -36,7 +36,7 @@ export const Modal = (props: WindowProps) => {
         bg="main"
         font="sans"
         text="main"
-        p="6"
+        p="x-6 y-5"
         border="main"
         rounded="md"
         shadow="2xl"

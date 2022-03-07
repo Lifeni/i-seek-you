@@ -1,6 +1,9 @@
-import { createSignal } from 'solid-js'
+import { createSignal, lazy, Show } from 'solid-js'
+import { Portal } from 'solid-js/web'
 import { Tooltip } from '../base/Tooltip'
 import { Background } from './Background'
+
+const Profile = lazy(() => import('../modal/Profile'))
 
 // prettier-ignore
 const EmojiList = [
@@ -17,6 +20,10 @@ const EmojiList = [
 
 export const You = () => {
   const [copied, setCopied] = createSignal(false)
+  const [showProfile, setShowProfile] = createSignal(false)
+
+  const handleOpen = () => setShowProfile(true)
+  const handleClose = () => setShowProfile(false)
 
   const copy = () => (copied() ? '✅ Copied' : 'Copy Your ID')
   const emoji = EmojiList[Math.floor(Math.random() * EmojiList.length)]
@@ -42,11 +49,18 @@ export const You = () => {
           flex="center"
           rounded="full"
           text="18"
+          onClick={handleOpen}
         >
           <Background />
           <span z="1">{emoji}</span>
         </button>
       </Tooltip>
+
+      <Show when={showProfile()}>
+        <Portal>
+          <Profile close={handleClose} />
+        </Portal>
+      </Show>
 
       <Tooltip label={copy()}>
         <button

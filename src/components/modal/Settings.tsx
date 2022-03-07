@@ -1,10 +1,9 @@
 import { createSignal, For, onMount, type JSX } from 'solid-js'
+import Logo from '../../assets/logo.svg'
 import { Field, Form, Radio } from '../base/Form'
 import { ExternalLink } from '../base/Link'
-import { Modal } from './Modal'
-
-import Logo from '../../assets/logo.svg'
 import { Tooltip } from '../base/Tooltip'
+import { Modal } from './Modal'
 
 interface SettingsProps extends JSX.HTMLAttributes<HTMLDivElement> {
   close: () => void
@@ -16,6 +15,11 @@ export const Settings = (props: SettingsProps) => (
       <Theme />
       <About />
     </Form>
+    <hr border="0 t-1 main" m="y-5" />
+    <span text="sm light">
+      Tip: To set a connection password or other connection-related settings,
+      click on the Emoji avatar on the home page.
+    </span>
   </Modal>
 )
 
@@ -51,28 +55,26 @@ export const Theme = () => {
 
 export const About = () => (
   <Field legend="About">
-    <article>
-      <section w="full" flex="between" gap="6">
-        <img src={Logo} alt="Logo" w="12" h="12" m="b-2" />
-        <div flex="col start" gap="2">
-          <span w="full" font="bold" flex="start" gap="3">
-            I Seek You
-            <Tooltip label="GitHub">
-              <ExternalLink
-                aria-label="GitHub"
-                href="https://github.com/Lifeni/i-seek-you"
-                text="light hover:main"
-                class="transition"
-              >
-                <span class="i-bxl-github" w="5" h="5" flex="center" />
-              </ExternalLink>
-            </Tooltip>
-          </span>
-          <span text="sm">
-            A WebRTC-based cross-platform data transfer application.
-          </span>
-        </div>
-      </section>
+    <article w="full" flex="between" gap="6">
+      <img src={Logo} alt="Logo" w="12" h="12" m="b-2" />
+      <div flex="col start" gap="2">
+        <span w="full" font="bold" flex="start" gap="3">
+          I Seek You
+          <Tooltip label="GitHub">
+            <ExternalLink
+              aria-label="GitHub"
+              href="https://github.com/Lifeni/i-seek-you"
+              text="light hover:main"
+              class="transition"
+            >
+              <span class="i-bxl-github" w="5" h="5" flex="center" />
+            </ExternalLink>
+          </Tooltip>
+        </span>
+        <span text="sm">
+          A WebRTC-based cross-platform data transfer application.
+        </span>
+      </div>
     </article>
   </Field>
 )
