@@ -2,9 +2,9 @@ import { Route, Router, Routes } from 'solid-app-router'
 import { lazy } from 'solid-js'
 import { render } from 'solid-js/web'
 import { MetaProvider } from 'solid-meta'
-
 import 'uno.css'
-import './app.css'
+import './libs/app.css'
+import './libs/ripple.css'
 
 const Home = lazy(() => import('./pages/index'))
 const NotFound = lazy(() => import('./pages/[...all]'))

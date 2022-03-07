@@ -1,11 +1,13 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@iconify-json/bxl': ^1.1.1
   '@iconify-json/ic': ^1.1.1
   '@unocss/inspector': ^0.27.2
   '@unocss/preset-attributify': ^0.27.2
   '@unocss/preset-icons': ^0.27.2
   '@unocss/preset-uno': ^0.27.2
+  '@unocss/preset-wind': ^0.27.2
   '@unocss/transformer-directives': ^0.27.2
   commitizen: ^4.2.4
   cz-conventional-changelog: ^3.3.0
@@ -26,11 +28,13 @@ dependencies:
   solid-meta: 0.27.3_solid-js@1.3.9
 
 devDependencies:
+  '@iconify-json/bxl': 1.1.1
   '@iconify-json/ic': 1.1.1
   '@unocss/inspector': 0.27.2
   '@unocss/preset-attributify': 0.27.2
   '@unocss/preset-icons': 0.27.2
   '@unocss/preset-uno': 0.27.2
+  '@unocss/preset-wind': 0.27.2
   '@unocss/transformer-directives': 0.27.2
   commitizen: 4.2.4
   cz-conventional-changelog: 3.3.0
@@ -439,6 +443,12 @@ packages:
       '@cspotcode/source-map-consumer': 0.8.0
     dev: true
     optional: true
+
+  /@iconify-json/bxl/1.1.1:
+    resolution: {integrity: sha512-/1/268oW4PIxyiL0txGxS+n2j1z3ONKCN9QDvl88LyU6QNKctwKjacvnVzVfBq5ODb7UtJ+5eJz3HQlk+UtMUw==}
+    dependencies:
+      '@iconify/types': 1.0.12
+    dev: true
 
   /@iconify-json/ic/1.1.1:
     resolution: {integrity: sha512-HR2m3Rsel5Zp3T98Vsai+tw6ip7DKYq9xLUv3NXgZE0aSHlQw9MpQdzdW0xkdfZEnX8gfIOpW2XZy1p2YAwxSA==}

@@ -6,20 +6,16 @@ declare module 'solid-js' {
       font?: string
       w?: string
       h?: string
+      left?: string
+      right?: string
+      top?: string
+      bottom?: string
       z?: string
       pos?: string
       display?: string
       flex?: string
       p?: string
-      px?: string
-      pt?: string
-      pb?: string
-      pl?: string
-      pr?: string
-      py?: string
       m?: string
-      mx?: string
-      my?: string
       border?: string
       items?: string
       justify?: string
@@ -29,15 +25,22 @@ declare module 'solid-js' {
       place?: string
       underline?: string
       decoration?: string
-      rounded?: string
+      rounded?: string | boolean
       shadow?: string
       cursor?: string
+      transform?: string | boolean
       transition?: string | boolean
       focus?: string
       filter?: string
       overflow?: string
       pointer?: string
       leading?: string
+      whitespace?: string
+      group?: string | boolean
+      animate?: string | boolean
+      list?: string
+      before?: string
+      after?: string
     }
   }
 }

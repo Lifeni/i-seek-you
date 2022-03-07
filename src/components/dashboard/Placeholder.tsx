@@ -1,29 +1,28 @@
-import { ExternalLink } from '../Link'
+import { ExternalLink } from '../base/Link'
 
 export const Placeholder = () => (
-  <div flex="center col 1" gap="4" z="10">
-    <span text="xl secondary none">
+  <div flex="center col 1" gap="4" z="20">
+    <span text="xl light center" leading="8">
       Open
-      <ExternalLink href="https://i-seek-you.dist.run" mx="2" font="bold">
+      <ExternalLink href="https://i-seek-you.dist.run" m="x-2" font="bold">
         I Seek You
       </ExternalLink>
       on another local device or
       <input
+        aria-label="Enter a 4-digit ID"
         type="number"
         name="connect-id"
         id="connect-id"
         placeholder="Enter an ID"
-        class="placeholder-current placeholder-opacity-100"
+        pattern="[0-9]{4}"
+        class="input placeholder-current placeholder:opacity-100"
         w="32"
-        mx="2"
-        px="3"
-        py="1.5"
-        bg="secondary"
-        border="input"
-        font="sans"
+        m="x-2"
+        p="x-3 y-1.5"
+        bg="dark"
         text="secondary focus:primary lg center"
         rounded="sm"
-        focus="ring-input"
+        focus="ring-main"
       />
       to connect.
     </span>

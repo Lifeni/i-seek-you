@@ -1,27 +1,56 @@
-import { createSignal } from 'solid-js'
+import { createSignal, lazy, Show } from 'solid-js'
+import { Portal } from 'solid-js/web'
+import { Tooltip } from './base/Tooltip'
+
+const Settings = lazy(() => import('./modal/Settings'))
 
 type StatusType = 'success' | 'error' | 'warning' | 'loading'
 
 export const Toolbar = () => {
   const [status, setStatus] = createSignal<StatusType>('loading')
+  const [showSettings, setShowSettings] = createSignal(false)
+
   const iconStyle = () => `${BackgroundMap[status()]} ${SignalMap[status()]}`
 
+  const handleOpen = () => setShowSettings(true)
+  const handleClose = () => setShowSettings(false)
+
   return (
-    <header w="full" flex="between" px="12" py="6" gap="8" z="10">
-      <div flex="start 1">
-        <span class="tooltip tooltip-left" data-label={TextMap[status()]}>
-          <span class={`${iconStyle()} icon-base`} />
-        </span>
+    <header w="full" flex="between" p="x-10 y-6 sm:x-12" z="20" role="toolbar">
+      <div flex="start">
+        <Tooltip label={TextMap[status()]} position="right">
+          <button
+            aria-label="Network Status"
+            class={`${iconStyle()}`}
+            w="6"
+            h="6"
+            border="none"
+            text="light"
+            rounded="full"
+          />
+        </Tooltip>
       </div>
-      <h1 text="xl center none" flex="1">
+      <h1 text="xl center" select="none" flex="1">
         I Seek You
       </h1>
-      <div flex="end 1">
-        <span class="tooltip tooltip-right" data-label="Settings">
-          <button class="i-ic-round-settings icon-button" onClick={console.log}>
-            Settings
-          </button>
-        </span>
+      <div flex="end">
+        <Tooltip label="Settings" position="left">
+          <button
+            aria-label="Settings"
+            class="button i-ic-round-settings"
+            w="6"
+            h="6"
+            text="light hover:main"
+            rounded="full"
+            transition
+            onClick={handleOpen}
+          />
+        </Tooltip>
+        <Show when={showSettings()}>
+          <Portal>
+            <Settings close={handleClose} />
+          </Portal>
+        </Show>
       </div>
     </header>
   )

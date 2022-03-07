@@ -1,4 +1,6 @@
 import { createSignal } from 'solid-js'
+import { Tooltip } from '../base/Tooltip'
+import { Background } from './Background'
 
 // prettier-ignore
 const EmojiList = [
@@ -29,40 +31,35 @@ export const You = () => {
   }
 
   return (
-    <div flex="center col" py="2" gap="16">
-      <div class="tooltip tooltip-top" pt="8" data-label="Update Your Profile">
+    <div flex="center col" p="b-3" gap="12">
+      <Tooltip label="Update Your Profile">
         <button
+          class="button"
           pos="relative"
-          w="0"
-          h="0"
-          rounded="full"
+          w="16"
+          h="16"
+          bg="transparent"
           flex="center"
-          text="18 none"
-          cursor="pointer"
+          rounded="full"
+          text="18"
         >
-          <div class="ripple" aria-label="hidden">
-            <span data-ring="1"></span>
-            <span data-ring="2"></span>
-            <span data-ring="3"></span>
-            <span data-ring="4"></span>
-            <span data-ring="5"></span>
-          </div>
+          <Background />
           <span z="1">{emoji}</span>
         </button>
-      </div>
-      <button
-        class="tooltip tooltip-top"
-        text="lg inherit"
-        font="sans bold"
-        border="none"
-        bg="inherit"
-        cursor="pointer"
-        z="1"
-        data-label={copy()}
-        onClick={handleCopyID}
-      >
-        You #{id}
-      </button>
+      </Tooltip>
+
+      <Tooltip label={copy()}>
+        <button
+          class="button"
+          text="lg inherit"
+          bg="inherit"
+          font="sans bold"
+          leading="none"
+          onClick={handleCopyID}
+        >
+          You #{id}
+        </button>
+      </Tooltip>
     </div>
   )
 }
