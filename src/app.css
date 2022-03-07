@@ -21,4 +21,5 @@ input[type='number'] {
 
 .tooltip::before {
   content: attr(data-label);
+  z-index: 1;
 }

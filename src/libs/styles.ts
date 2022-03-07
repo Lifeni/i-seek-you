@@ -1,6 +1,7 @@
 export const shortcuts = {
   // base
-  'display-screen': 'w-screen h-screen bg-primary font-sans text-primary',
+  'display-screen':
+    'w-screen h-screen bg-primary font-sans text-primary overflow-hidden',
   'display-base': 'bg-primary font-sans text-primary',
 
   // flex

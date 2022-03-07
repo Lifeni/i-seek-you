@@ -1,16 +1,12 @@
+import { ExternalLink } from '../Link'
+
 export const Placeholder = () => (
   <div flex="center col 1" gap="4" z="10">
     <span text="xl secondary none">
       Open
-      <a
-        href="https://i-seek-you.dist.run"
-        target="_blank"
-        mx="2"
-        text="link"
-        font="bold"
-      >
+      <ExternalLink href="https://i-seek-you.dist.run" mx="2" font="bold">
         I Seek You
-      </a>
+      </ExternalLink>
       on another local device or
       <input
         type="number"

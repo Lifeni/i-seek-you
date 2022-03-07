@@ -7,6 +7,7 @@ declare module 'solid-js' {
       w?: string
       h?: string
       z?: string
+      pos?: string
       display?: string
       flex?: string
       p?: string
