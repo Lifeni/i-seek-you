@@ -4,10 +4,10 @@
   "description": "A WebRTC-based cross-platform data transfer application.",
   "private": "true",
   "scripts": {
-    "start": "vite --host --port=8080",
-    "dev": "vite --host --port=8080 --debug",
+    "start": "vite",
+    "dev": "vite --debug",
     "build": "vite build",
-    "serve": "vite preview --host --port=8080",
+    "serve": "vite preview",
     "prepare": "husky install",
     "cz": "cz",
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
@@ -28,27 +28,22 @@
     "email": "liangfengning@foxmail.com"
   },
   "devDependencies": {
-    "@iconify-json/bxl": "^1.1.1",
-    "@iconify-json/ic": "^1.1.1",
-    "@unocss/inspector": "^0.27.2",
-    "@unocss/preset-attributify": "^0.27.2",
-    "@unocss/preset-icons": "^0.27.2",
-    "@unocss/preset-uno": "^0.27.2",
-    "@unocss/preset-wind": "^0.27.2",
-    "@unocss/transformer-directives": "^0.27.2",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
     "husky": "^7.0.4",
-    "lint-staged": "^12.3.4",
-    "prettier": "^2.5.1",
+    "lint-staged": "^12.3.7",
+    "prettier": "^2.6.0",
     "typescript": "^4.6.2",
-    "unocss": "^0.27.2",
     "vite": "^2.8.6",
-    "vite-plugin-solid": "^2.2.5"
+    "vite-plugin-solid": "^2.2.6",
+    "vite-plugin-windicss": "^1.8.3",
+    "windicss": "^3.5.1"
   },
   "dependencies": {
-    "solid-app-router": "^0.3.0",
-    "solid-js": "^1.3.9",
+    "lu2": "^2021.12.21",
+    "solid-app-router": "^0.3.1",
+    "solid-icons": "^0.3.3",
+    "solid-js": "^1.3.13",
     "solid-meta": "^0.27.3"
   },
   "lint-staged": {

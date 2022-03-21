@@ -1,25 +1,15 @@
-import presetAttributify from '@unocss/preset-attributify'
-import presetIcons from '@unocss/preset-icons'
-import presetUno from '@unocss/preset-uno'
-import presetWind from '@unocss/preset-wind'
-import transformerDirective from '@unocss/transformer-directives'
-import UnoCss from 'unocss/vite'
 import { defineConfig } from 'vite'
-import solidPlugin from 'vite-plugin-solid'
-import { shortcuts, theme } from './src/libs/styles'
+import SolidPlugin from 'vite-plugin-solid'
+import WindiCSS from 'vite-plugin-windicss'
 
 export default defineConfig({
-  plugins: [
-    solidPlugin(),
-    UnoCss({
-      presets: [presetUno(), presetWind(), presetAttributify(), presetIcons()],
-      transformers: [transformerDirective()],
-      theme: theme,
-      shortcuts: shortcuts,
-    }),
-  ],
+  plugins: [SolidPlugin(), WindiCSS()],
   build: {
     target: 'esnext',
     polyfillDynamicImport: false,
+  },
+  server: {
+    host: '0.0.0.0',
+    port: 8080,
   },
 })

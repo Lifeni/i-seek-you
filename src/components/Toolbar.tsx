@@ -1,78 +1,51 @@
-import { createSignal, lazy, Show } from 'solid-js'
-import { Portal } from 'solid-js/web'
-import { Tooltip } from './base/Tooltip'
-
-const Settings = lazy(() => import('./modal/Settings'))
-
-type StatusType = 'success' | 'error' | 'warning' | 'loading'
+import { RiSystemSettingsFill } from 'solid-icons/ri'
+import { createSignal, Show } from 'solid-js'
+import { Settings } from './modal/Settings'
+import { Signal } from './toolbar/Signal'
 
 export const Toolbar = () => {
-  const [status, setStatus] = createSignal<StatusType>('loading')
   const [showSettings, setShowSettings] = createSignal(false)
 
-  const iconStyle = () => `${BackgroundMap[status()]} ${SignalMap[status()]}`
-
-  const handleOpen = () => setShowSettings(true)
-  const handleClose = () => setShowSettings(false)
-
   return (
-    <header w="full" flex="between" p="x-10 y-6 sm:x-12" z="20" role="toolbar">
-      <div flex="start">
-        <Tooltip label={TextMap[status()]} position="right">
-          <button
-            aria-label="Network Status"
-            class={`${iconStyle()}`}
-            w="6"
-            h="6"
-            border="none"
-            text="light"
-            rounded="full"
-          />
-        </Tooltip>
+    <header
+      role="toolbar"
+      w="full"
+      flex="~"
+      justify="between"
+      items="center"
+      p="x-6 y-6 sm:x-8"
+      z="20"
+    >
+      <div flex="~" justify="start" items="center">
+        <Signal />
       </div>
-      <h1 text="xl center" select="none" flex="1">
-        I Seek You
-      </h1>
-      <div flex="end">
-        <Tooltip label="Settings" position="left">
+      <div flex="~ 1" justify="center" items="center">
+        <h1 text="xl" font="bold" select="none">
+          I Seek You
+        </h1>
+      </div>
+      <div flex="~" justify="end" items="center">
+        <div class="ui-tips reverse" title="Settings">
           <button
             aria-label="Settings"
-            class="button i-ic-round-settings"
-            w="6"
-            h="6"
-            text="light hover:main"
+            flex="~"
             rounded="full"
-            transition
-            onClick={handleOpen}
-          />
-        </Tooltip>
+            p="3"
+            border="none"
+            bg="transparent hover:light-500 dark:hover:dark-400"
+            onClick={() => setShowSettings(true)}
+          >
+            <RiSystemSettingsFill
+              class="w-6 h-6"
+              text="gray-800 dark:gray-300"
+            />
+          </button>
+        </div>
+
         <Show when={showSettings()}>
-          <Portal>
-            <Settings close={handleClose} />
-          </Portal>
+          <Settings close={() => setShowSettings(false)} />
         </Show>
       </div>
     </header>
   )
-}
-
-const TextMap = {
-  success: 'Connected',
-  error: 'Lost Connection',
-  warning: 'Slow Connection',
-  loading: 'Connecting ...',
-}
-
-const BackgroundMap = {
-  success: 'bg-green-600 dark:bg-green-500',
-  error: 'bg-red-600 dark:bg-red-500',
-  warning: 'bg-orange-600 dark:bg-orange-500',
-  loading: 'bg-gray-600 dark:bg-gray-400',
-}
-
-const SignalMap = {
-  success: 'i-ic-round-signal-wifi-4-bar',
-  error: 'i-ic-round-signal-wifi-bad',
-  warning: 'i-ic-round-signal-wifi-1-bar',
-  loading: 'i-ic-round-signal-wifi-4-bar',
 }
