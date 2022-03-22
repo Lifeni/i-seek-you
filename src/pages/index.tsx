@@ -1,3 +1,4 @@
+import { Outlet } from 'solid-app-router'
 import { type Component } from 'solid-js'
 import { Title } from 'solid-meta'
 import { Dashboard } from '../components/Dashboard'
@@ -9,6 +10,7 @@ const Home: Component = () => {
       <Title>I Seek You</Title>
       <Toolbar />
       <Dashboard />
+      <Outlet />
     </>
   )
 }

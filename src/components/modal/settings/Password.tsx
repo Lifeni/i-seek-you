@@ -1,5 +1,5 @@
+import { RiOthersDoorLockFill } from 'solid-icons/ri'
 import { createSignal, Show } from 'solid-js'
-import colors from 'windicss/colors'
 
 export const Password = () => {
   const [enabled, setEnabled] = createSignal(false)
@@ -7,36 +7,35 @@ export const Password = () => {
 
   return (
     <fieldset w="full" p="3">
-      <legend text="xs uppercase gray-500 dark:gray-400" font="bold">
-        Password
+      <legend
+        flex="~"
+        items="center"
+        text="sm gray-500 dark:gray-400"
+        font="bold"
+        gap="2"
+      >
+        <RiOthersDoorLockFill w="4" h="4" /> Password
       </legend>
-      <div w="full" flex="~ col" gap="3">
-        <label flex="~" h="5" items="center">
-          <span flex="1">Connection Password</span>
-          <input
-            type="checkbox"
+      <div w="full" flex="~ col" gap="2">
+        <label for="connection-password" flex="~" items="center" m="-r-2">
+          <span flex="1"> Connection Password </span>
+          <sl-switch
             name="enable-password"
-            is="ui-switch"
             checked={enabled()}
             onInput={e => setEnabled((e.target as HTMLInputElement).checked)}
-            class="scale-85 origin-right"
-            transform="~"
-            style={{
-              '--ui-blue': colors.rose[500],
-              '--ui-dark-blue': colors.rose[500],
-            }}
           />
         </label>
 
         <Show when={enabled()}>
           <input
+            id="connection-password"
             type="text"
-            name="device-name"
+            name="connection-password"
             maxLength="18"
             placeholder={enabled() ? 'Your Password' : 'Not Enabled'}
             disabled={!enabled()}
-            w="full"
             flex="~ 1"
+            m="y-1"
             p="x-3 y-2"
             border="1 transparent rounded-sm hover:rose-500 !disabled:transparent"
             text="inherit"

@@ -1,4 +1,4 @@
-type StyleAttrs = {
+interface StyleAttrs {
   bg?: string
   text?: string
   font?: string
@@ -32,6 +32,7 @@ type StyleAttrs = {
   focus?: string
   filter?: string
   overflow?: string
+  opacity?: string
   outline?: string
   pointer?: string
   leading?: string
@@ -45,14 +46,29 @@ type StyleAttrs = {
   ring?: string
 }
 
+interface ShoeLaceAttrs {
+  name?: string
+  panel?: string
+  content?: string
+  slot?: string
+  placement?: string
+  value?: string
+  label?: string
+  disabled?: boolean
+}
+
 declare module 'solid-js' {
   namespace JSX {
-    interface HTMLAttributes<T> extends StyleAttrs {
-      is?: string
-    }
+    interface HTMLAttributes<T> extends StyleAttrs, ShoeLaceAttrs {}
     interface SvgSVGAttributes<T> extends StyleAttrs {}
     interface IntrinsicElements {
-      'ui-tips': HTMLAttributes<HTMLDivElement>
+      'sl-tooltip': HTMLAttributes<HTMLDivElement>
+      'sl-switch': InputHTMLAttributes<HTMLInputElement>
+      'sl-input': InputHTMLAttributes<HTMLInputElement>
+      'sl-qr-code': CanvasHTMLAttributes<HTMLCanvasElement>
+      'sl-tab-group': HTMLAttributes<HTMLDivElement>
+      'sl-tab': HTMLAttributes<HTMLDivElement>
+      'sl-tab-panel': HTMLAttributes<HTMLDivElement>
     }
   }
 }

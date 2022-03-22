@@ -1,11 +1,9 @@
+import { Link } from 'solid-app-router'
 import { RiSystemSettingsFill } from 'solid-icons/ri'
-import { createSignal, Show } from 'solid-js'
 import { Settings } from './modal/Settings'
-import { Signal } from './toolbar/Signal'
+import { Server } from './modal/Server'
 
 export const Toolbar = () => {
-  const [showSettings, setShowSettings] = createSignal(false)
-
   return (
     <header
       role="toolbar"
@@ -17,7 +15,7 @@ export const Toolbar = () => {
       z="20"
     >
       <div flex="~" justify="start" items="center">
-        <Signal />
+        <Server />
       </div>
       <div flex="~ 1" justify="center" items="center">
         <h1 text="xl" font="bold" select="none">
@@ -25,26 +23,7 @@ export const Toolbar = () => {
         </h1>
       </div>
       <div flex="~" justify="end" items="center">
-        <div class="ui-tips reverse" title="Settings">
-          <button
-            aria-label="Settings"
-            flex="~"
-            rounded="full"
-            p="3"
-            border="none"
-            bg="transparent hover:light-500 dark:hover:dark-400"
-            onClick={() => setShowSettings(true)}
-          >
-            <RiSystemSettingsFill
-              class="w-6 h-6"
-              text="gray-800 dark:gray-300"
-            />
-          </button>
-        </div>
-
-        <Show when={showSettings()}>
-          <Settings close={() => setShowSettings(false)} />
-        </Show>
+        <Settings />
       </div>
     </header>
   )

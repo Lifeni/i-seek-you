@@ -1,3 +1,4 @@
+import { RiUserAccountCircleFill } from 'solid-icons/ri'
 import { createSignal } from 'solid-js'
 
 export const Profile = () => {
@@ -5,29 +6,36 @@ export const Profile = () => {
 
   return (
     <fieldset w="full" p="3">
-      <legend text="xs uppercase gray-500 dark:gray-400" font="bold">
-        Profile
+      <legend
+        flex="~"
+        items="center"
+        text="sm gray-500 dark:gray-400"
+        font="bold"
+        gap="2"
+      >
+        <RiUserAccountCircleFill w="4" h="4" /> Your Profile
       </legend>
       <div w="full" flex="~" items="center" gap="6">
-        <button
-          class="ui-tips"
-          title="Select Your Emoji"
-          font="emoji"
-          w="4.5rem"
-          flex="~"
-          items="center"
-          justify="center"
-          rounded="full"
-          leading="none"
-          text="4.5rem"
-          before="font-sans"
-        >
-          🙃
-        </button>
-        <label flex="~ col 1" gap="3">
-          <span flex="~">
+        <sl-tooltip content="Select Your Emoji">
+          <button
+            font="emoji"
+            w="4.5rem"
+            flex="~"
+            items="center"
+            justify="center"
+            rounded="full"
+            leading="none"
+            text="4.5rem"
+            before="font-sans"
+          >
+            🙃
+          </button>
+        </sl-tooltip>
+
+        <label flex="~ col 1" gap="2">
+          <span flex="~" items="baseline">
             <span flex="1">Your Name</span>
-            <span text="gray-500 dark:gray-400">{name().length}/18</span>
+            <span text="sm gray-500 dark:gray-400">{name().length}/18</span>
           </span>
           <input
             type="text"
@@ -51,5 +59,3 @@ export const Profile = () => {
     </fieldset>
   )
 }
-
-const Emoji = () => <div></div>

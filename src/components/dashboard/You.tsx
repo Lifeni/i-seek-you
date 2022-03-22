@@ -1,4 +1,4 @@
-import { createSignal, For } from 'solid-js'
+import { createSignal, For, Show } from 'solid-js'
 
 // prettier-ignore
 const EmojiList = [
@@ -16,14 +16,13 @@ const EmojiList = [
 export const You = () => {
   const [copied, setCopied] = createSignal(false)
 
-  const copy = () => (copied() ? '✅ Copied' : 'Copy Your ID')
   const emoji = EmojiList[Math.floor(Math.random() * EmojiList.length)]
   const id = Math.floor(Math.random() * 10000)
     .toString()
     .padStart(4, '0')
 
   const handleCopyID = () => {
-    navigator.clipboard.writeText(id)
+    navigator.clipboard.writeText(`${location.href}#${id}`)
     setCopied(true)
     setTimeout(() => setCopied(false), 3000)
   }
@@ -44,18 +43,38 @@ export const You = () => {
         </span>
       </div>
 
-      <div class="ui-tips" data-title={copy()} z="1">
+      <sl-tooltip>
+        <div slot="content">
+          <Show
+            when={copied()}
+            fallback={
+              <span flex="~ col">
+                <span flex="~" p="2" bg="white" rounded="sm" m="t-0.5 b-2">
+                  <sl-qr-code
+                    value={`${location.href}#${id}`}
+                    label="QR code for your link"
+                  />
+                </span>
+
+                <span>🔗 Copy Your Link</span>
+              </span>
+            }
+          >
+            <span>✅ Copied</span>
+          </Show>
+        </div>
         <button
           text="lg inherit"
           bg="inherit"
           font="sans bold"
           leading="none"
           select="none"
+          z="1"
           onClick={handleCopyID}
         >
           You #{id}
         </button>
-      </div>
+      </sl-tooltip>
     </div>
   )
 }

@@ -1,0 +1,47 @@
+/* https://github.com/shoelace-style/shoelace/blob/next/src/themes/light.css */
+
+:root {
+  --sl-color-primary-400: theme(colors.rose.400);
+  --sl-color-primary-600: theme(colors.rose.600);
+  --sl-color-neutral-400: theme(colors.light.800);
+  --sl-color-neutral-0: hsl(0, 0%, 100%);
+  --sl-color-neutral-1000: hsl(0, 0%, 0%);
+  --sl-transition-fast: 150ms;
+}
+
+sl-tooltip {
+  --sl-tooltip-padding: 0.5rem 0.75em;
+  --sl-tooltip-border-radius: 0.25rem;
+  --sl-tooltip-font-family: theme(fontFamily.sans);
+  --sl-tooltip-font-size: 0.875rem;
+  --sl-tooltip-font-weight: bold;
+  --sl-tooltip-line-height: 1.4;
+  --sl-tooltip-color: theme(colors.gray.800);
+  --sl-tooltip-background-color: theme(colors.light.600);
+  --sl-tooltip-arrow-size: 4px;
+  --sl-z-index-tooltip: 1000;
+}
+
+sl-switch {
+  --sl-input-font-size-medium: 1rem;
+  --sl-input-font-family: theme(fontFamily.sans);
+  --sl-input-font-weight: normal;
+  --sl-input-color: theme(colors.light.100);
+  --sl-input-border-width: 1px;
+  --sl-toggle-size: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sl-color-neutral-400: theme(colors.dark.200);
+  }
+
+  sl-tooltip {
+    --sl-tooltip-color: theme(colors.gray.300);
+    --sl-tooltip-background-color: theme(colors.dark.400);
+  }
+
+  sl-switch {
+    --sl-input-color: theme(colors.dark.800);
+  }
+}

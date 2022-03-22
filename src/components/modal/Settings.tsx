@@ -1,41 +1,49 @@
-import { type JSX } from 'solid-js'
+import { useLocation, useNavigate } from 'solid-app-router'
+import { RiSystemSettingsFill } from 'solid-icons/ri'
+import { createSignal, onMount } from 'solid-js'
 import { Modal } from '../Modal'
 import { Password } from './settings/Password'
 import { Profile } from './settings/Profile'
-import { Theme } from './settings/Theme'
 
-interface SettingsProps extends JSX.HTMLAttributes<HTMLDivElement> {
-  close: () => void
-}
+export const Settings = () => {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [open, setOpen] = createSignal(false)
 
-export const Settings = (props: SettingsProps) => {
+  onMount(() => {
+    if (location.pathname === '/settings') handleOpen()
+  })
+
+  const handleOpen = () => {
+    setOpen(true)
+    navigate('/settings')
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+    navigate('/')
+  }
+
   return (
-    <Modal title="Settings" close={props.close}>
-      <Profile />
-      <Password />
-      <Theme />
-      <p
-        flex="~"
-        items="center"
-        p="x-3 b-2"
-        text="sm gray-500 dark:gray-400"
-        font="bold"
-      >
-        <span flex="1" select="none">
-          I Seek You © MIT License
-        </span>
-        <a
-          href="https://github.com/Lifeni/i-seek-you"
-          target="_blank"
-          rel="noopener noreferrer"
-          text="rose-500 hover:underline"
-          font="bold"
+    <>
+      <sl-tooltip content="Settings" placement="bottom-end">
+        <button
+          aria-label="Settings"
+          flex="~"
+          rounded="full"
+          p="3"
+          border="none"
+          bg="transparent hover:light-600 dark:hover:dark-400"
+          onClick={handleOpen}
         >
-          GitHub
-        </a>
-      </p>
-    </Modal>
+          <RiSystemSettingsFill class="w-6 h-6" text="gray-800 dark:gray-300" />
+        </button>
+      </sl-tooltip>
+
+      <Modal title="Settings" width="84" open={open()} onClose={handleClose}>
+        <Profile />
+        <Password />
+      </Modal>
+    </>
   )
 }
-
-const EmojiPanel = () => <div></div>
