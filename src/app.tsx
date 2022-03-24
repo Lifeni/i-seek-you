@@ -3,6 +3,7 @@ import { lazy } from 'solid-js'
 import { render } from 'solid-js/web'
 import { MetaProvider } from 'solid-meta'
 import 'windi.css'
+import { ConfigProvider } from './context/Config'
 import './libs/tooltip.css'
 
 const Home = lazy(() => import('./pages/index'))
@@ -37,9 +38,11 @@ const App = () => {
 
 render(
   () => (
-    <MetaProvider>
-      <App />
-    </MetaProvider>
+    <ConfigProvider>
+      <MetaProvider>
+        <App />
+      </MetaProvider>
+    </ConfigProvider>
   ),
   document.getElementById('root') as HTMLElement
 )

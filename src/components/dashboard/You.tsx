@@ -1,22 +1,11 @@
-import { createSignal, For } from 'solid-js'
-
-// prettier-ignore
-const EmojiList = [
-  '😏', '😅', '😎', '🤡', '👽',
-  '👾', '🤖', '💩', '💀', '🐵',
-  '🐶', '🐺', '🐱', '🦁', '🐯',
-  '🦊', '🦝', '🐮', '🐷', '🐭',
-  '🐹', '🐰', '🐻', '🐻‍❄️', '🐨',
-  '🐼', '🐸', '🐔', '🦀', '🐳',
-  '🦐', '🐤', '🦉', '🦚', '🕊️',
-  '🐲', '🦄', '🦕', '🐇', '🐙',
-  '😂', '😚', '🙃', '🥳', '🧐'
-]
+import { Link } from 'solid-app-router'
+import { createSignal, For, useContext } from 'solid-js'
+import { ConfigContext } from '../../context/Config'
 
 export const You = () => {
   const [copied, setCopied] = createSignal(false)
+  const [config] = useContext(ConfigContext)
 
-  const emoji = EmojiList[Math.floor(Math.random() * EmojiList.length)]
   const id = Math.floor(Math.random() * 10000)
     .toString()
     .padStart(4, '0')
@@ -30,6 +19,9 @@ export const You = () => {
   return (
     <div flex="~ col" items="center" justify="center" p="b-3" gap="8">
       <div
+        role="tooltip"
+        aria-label="Your Emoji"
+        data-position="top"
         pos="relative"
         w="16"
         h="16"
@@ -38,14 +30,14 @@ export const You = () => {
         items="center"
       >
         <Ripple />
-        <span z="1" transform="~ scale-400" select="none">
-          {emoji}
-        </span>
+        <Link href="/settings" z="1" transform="~ scale-400" select="none">
+          {config.emoji}
+        </Link>
       </div>
 
       <button
         role="tooltip"
-        aria-label={copied() ? '✅ Copied' : `🔗 Copy Your Link`}
+        aria-label={copied() ? '✅ Copied' : `Copy Your Link`}
         data-position="top"
         text="lg inherit"
         bg="inherit"
@@ -55,7 +47,7 @@ export const You = () => {
         z="1"
         onClick={handleCopyID}
       >
-        You #{id}
+        {config.name} #{id}
       </button>
     </div>
   )
@@ -81,11 +73,7 @@ const Ripple = () => (
           border="light-600 dark:dark-400 6"
           rounded="full"
           animate="ripple motion-reduce:none"
-          style={{
-            '--from': (item - 1) * 0.2,
-            '--to': item * 0.2,
-            'will-change': 'width, height, opacity',
-          }}
+          style={{ '--from': (item - 1) * 0.2, '--to': item * 0.2 }}
         />
       )}
     </For>

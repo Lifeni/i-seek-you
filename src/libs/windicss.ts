@@ -34,6 +34,3 @@ export const keyframes = {
 }
 
 export const safelist = []
-
-export const range = (size: number, start = 1) =>
-  Array.from(Array(size).keys()).map(i => i + start)

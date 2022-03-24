@@ -5,7 +5,7 @@ import {
   keyframes,
   safelist,
   transitions,
-} from './src/libs/styles'
+} from './src/libs/windicss'
 
 export default defineConfig({
   darkMode: 'media',

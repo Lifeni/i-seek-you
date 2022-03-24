@@ -1,8 +1,9 @@
 import { RiDeviceSignalWifiFill } from 'solid-icons/ri'
-import { createSignal } from 'solid-js'
+import { useContext } from 'solid-js'
+import { ConfigContext } from '../../../context/Config'
 
 export const Custom = () => {
-  const [custom, setCustom] = createSignal('')
+  const [config, { setServer }] = useContext(ConfigContext)
 
   return (
     <fieldset w="full" p="3">
@@ -46,8 +47,8 @@ export const Custom = () => {
           transition="border"
           cursor="disabled:not-allowed"
           outline="none"
-          value={custom()}
-          onInput={e => setCustom((e.target as HTMLInputElement).value)}
+          value={config.server}
+          onInput={e => setServer((e.target as HTMLInputElement).value)}
         />
       </div>
     </fieldset>

@@ -5,8 +5,9 @@ import {
   PopoverPanel,
   Transition,
 } from 'solid-headless'
-import { createSignal, For } from 'solid-js'
+import { For, useContext } from 'solid-js'
 import { Portal } from 'solid-js/web'
+import { ConfigContext } from '../../../context/Config'
 
 type Emojis = {
   name: string
@@ -31,7 +32,7 @@ const EmojiList = [
 ]
 
 export const Emoji = () => {
-  const [emoji, setEmoji] = createSignal('🧐')
+  const [config, { setEmoji }] = useContext(ConfigContext)
   let panel: HTMLElement
 
   const emojis = gemoji.reduce((emojis, emoji) => {
@@ -68,7 +69,7 @@ export const Emoji = () => {
             text="4.5rem"
             before="font-sans"
           >
-            {emoji}
+            <div>{config.emoji}</div>
           </PopoverButton>
 
           <Portal>

@@ -1,10 +1,11 @@
 import { Toggle } from 'solid-headless'
 import { RiOthersDoorLockFill } from 'solid-icons/ri'
-import { createSignal, Show } from 'solid-js'
+import { createSignal, Show, useContext } from 'solid-js'
+import { ConfigContext } from '../../../context/Config'
 
 export const Password = () => {
   const [enabled, setEnabled] = createSignal(false)
-  const [password, setPassword] = createSignal('')
+  const [config, { setPassword }] = useContext(ConfigContext)
 
   return (
     <fieldset w="full" p="3">
@@ -20,30 +21,42 @@ export const Password = () => {
       <div w="full" flex="~ col" gap="2">
         <label for="connection-password" flex="~" items="center">
           <span flex="1">Connection Password</span>
-          <Toggle
-            pressed={enabled()}
-            onChange={e => setEnabled(e)}
-            class="w-9 h-3.5"
-            pos="relative"
-            bg={enabled() ? 'rose-500' : 'light-800 dark:dark-200'}
-            flex="~"
-            items="center"
-            rounded="full"
-          >
-            <span class="sr-only">Enable Password</span>
-            <span
-              class={enabled() ? 'translate-x-4' : 'translate-x-0'}
+          <Toggle pressed={enabled()} onChange={e => setEnabled(e)}>
+            <div
               pos="relative"
-              w="5"
-              h="5"
               flex="~"
-              border={`1 ${enabled() ? 'rose-500' : 'light-800 dark:dark-200'}`}
+              items="center"
+              w="9"
+              h="3.5"
+              bg={enabled() ? 'rose-500' : 'light-800 dark:dark-200'}
               rounded="full"
-              bg="white"
-              transform="~"
-              transition="transform"
-              shadow="md"
-            />
+            >
+              <span class="sr-only">Enable Password</span>
+              <span
+                class={enabled() ? 'translate-x-4' : 'translate-x-0'}
+                pos="relative"
+                w="5"
+                h="5"
+                flex="~"
+                items="center"
+                justify="center"
+                border={`1 ${
+                  enabled() ? 'rose-500' : 'light-800 dark:dark-200'
+                }`}
+                rounded="full"
+                bg="white"
+                transform="~"
+                transition="transform"
+                shadow="md"
+              >
+                <span
+                  w="1.5"
+                  h="1.5"
+                  rounded="full"
+                  bg={enabled() ? 'rose-500' : 'light-800'}
+                />
+              </span>
+            </div>
           </Toggle>
         </label>
 
@@ -65,7 +78,7 @@ export const Password = () => {
             transition="border"
             cursor="disabled:not-allowed"
             outline="none"
-            value={password()}
+            value={config.password}
             onInput={e => setPassword((e.target as HTMLInputElement).value)}
           />
         </Show>

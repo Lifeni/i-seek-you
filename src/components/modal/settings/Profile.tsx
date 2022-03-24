@@ -1,9 +1,10 @@
 import { RiUserAccountCircleFill } from 'solid-icons/ri'
-import { createSignal } from 'solid-js'
+import { useContext } from 'solid-js'
+import { ConfigContext } from '../../../context/Config'
 import { Emoji } from './Emoji'
 
 export const Profile = () => {
-  const [name, setName] = createSignal('')
+  const [config, { setName }] = useContext(ConfigContext)
 
   return (
     <fieldset w="full" p="3">
@@ -22,7 +23,9 @@ export const Profile = () => {
         <label flex="~ col 1" gap="2">
           <span flex="~" items="baseline">
             <span flex="1">Your Name</span>
-            <span text="sm gray-500 dark:gray-400">{name().length}/18</span>
+            <span text="sm gray-500 dark:gray-400">
+              {config.name.length}/18
+            </span>
           </span>
           <input
             type="text"
@@ -38,7 +41,7 @@ export const Profile = () => {
             ring="focus:4 rose-500"
             transition="border"
             outline="none"
-            value={name()}
+            value={config.name}
             onInput={e => setName((e.target as HTMLInputElement).value)}
           />
         </label>

@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'solid-app-router'
 import { RiSystemSettingsFill } from 'solid-icons/ri'
-import { createSignal, onMount } from 'solid-js'
+import { createEffect, createSignal, onMount } from 'solid-js'
 import { Modal } from '../Modal'
 import { Password } from './settings/Password'
 import { Profile } from './settings/Profile'
@@ -10,8 +10,8 @@ export const Settings = () => {
   const location = useLocation()
   const [open, setOpen] = createSignal(false)
 
-  onMount(() => {
-    if (location.pathname === '/settings') handleOpen()
+  createEffect(() => {
+    if (location.pathname === '/settings') setOpen(true)
   })
 
   const handleOpen = () => {
