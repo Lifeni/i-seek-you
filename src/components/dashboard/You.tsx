@@ -1,4 +1,4 @@
-import { createSignal, For, Show } from 'solid-js'
+import { createSignal, For } from 'solid-js'
 
 // prettier-ignore
 const EmojiList = [
@@ -43,38 +43,20 @@ export const You = () => {
         </span>
       </div>
 
-      <sl-tooltip>
-        <div slot="content">
-          <Show
-            when={copied()}
-            fallback={
-              <span flex="~ col">
-                <span flex="~" p="2" bg="white" rounded="sm" m="t-0.5 b-2">
-                  <sl-qr-code
-                    value={`${location.href}#${id}`}
-                    label="QR code for your link"
-                  />
-                </span>
-
-                <span>🔗 Copy Your Link</span>
-              </span>
-            }
-          >
-            <span>✅ Copied</span>
-          </Show>
-        </div>
-        <button
-          text="lg inherit"
-          bg="inherit"
-          font="sans bold"
-          leading="none"
-          select="none"
-          z="1"
-          onClick={handleCopyID}
-        >
-          You #{id}
-        </button>
-      </sl-tooltip>
+      <button
+        role="tooltip"
+        aria-label={copied() ? '✅ Copied' : `🔗 Copy Your Link`}
+        data-position="top"
+        text="lg inherit"
+        bg="inherit"
+        font="sans bold"
+        leading="none"
+        select="none"
+        z="1"
+        onClick={handleCopyID}
+      >
+        You #{id}
+      </button>
     </div>
   )
 }
@@ -99,7 +81,11 @@ const Ripple = () => (
           border="light-600 dark:dark-400 6"
           rounded="full"
           animate="ripple motion-reduce:none"
-          style={{ '--from': (item - 1) * 0.2, '--to': item * 0.2 }}
+          style={{
+            '--from': (item - 1) * 0.2,
+            '--to': item * 0.2,
+            'will-change': 'width, height, opacity',
+          }}
         />
       )}
     </For>

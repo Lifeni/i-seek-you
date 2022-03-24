@@ -1,5 +1,6 @@
 import { RiUserAccountCircleFill } from 'solid-icons/ri'
 import { createSignal } from 'solid-js'
+import { Emoji } from './Emoji'
 
 export const Profile = () => {
   const [name, setName] = createSignal('')
@@ -16,21 +17,7 @@ export const Profile = () => {
         <RiUserAccountCircleFill w="4" h="4" /> Your Profile
       </legend>
       <div w="full" flex="~" items="center" gap="6">
-        <sl-tooltip content="Select Your Emoji">
-          <button
-            font="emoji"
-            w="4.5rem"
-            flex="~"
-            items="center"
-            justify="center"
-            rounded="full"
-            leading="none"
-            text="4.5rem"
-            before="font-sans"
-          >
-            🙃
-          </button>
-        </sl-tooltip>
+        <Emoji />
 
         <label flex="~ col 1" gap="2">
           <span flex="~" items="baseline">

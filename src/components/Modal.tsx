@@ -2,20 +2,20 @@ import { RiSystemCloseFill } from 'solid-icons/ri'
 import { children, Show, type JSX } from 'solid-js'
 import { Portal } from 'solid-js/web'
 
-interface WindowProps extends JSX.HTMLAttributes<HTMLDivElement> {
+interface ModalProps extends JSX.HTMLAttributes<HTMLDivElement> {
   title?: string
-  width?: string
-  open: boolean
+  size?: 'sm' | 'md' | 'lg'
+  isOpen: boolean
   onClose: () => void
 }
 
-export const Modal = (props: WindowProps) => {
+export const Modal = (props: ModalProps) => {
   const elements = children(() => props.children)
 
   return (
     <Portal>
       <div
-        aria-hidden={!props.open}
+        aria-hidden={!props.isOpen}
         pos="fixed"
         top="0"
         left="0"
@@ -23,8 +23,8 @@ export const Modal = (props: WindowProps) => {
         h="screen"
         z="1000"
         p="4"
-        display={props.open ? 'flex visible' : 'flex invisible'}
-        opacity={props.open ? '100' : '0'}
+        display={props.isOpen ? 'flex visible' : 'flex invisible'}
+        opacity={props.isOpen ? '100' : '0'}
         items="center"
         justify="center"
         transition="visible"
@@ -42,7 +42,15 @@ export const Modal = (props: WindowProps) => {
         <div
           w="full"
           h="auto"
-          max-w={props.width ? props.width : '96'}
+          max-w={
+            props.size === 'sm'
+              ? '90'
+              : props.size === 'md'
+              ? '120'
+              : props.size === 'lg'
+              ? '180'
+              : 'unset'
+          }
           z="1"
           font="sans"
           text="gray-800 dark:gray-300"
@@ -50,7 +58,7 @@ export const Modal = (props: WindowProps) => {
           p="x-3 t-2 b-3"
           rounded="md"
           shadow="2xl"
-          transform={props.open ? '~ scale-100' : '~ scale-95'}
+          transform={props.isOpen ? '~ scale-100' : '~ scale-95'}
           transition="transform"
         >
           <Show when={props.title}>
@@ -58,19 +66,20 @@ export const Modal = (props: WindowProps) => {
               <h1 text="lg" font="bold" m="0" p="x-3" flex="1">
                 {props.title}
               </h1>
-              <sl-tooltip content="Close">
-                <button
-                  aria-label="Close Window"
-                  flex="~"
-                  rounded="full"
-                  p="3"
-                  border="none"
-                  bg="transparent hover:light-600 dark:hover:dark-400"
-                  onClick={props.onClose}
-                >
-                  <RiSystemCloseFill class="w-6 h-6" />
-                </button>
-              </sl-tooltip>
+
+              <button
+                role="tooltip"
+                aria-label="Close"
+                data-position="top"
+                flex="~"
+                rounded="full"
+                p="3"
+                border="none"
+                bg="transparent hover:light-600 dark:hover:dark-400"
+                onClick={props.onClose}
+              >
+                <RiSystemCloseFill class="w-6 h-6" />
+              </button>
             </div>
           </Show>
           <div flex="~ col" gap="3">

@@ -1,3 +1,4 @@
+import { Toggle } from 'solid-headless'
 import { RiOthersDoorLockFill } from 'solid-icons/ri'
 import { createSignal, Show } from 'solid-js'
 
@@ -17,13 +18,33 @@ export const Password = () => {
         <RiOthersDoorLockFill w="4" h="4" /> Password
       </legend>
       <div w="full" flex="~ col" gap="2">
-        <label for="connection-password" flex="~" items="center" m="-r-2">
-          <span flex="1"> Connection Password </span>
-          <sl-switch
-            name="enable-password"
-            checked={enabled()}
-            onInput={e => setEnabled((e.target as HTMLInputElement).checked)}
-          />
+        <label for="connection-password" flex="~" items="center">
+          <span flex="1">Connection Password</span>
+          <Toggle
+            pressed={enabled()}
+            onChange={e => setEnabled(e)}
+            class="w-9 h-3.5"
+            pos="relative"
+            bg={enabled() ? 'rose-500' : 'light-800 dark:dark-200'}
+            flex="~"
+            items="center"
+            rounded="full"
+          >
+            <span class="sr-only">Enable Password</span>
+            <span
+              class={enabled() ? 'translate-x-4' : 'translate-x-0'}
+              pos="relative"
+              w="5"
+              h="5"
+              flex="~"
+              border={`1 ${enabled() ? 'rose-500' : 'light-800 dark:dark-200'}`}
+              rounded="full"
+              bg="white"
+              transform="~"
+              transition="transform"
+              shadow="md"
+            />
+          </Toggle>
         </label>
 
         <Show when={enabled()}>

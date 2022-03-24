@@ -26,21 +26,21 @@ export const Settings = () => {
 
   return (
     <>
-      <sl-tooltip content="Settings" placement="bottom-end">
-        <button
-          aria-label="Settings"
-          flex="~"
-          rounded="full"
-          p="3"
-          border="none"
-          bg="transparent hover:light-600 dark:hover:dark-400"
-          onClick={handleOpen}
-        >
-          <RiSystemSettingsFill class="w-6 h-6" text="gray-800 dark:gray-300" />
-        </button>
-      </sl-tooltip>
+      <button
+        role="tooltip"
+        aria-label="Settings"
+        data-position="bottom-left"
+        flex="~"
+        rounded="full"
+        p="3"
+        border="none"
+        bg="transparent hover:light-600 dark:hover:dark-400"
+        onClick={handleOpen}
+      >
+        <RiSystemSettingsFill class="w-6 h-6" text="gray-800 dark:gray-300" />
+      </button>
 
-      <Modal title="Settings" width="84" open={open()} onClose={handleClose}>
+      <Modal title="Settings" size="sm" isOpen={open()} onClose={handleClose}>
         <Profile />
         <Password />
       </Modal>

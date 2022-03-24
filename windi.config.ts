@@ -1,5 +1,11 @@
 import { defineConfig } from 'windicss/helpers'
-import { animations, fonts, keyframes, transitions } from './src/libs/styles'
+import {
+  animations,
+  fonts,
+  keyframes,
+  safelist,
+  transitions,
+} from './src/libs/styles'
 
 export default defineConfig({
   darkMode: 'media',
@@ -13,4 +19,5 @@ export default defineConfig({
       keyframes: { ripple: keyframes.ripple },
     },
   },
+  safelist: safelist,
 })

@@ -6,11 +6,12 @@ export const fonts = {
 
 export const transitions = {
   border: 'border-color, box-shadow',
-  visible: 'opacity, transform, visibility',
+  visible: 'opacity, visibility',
 }
 
 export const animations = {
   ripple: 'ripple 2s linear infinite',
+  fade: 'fade 0.2s ease',
 }
 
 export const keyframes = {
@@ -26,4 +27,13 @@ export const keyframes = {
       opacity: 'calc(1 - var(--to))',
     },
   },
+  fade: {
+    '0%': { opacity: '0', transform: 'scale(0.95)' },
+    '100%': { opacity: '1', transform: 'scale(1)' },
+  },
 }
+
+export const safelist = []
+
+export const range = (size: number, start = 1) =>
+  Array.from(Array(size).keys()).map(i => i + start)

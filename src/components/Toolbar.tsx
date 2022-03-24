@@ -1,7 +1,6 @@
-import { Link } from 'solid-app-router'
-import { RiSystemSettingsFill } from 'solid-icons/ri'
-import { Settings } from './modal/Settings'
+import { version } from '../../package.json'
 import { Server } from './modal/Server'
+import { Settings } from './modal/Settings'
 
 export const Toolbar = () => {
   return (
@@ -18,8 +17,22 @@ export const Toolbar = () => {
         <Server />
       </div>
       <div flex="~ 1" justify="center" items="center">
-        <h1 text="xl" font="bold" select="none">
-          I Seek You
+        <h1
+          role="tooltip"
+          aria-label={`I Seek You ${version} ︱ View on GitHub`}
+          data-position="bottom"
+          text="xl"
+          font="bold"
+          select="none"
+        >
+          <a
+            href="https://github.com/Lifeni/i-seek-you"
+            target="_blank"
+            rel="noopener noreferrer"
+            text="hover:underline"
+          >
+            I Seek You
+          </a>
         </h1>
       </div>
       <div flex="~" justify="end" items="center">

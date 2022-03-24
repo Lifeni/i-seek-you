@@ -1,0 +1,298 @@
+/* Modified from https://github.com/ghosh/microtip
+
+/* -------------------------------------------------------------------
+  Microtip
+
+  Modern, lightweight css-only tooltips
+  Just 1kb minified and gzipped
+
+  @author Ghosh
+  @package Microtip
+
+----------------------------------------------------------------------
+  1. Base Styles
+  2. Direction Modifiers
+  3. Position Modifiers
+--------------------------------------------------------------------*/
+
+/* ------------------------------------------------
+  [1] Base Styles
+-------------------------------------------------*/
+
+[aria-label][role~='tooltip'] {
+  position: relative;
+
+  --font-size: 14px;
+  --font-family: theme(fontFamily.sans);
+  --transition-easing: cubic-bezier(0.33, 0.84, 0.42, 1);
+  --transition-duration: 0.1s;
+  --box-shadow: theme(boxShadow.2xl);
+}
+
+[aria-label][role~='tooltip']::before,
+[aria-label][role~='tooltip']::after {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
+  opacity: 0;
+  pointer-events: none;
+  transition: all var(--transition-duration, 0.18s)
+    var(--transition-easing, ease-in-out) var(--transition-delay, 0s);
+  position: absolute;
+  box-sizing: border-box;
+  z-index: 10;
+}
+
+[aria-label][role~='tooltip']::before {
+  background-size: 100% auto !important;
+  content: '';
+}
+
+[aria-label][role~='tooltip']::after {
+  background: rgba(17, 17, 17, 0.9);
+  border-radius: 4px;
+  color: #ffffff;
+  content: attr(aria-label);
+  height: fit-content;
+  font-size: var(--font-size, 13px);
+  font-weight: var(--font-weight, normal);
+  font-family: var(--font-family);
+  line-height: 1.5;
+  text-transform: var(--text-transform, none);
+  padding: 0.375rem 0.75rem;
+  white-space: nowrap;
+  box-sizing: content-box;
+  box-shadow: var(--box-shadow);
+}
+
+[aria-label][role~='tooltip']:hover::before,
+[aria-label][role~='tooltip']:hover::after {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ------------------------------------------------
+    [2] Position Modifiers
+  -------------------------------------------------*/
+
+[role~='tooltip'][data-position|='top']::before {
+  background: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2236px%22%20height%3D%2212px%22%3E%3Cpath%20fill%3D%22rgba%2817,%2017,%2017,%200.9%29%22%20transform%3D%22rotate%280%29%22%20d%3D%22M2.658,0.000%20C-13.615,0.000%2050.938,0.000%2034.662,0.000%20C28.662,0.000%2023.035,12.002%2018.660,12.002%20C14.285,12.002%208.594,0.000%202.658,0.000%20Z%22/%3E%3C/svg%3E')
+    no-repeat;
+  height: 6px;
+  width: 18px;
+  margin-bottom: 5px;
+}
+
+[role~='tooltip'][data-position|='top']::after {
+  margin-bottom: 11px;
+}
+
+[role~='tooltip'][data-position|='top']::before {
+  transform: translateX(-50%) scale(0.95);
+  bottom: 100%;
+  left: 50%;
+  transform-origin: top;
+}
+
+[role~='tooltip'][data-position|='top']:hover::before {
+  transform: translateX(-50%) scale(1);
+}
+
+[role~='tooltip'][data-position|='top']::after {
+  transform: translateX(-50%) scale(0.95);
+  bottom: 100%;
+  left: 50%;
+  transform-origin: bottom;
+}
+
+[role~='tooltip'][data-position='top']:hover::after {
+  transform: translateX(-50%) scale(1);
+}
+
+/* ------------------------------------------------
+    [2.1] Top Left
+  -------------------------------------------------*/
+[role~='tooltip'][data-position='top-left']::before {
+  transform-origin: right top;
+}
+
+[role~='tooltip'][data-position='top-left']::after {
+  transform: translateX(calc(-100% + 1.5rem)) scale(0.95);
+  bottom: 100%;
+  transform-origin: calc(100% - 1.5rem) bottom;
+}
+
+[role~='tooltip'][data-position='top-left']:hover::after {
+  transform: translateX(calc(-100% + 1.5rem)) scale(1);
+}
+
+/* ------------------------------------------------
+    [2.2] Top Right
+  -------------------------------------------------*/
+[role~='tooltip'][data-position='top-right']::before {
+  transform-origin: left top;
+}
+
+[role~='tooltip'][data-position='top-right']::after {
+  transform: translateX(calc(0% - 1.5rem)) scale(0.95);
+  bottom: 100%;
+  transform-origin: 1.5rem bottom;
+}
+
+[role~='tooltip'][data-position='top-right']:hover::after {
+  transform: translateX(calc(0% - 1.5rem)) scale(1);
+}
+
+/* ------------------------------------------------
+    [2.3] Bottom
+  -------------------------------------------------*/
+[role~='tooltip'][data-position|='bottom']::before {
+  background: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2236px%22%20height%3D%2212px%22%3E%3Cpath%20fill%3D%22rgba%2817,%2017,%2017,%200.9%29%22%20transform%3D%22rotate%28180%2018%206%29%22%20d%3D%22M2.658,0.000%20C-13.615,0.000%2050.938,0.000%2034.662,0.000%20C28.662,0.000%2023.035,12.002%2018.660,12.002%20C14.285,12.002%208.594,0.000%202.658,0.000%20Z%22/%3E%3C/svg%3E')
+    no-repeat;
+  height: 6px;
+  width: 18px;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+[role~='tooltip'][data-position|='bottom']::after {
+  margin-top: 11px;
+}
+
+[role~='tooltip'][data-position|='bottom']::before {
+  transform: translateX(-50%) scale(0.95);
+  bottom: auto;
+  left: 50%;
+  top: 100%;
+  transform-origin: bottom;
+}
+
+[role~='tooltip'][data-position|='bottom']:hover::before {
+  transform: translateX(-50%) scale(1);
+}
+
+[role~='tooltip'][data-position|='bottom']::after {
+  transform: translateX(-50%) scale(0.95);
+  top: 100%;
+  left: 50%;
+  transform-origin: top;
+}
+
+[role~='tooltip'][data-position='bottom']:hover::after {
+  transform: translateX(-50%) scale(1);
+}
+
+/* ------------------------------------------------
+    [2.4] Bottom Left
+  -------------------------------------------------*/
+[role~='tooltip'][data-position='bottom-left']::before {
+  transform-origin: right bottom;
+}
+
+[role~='tooltip'][data-position='bottom-left']::after {
+  transform: translateX(calc(-100% + 1.5rem)) scale(0.95);
+  bottom: 100%;
+  transform-origin: calc(100% - 1.5rem) top;
+}
+
+[role~='tooltip'][data-position='bottom-left']:hover::after {
+  transform: translateX(calc(-100% + 1.5rem)) scale(1);
+}
+
+/* ------------------------------------------------
+    [2.5] Bottom Right
+  -------------------------------------------------*/
+[role~='tooltip'][data-position='bottom-right']::before {
+  transform-origin: left bottom;
+}
+
+[role~='tooltip'][data-position='bottom-right']::after {
+  transform: translateX(calc(0% - 1.5rem)) scale(0.95);
+  bottom: 100%;
+  transform-origin: 1.5rem top;
+}
+
+[role~='tooltip'][data-position='bottom-right']:hover::after {
+  transform: translateX(calc(0% - 1.5rem)) scale(1);
+}
+
+/* ------------------------------------------------
+    [2.6] Left
+  -------------------------------------------------*/
+[role~='tooltip'][data-position='left']::before,
+[role~='tooltip'][data-position='left']::after {
+  bottom: auto;
+  left: auto;
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%) scale(0.95);
+}
+
+[role~='tooltip'][data-position='left']::before {
+  background: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212px%22%20height%3D%2236px%22%3E%3Cpath%20fill%3D%22rgba%2817,%2017,%2017,%200.9%29%22%20transform%3D%22rotate%28-90%2018%2018%29%22%20d%3D%22M2.658,0.000%20C-13.615,0.000%2050.938,0.000%2034.662,0.000%20C28.662,0.000%2023.035,12.002%2018.660,12.002%20C14.285,12.002%208.594,0.000%202.658,0.000%20Z%22/%3E%3C/svg%3E')
+    no-repeat;
+  height: 18px;
+  width: 6px;
+  margin-right: 5px;
+  margin-bottom: 0;
+  transform-origin: left;
+}
+
+[role~='tooltip'][data-position='left']::after {
+  margin-right: 11px;
+  transform-origin: right;
+}
+
+[role~='tooltip'][data-position='left']:hover::before,
+[role~='tooltip'][data-position='left']:hover::after {
+  transform: translateY(-50%) scale(1);
+}
+
+/* ------------------------------------------------
+    [2.7] Right
+  -------------------------------------------------*/
+[role~='tooltip'][data-position='right']::before,
+[role~='tooltip'][data-position='right']::after {
+  bottom: auto;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) scale(0.95);
+}
+
+[role~='tooltip'][data-position='right']::before {
+  background: url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2212px%22%20height%3D%2236px%22%3E%3Cpath%20fill%3D%22rgba%2817,%2017,%2017,%200.9%29%22%20transform%3D%22rotate%2890%206%206%29%22%20d%3D%22M2.658,0.000%20C-13.615,0.000%2050.938,0.000%2034.662,0.000%20C28.662,0.000%2023.035,12.002%2018.660,12.002%20C14.285,12.002%208.594,0.000%202.658,0.000%20Z%22/%3E%3C/svg%3E')
+    no-repeat;
+  height: 18px;
+  width: 6px;
+  margin-bottom: 0;
+  margin-left: 5px;
+  transform-origin: right;
+}
+
+[role~='tooltip'][data-position='right']::after {
+  margin-left: 11px;
+  transform-origin: left;
+}
+
+[role~='tooltip'][data-position='right']:hover::before,
+[role~='tooltip'][data-position='right']:hover::after {
+  transform: translateY(-50%) scale(1);
+}
+
+/* ------------------------------------------------
+    [3] Size
+  -------------------------------------------------*/
+[role~='tooltip'][data-size='small']::after {
+  white-space: initial;
+  width: 80px;
+}
+
+[role~='tooltip'][data-size='medium']::after {
+  white-space: initial;
+  width: 150px;
+}
+
+[role~='tooltip'][data-size='large']::after {
+  white-space: initial;
+  width: 260px;
+}

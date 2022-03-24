@@ -3,7 +3,11 @@ interface StyleAttrs {
   text?: string
   font?: string
   w?: string
+  'max-w'?: string
+  'min-w'?: string
   h?: string
+  'max-h'?: string
+  'min-h'?: string
   left?: string
   right?: string
   top?: string
@@ -23,13 +27,13 @@ interface StyleAttrs {
   select?: string
   place?: string
   underline?: string
-  decoration?: string
-  rounded?: string | boolean
+  rounded?: string
   shadow?: string
   cursor?: string
-  transform?: string | boolean
-  transition?: string | boolean
+  transform?: string
+  transition?: string
   focus?: string
+  touch?: string
   filter?: string
   overflow?: string
   opacity?: string
@@ -38,38 +42,19 @@ interface StyleAttrs {
   leading?: string
   whitespace?: string
   group?: string | boolean
-  animate?: string | boolean
+  animate?: string
   list?: string
   before?: string
   after?: string
   reverse?: boolean
   ring?: string
-}
-
-interface ShoeLaceAttrs {
-  name?: string
-  panel?: string
-  content?: string
-  slot?: string
-  placement?: string
-  value?: string
-  label?: string
-  disabled?: boolean
+  backdrop?: string
 }
 
 declare module 'solid-js' {
   namespace JSX {
-    interface HTMLAttributes<T> extends StyleAttrs, ShoeLaceAttrs {}
+    interface HTMLAttributes<T> extends StyleAttrs {}
     interface SvgSVGAttributes<T> extends StyleAttrs {}
-    interface IntrinsicElements {
-      'sl-tooltip': HTMLAttributes<HTMLDivElement>
-      'sl-switch': InputHTMLAttributes<HTMLInputElement>
-      'sl-input': InputHTMLAttributes<HTMLInputElement>
-      'sl-qr-code': CanvasHTMLAttributes<HTMLCanvasElement>
-      'sl-tab-group': HTMLAttributes<HTMLDivElement>
-      'sl-tab': HTMLAttributes<HTMLDivElement>
-      'sl-tab-panel': HTMLAttributes<HTMLDivElement>
-    }
   }
 }
 
