@@ -62,7 +62,8 @@ export const ConfigProvider = (props: ConfigProviderProps) => {
 
   const writeStore = (name: keyof Config[0], value: string, once?: boolean) => {
     setConfig(name, () => value)
-    !once && localStorage.setItem(name, value)
+    if (value && !once) localStorage.setItem(name, value)
+    else if (!value) localStorage.removeItem(name)
   }
 
   const store: Config = [

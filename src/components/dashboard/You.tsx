@@ -30,7 +30,12 @@ export const You = () => {
         items="center"
       >
         <Ripple />
-        <Link href="/settings" z="1" transform="~ scale-400" select="none">
+        <Link
+          href="/settings#emoji"
+          z="1"
+          transform="~ scale-400"
+          select="none"
+        >
           {config.emoji}
         </Link>
       </div>

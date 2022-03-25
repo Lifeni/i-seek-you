@@ -4,8 +4,13 @@ import { createSignal, Show, useContext } from 'solid-js'
 import { ConfigContext } from '../../../context/Config'
 
 export const Password = () => {
-  const [enabled, setEnabled] = createSignal(false)
   const [config, { setPassword }] = useContext(ConfigContext)
+  const [enabled, setEnabled] = createSignal(!!config.password)
+
+  const handleToggle = () => {
+    setEnabled(stat => !stat)
+    if (!enabled()) setPassword('')
+  }
 
   return (
     <fieldset w="full" p="3">
@@ -21,7 +26,7 @@ export const Password = () => {
       <div w="full" flex="~ col" gap="2">
         <label for="connection-password" flex="~" items="center">
           <span flex="1">Connection Password</span>
-          <Toggle pressed={enabled()} onChange={e => setEnabled(e)}>
+          <Toggle pressed={enabled()} onChange={handleToggle}>
             <div
               pos="relative"
               flex="~"

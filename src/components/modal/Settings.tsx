@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from 'solid-app-router'
 import { RiSystemSettingsFill } from 'solid-icons/ri'
-import { createEffect, createSignal, onMount } from 'solid-js'
+import { createEffect, createSignal } from 'solid-js'
 import { Modal } from '../Modal'
 import { Password } from './settings/Password'
 import { Profile } from './settings/Profile'
