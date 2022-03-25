@@ -88,7 +88,7 @@
 }
 
 [role~='tooltip'][data-position|='top']::before {
-  transform: translateX(-50%) scale(0.95);
+  transform: translateX(-50%) scale(0.96);
   bottom: 100%;
   left: 50%;
   transform-origin: top;
@@ -99,7 +99,7 @@
 }
 
 [role~='tooltip'][data-position|='top']::after {
-  transform: translateX(-50%) scale(0.95);
+  transform: translateX(-50%) scale(0.96);
   bottom: 100%;
   left: 50%;
   transform-origin: bottom;
@@ -117,7 +117,7 @@
 }
 
 [role~='tooltip'][data-position='top-left']::after {
-  transform: translateX(calc(-100% + 1.5rem)) scale(0.95);
+  transform: translateX(calc(-100% + 1.5rem)) scale(0.96);
   bottom: 100%;
   transform-origin: calc(100% - 1.5rem) bottom;
 }
@@ -134,7 +134,7 @@
 }
 
 [role~='tooltip'][data-position='top-right']::after {
-  transform: translateX(calc(0% - 1.5rem)) scale(0.95);
+  transform: translateX(calc(0% - 1.5rem)) scale(0.96);
   bottom: 100%;
   transform-origin: 1.5rem bottom;
 }
@@ -160,7 +160,7 @@
 }
 
 [role~='tooltip'][data-position|='bottom']::before {
-  transform: translateX(-50%) scale(0.95);
+  transform: translateX(-50%) scale(0.96);
   bottom: auto;
   left: 50%;
   top: 100%;
@@ -172,7 +172,7 @@
 }
 
 [role~='tooltip'][data-position|='bottom']::after {
-  transform: translateX(-50%) scale(0.95);
+  transform: translateX(-50%) scale(0.96);
   top: 100%;
   left: 50%;
   transform-origin: top;
@@ -190,7 +190,7 @@
 }
 
 [role~='tooltip'][data-position='bottom-left']::after {
-  transform: translateX(calc(-100% + 1.5rem)) scale(0.95);
+  transform: translateX(calc(-100% + 1.5rem)) scale(0.96);
   bottom: 100%;
   transform-origin: calc(100% - 1.5rem) top;
 }
@@ -207,7 +207,7 @@
 }
 
 [role~='tooltip'][data-position='bottom-right']::after {
-  transform: translateX(calc(0% - 1.5rem)) scale(0.95);
+  transform: translateX(calc(0% - 1.5rem)) scale(0.96);
   bottom: 100%;
   transform-origin: 1.5rem top;
 }
@@ -225,7 +225,7 @@
   left: auto;
   right: 100%;
   top: 50%;
-  transform: translateY(-50%) scale(0.95);
+  transform: translateY(-50%) scale(0.96);
 }
 
 [role~='tooltip'][data-position='left']::before {
@@ -256,7 +256,7 @@
   bottom: auto;
   left: 100%;
   top: 50%;
-  transform: translateY(-50%) scale(0.95);
+  transform: translateY(-50%) scale(0.96);
 }
 
 [role~='tooltip'][data-position='right']::before {

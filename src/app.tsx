@@ -4,6 +4,7 @@ import { render } from 'solid-js/web'
 import { MetaProvider } from 'solid-meta'
 import 'windi.css'
 import { ConfigProvider } from './context/Config'
+import { SessionProvider } from './context/Session'
 import './libs/tooltip.css'
 
 const Home = lazy(() => import('./pages/index'))
@@ -24,10 +25,13 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<Home />}>
-            <Route path="/" />
-            <Route path="/message" />
+            <Route path="/+" />
+            <Route path="/auth/:id" />
+            <Route path="/channels/:id" />
             <Route path="/server" />
             <Route path="/settings" />
+            <Route path="/share" />
+            <Route path="/" />
           </Route>
           <Route path="/*all" element={<NotFound />} />
         </Routes>
@@ -38,11 +42,13 @@ const App = () => {
 
 render(
   () => (
-    <ConfigProvider>
-      <MetaProvider>
-        <App />
-      </MetaProvider>
-    </ConfigProvider>
+    <SessionProvider>
+      <ConfigProvider>
+        <MetaProvider>
+          <App />
+        </MetaProvider>
+      </ConfigProvider>
+    </SessionProvider>
   ),
   document.getElementById('root') as HTMLElement
 )

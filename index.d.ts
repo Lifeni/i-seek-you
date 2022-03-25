@@ -49,6 +49,7 @@ interface StyleAttrs {
   reverse?: boolean
   ring?: string
   backdrop?: string
+  aspect?: string
 }
 
 declare module 'solid-js' {

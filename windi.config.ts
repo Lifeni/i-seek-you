@@ -3,6 +3,7 @@ import {
   animations,
   fonts,
   keyframes,
+  plugins,
   safelist,
   transitions,
 } from './src/libs/windicss'
@@ -20,4 +21,5 @@ export default defineConfig({
     },
   },
   safelist: safelist,
+  plugins: plugins,
 })

@@ -1,9 +1,8 @@
 import { RiDeviceSignalWifiFill } from 'solid-icons/ri'
-import { useContext } from 'solid-js'
-import { ConfigContext } from '../../../context/Config'
+import { useConfig } from '../../../context/Config'
 
 export const Custom = () => {
-  const [config, { setServer }] = useContext(ConfigContext)
+  const [config, { setServer }] = useConfig()
 
   return (
     <fieldset w="full" p="3">

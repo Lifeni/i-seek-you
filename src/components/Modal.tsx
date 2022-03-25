@@ -55,10 +55,10 @@ export const Modal = (props: ModalProps) => {
           font="sans"
           text="gray-800 dark:gray-300"
           bg="light-100 dark:dark-800"
-          p="x-3 t-2 b-3"
+          p={props.title ? 'x-3 t-2 b-3' : '0'}
           rounded="md"
           shadow="2xl"
-          transform={props.isOpen ? '~ scale-100' : '~ scale-95'}
+          transform={props.isOpen ? '~ scale-100' : '~ scale-96'}
           transition="transform"
         >
           <Show when={props.title}>

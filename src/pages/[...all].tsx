@@ -6,6 +6,7 @@ const NotFound: Component = () => {
   return (
     <>
       <Title>404 Not Found</Title>
+
       <h1 text="xl" font="normal" m="b-3">
         <code font="sans bold">404</code>
         <span m="x-4">|</span>

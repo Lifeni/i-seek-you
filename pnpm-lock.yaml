@@ -1,25 +1,27 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@nuintun/qrcode': ^3.1.1
   commitizen: ^4.2.4
   cz-conventional-changelog: ^3.3.0
   gemoji: ^7.1.0
   husky: ^7.0.4
   lint-staged: ^12.3.7
   lodash: ^4.17.21
-  prettier: ^2.6.0
+  prettier: ^2.6.1
   solid-app-router: ^0.3.2
   solid-headless: ^0.10.12
   solid-icons: ^0.3.3
   solid-js: ^1.3.13
   solid-meta: ^0.27.3
-  typescript: ^4.6.2
+  typescript: ^4.6.3
   vite: ^2.8.6
   vite-plugin-solid: ^2.2.6
   vite-plugin-windicss: ^1.8.3
   windicss: ^3.5.1
 
 dependencies:
+  '@nuintun/qrcode': 3.1.1
   gemoji: 7.1.0
   lodash: 4.17.21
   solid-app-router: 0.3.2_solid-js@1.3.13
@@ -33,8 +35,8 @@ devDependencies:
   cz-conventional-changelog: 3.3.0
   husky: 7.0.4
   lint-staged: 12.3.7
-  prettier: 2.6.0
-  typescript: 4.6.2
+  prettier: 2.6.1
+  typescript: 4.6.3
   vite: 2.8.6
   vite-plugin-solid: 2.2.6
   vite-plugin-windicss: 1.8.3_vite@2.8.6
@@ -380,10 +382,10 @@ packages:
       '@types/node': 17.0.21
       chalk: 4.1.2
       cosmiconfig: 7.0.1
-      cosmiconfig-typescript-loader: 1.0.6_e79e62fe450383fd2d418267dc75e645
+      cosmiconfig-typescript-loader: 1.0.6_f01b7c141b75a45db67b7d9ae4c261df
       lodash: 4.17.21
       resolve-from: 5.0.0
-      typescript: 4.6.2
+      typescript: 4.6.3
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -445,6 +447,12 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
     dev: true
+
+  /@nuintun/qrcode/3.1.1:
+    resolution: {integrity: sha512-wIZHSut0P7208M0LvoljEsxjYdrpkGuOwNUKAdZaK7sxlnv07G4adondqbD0tpRTOFNSYAjhomybCmzeDaGhCw==}
+    dependencies:
+      tslib: 2.3.1
+    dev: false
 
   /@tsconfig/node10/1.0.8:
     resolution: {integrity: sha512-6XFfSQmMgq0CFLY1MslA/CPUfhIL919M1rMsa5lP2P097N2Wd1sSX0tx1u4olM16fLNhtHZpRhedZJphNJqmZg==}
@@ -785,7 +793,7 @@ packages:
       safe-buffer: 5.1.2
     dev: true
 
-  /cosmiconfig-typescript-loader/1.0.6_e79e62fe450383fd2d418267dc75e645:
+  /cosmiconfig-typescript-loader/1.0.6_f01b7c141b75a45db67b7d9ae4c261df:
     resolution: {integrity: sha512-2nEotziYJWtNtoTjKbchj9QrdTT6DBxCvqjNKoDKARw+e2yZmTQCa07uRrykLIZuvSgp69YXLH89UHc0WhdMfQ==}
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
@@ -794,8 +802,8 @@ packages:
     dependencies:
       '@types/node': 17.0.21
       cosmiconfig: 7.0.1
-      ts-node: 10.6.0_e79e62fe450383fd2d418267dc75e645
-      typescript: 4.6.2
+      ts-node: 10.6.0_f01b7c141b75a45db67b7d9ae4c261df
+      typescript: 4.6.3
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -1797,8 +1805,8 @@ packages:
       source-map-js: 1.0.2
     dev: true
 
-  /prettier/2.6.0:
-    resolution: {integrity: sha512-m2FgJibYrBGGgQXNzfd0PuDGShJgRavjUoRCw1mZERIWVSXF0iLzLm+aOqTAbLnC3n6JzUhAA8uZnFVghHJ86A==}
+  /prettier/2.6.1:
+    resolution: {integrity: sha512-8UVbTBYGwN37Bs9LERmxCPjdvPxlEowx2urIL6urHzdb3SDq4B/Z6xLFCblrSnE4iKWcS6ziJ3aOYrc1kz/E2A==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
@@ -2155,7 +2163,7 @@ packages:
       is-number: 7.0.0
     dev: true
 
-  /ts-node/10.6.0_e79e62fe450383fd2d418267dc75e645:
+  /ts-node/10.6.0_f01b7c141b75a45db67b7d9ae4c261df:
     resolution: {integrity: sha512-CJen6+dfOXolxudBQXnVjRVvYTmTWbyz7cn+xq2XTsvnaXbHqr4gXSCNbS2Jj8yTZMuGwUoBESLaOkLascVVvg==}
     hasBin: true
     peerDependencies:
@@ -2181,7 +2189,7 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 4.6.2
+      typescript: 4.6.3
       v8-compile-cache-lib: 3.0.0
       yn: 3.1.1
     dev: true
@@ -2197,15 +2205,14 @@ packages:
 
   /tslib/2.3.1:
     resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
-    dev: true
 
   /type-fest/0.21.3:
     resolution: {integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w==}
     engines: {node: '>=10'}
     dev: true
 
-  /typescript/4.6.2:
-    resolution: {integrity: sha512-HM/hFigTBHZhLXshn9sN37H085+hQGeJHJ/X7LpBWLID/fbc2acUMfU+lGD98X81sKP+pFa9f0DZmCwB9GnbAg==}
+  /typescript/4.6.3:
+    resolution: {integrity: sha512-yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true

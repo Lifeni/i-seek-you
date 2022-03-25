@@ -8,6 +8,7 @@ const Home: Component = () => {
   return (
     <>
       <Title>I Seek You</Title>
+
       <Toolbar />
       <Dashboard />
       <Outlet />

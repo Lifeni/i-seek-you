@@ -1,10 +1,10 @@
 import { Toggle } from 'solid-headless'
 import { RiOthersDoorLockFill } from 'solid-icons/ri'
-import { createSignal, Show, useContext } from 'solid-js'
-import { ConfigContext } from '../../../context/Config'
+import { createSignal, Show } from 'solid-js'
+import { useConfig } from '../../../context/Config'
 
 export const Password = () => {
-  const [config, { setPassword }] = useContext(ConfigContext)
+  const [config, { setPassword }] = useConfig()
   const [enabled, setEnabled] = createSignal(!!config.password)
 
   const handleToggle = () => {

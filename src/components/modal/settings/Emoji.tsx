@@ -6,9 +6,9 @@ import {
   PopoverPanel,
   Transition,
 } from 'solid-headless'
-import { For, useContext } from 'solid-js'
+import { For } from 'solid-js'
 import { Portal } from 'solid-js/web'
-import { ConfigContext } from '../../../context/Config'
+import { useConfig } from '../../../context/Config'
 
 type Emojis = {
   name: string
@@ -33,7 +33,7 @@ const EmojiList = [
 ]
 
 export const Emoji = () => {
-  const [config, { setEmoji }] = useContext(ConfigContext)
+  const [config, { setEmoji }] = useConfig()
   const location = useLocation()
   const navigate = useNavigate()
   const isOpen = () =>
@@ -54,6 +54,11 @@ export const Emoji = () => {
   const handleScroll = (e: MouseEvent) => {
     const icon = (e.target as HTMLDivElement).dataset.id
     if (icon && panel) panel.querySelector(`#${icon}`)?.scrollIntoView()
+  }
+
+  const handleClick = (e: MouseEvent) => {
+    setEmoji((e.target as HTMLButtonElement).textContent || '')
+    navigate('/settings')
   }
 
   return (
@@ -81,11 +86,11 @@ export const Emoji = () => {
         <Transition
           show={isOpen()}
           enter="transition duration-200"
-          enterFrom="opacity-0 scale-95"
+          enterFrom="opacity-0 scale-96"
           enterTo="opacity-100 scale-100"
           leave="transition duration-150"
           leaveFrom="opacity-100 scale-100"
-          leaveTo="opacity-0 scale-95"
+          leaveTo="opacity-0 scale-96"
           pos="relative"
           rounded="md"
           overflow="hidden"
@@ -159,11 +164,11 @@ export const Emoji = () => {
                       >
                         {list.name}
                       </h2>
-                      <div grid="~ cols-9">
+                      <div role="list" grid="~ cols-9">
                         <For each={list.list}>
                           {item => (
                             <button
-                              role="img"
+                              role="listitem"
                               aria-label={item.description}
                               title={item.description}
                               w="10"
@@ -172,12 +177,8 @@ export const Emoji = () => {
                               bg="hover:(light-600 dark:dark-400)"
                               rounded="sm"
                               font="emoji"
-                              text="2xl gray-800 dark:gray-300"
-                              leading="none"
-                              onClick={() => {
-                                setEmoji(item.emoji)
-                                navigate('/settings')
-                              }}
+                              text="2xl"
+                              onClick={handleClick}
                             >
                               {item.emoji}
                             </button>

@@ -17,20 +17,22 @@ export const animations = {
 export const keyframes = {
   ripple: {
     '0%': {
-      width: 'calc(max(100vh, 100vw) * var(--from))',
-      height: 'calc(max(100vh, 100vw) * var(--from))',
+      width: 'var(--size-from)',
+      height: 'var(--size-from)',
       opacity: 'calc(1 - var(--from))',
     },
     '100%': {
-      width: 'calc(max(100vh, 100vw) * var(--to))',
-      height: 'calc(max(100vh, 100vw) * var(--to))',
+      width: 'var(--size-to)',
+      height: 'var(--size-to)',
       opacity: 'calc(1 - var(--to))',
     },
   },
   fade: {
-    '0%': { opacity: '0', transform: 'scale(0.95)' },
+    '0%': { opacity: '0', transform: 'scale(0.96)' },
     '100%': { opacity: '1', transform: 'scale(1)' },
   },
 }
 
 export const safelist = []
+
+export const plugins = [require('windicss/plugin/aspect-ratio')]

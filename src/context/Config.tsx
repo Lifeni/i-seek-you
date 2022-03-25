@@ -1,4 +1,4 @@
-import { createContext, type JSX } from 'solid-js'
+import { createContext, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
 type Config = [
@@ -46,9 +46,9 @@ const defaultConfig: Config = [
 
 export const ConfigContext = createContext<Config>(defaultConfig)
 
-interface ConfigProviderProps extends JSX.HTMLAttributes<HTMLElement> {}
+export const useConfig = () => useContext(ConfigContext)
 
-export const ConfigProvider = (props: ConfigProviderProps) => {
+export const ConfigProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
   const readStore = () =>
     (Object.keys(defaultConfig[0]) as [keyof Config[0]]).reduce((pre, cur) => {
       pre[cur] = localStorage.getItem(cur) || defaultConfig[0][cur]
