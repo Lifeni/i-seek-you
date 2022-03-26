@@ -26,7 +26,7 @@
   --font-family: theme(fontFamily.sans);
   --transition-easing: cubic-bezier(0.33, 0.84, 0.42, 1);
   --transition-duration: 0.1s;
-  --box-shadow: theme(boxShadow.2xl);
+  --box-shadow: theme(boxShadow.xl);
 }
 
 [aria-label][role~='tooltip']::before,
@@ -84,7 +84,7 @@
 }
 
 [role~='tooltip'][data-position|='top']::after {
-  margin-bottom: 11px;
+  margin-bottom: 10px;
 }
 
 [role~='tooltip'][data-position|='top']::before {
@@ -156,7 +156,7 @@
 }
 
 [role~='tooltip'][data-position|='bottom']::after {
-  margin-top: 11px;
+  margin-top: 10px;
 }
 
 [role~='tooltip'][data-position|='bottom']::before {
@@ -239,7 +239,7 @@
 }
 
 [role~='tooltip'][data-position='left']::after {
-  margin-right: 11px;
+  margin-right: 10px;
   transform-origin: right;
 }
 
@@ -270,7 +270,7 @@
 }
 
 [role~='tooltip'][data-position='right']::after {
-  margin-left: 11px;
+  margin-left: 10px;
   transform-origin: left;
 }
 

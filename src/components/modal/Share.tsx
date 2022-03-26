@@ -5,8 +5,9 @@ import {
   RiDocumentFileCopy2Fill,
   RiSystemShareFill,
 } from 'solid-icons/ri'
-import { createEffect, createSignal, For, onMount } from 'solid-js'
+import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 import { Title } from 'solid-meta'
+import Logo from '../../assets/logo.svg'
 import { useConfig } from '../../context/Config'
 import { useSession } from '../../context/Session'
 import { Avatar } from '../dashboard/Avatar'
@@ -34,7 +35,7 @@ export const Share = () => {
 
     const qrcode = new Encoder()
     qrcode.setEncodingHint(true)
-    qrcode.setErrorCorrectionLevel(ErrorCorrectionLevel.M)
+    qrcode.setErrorCorrectionLevel(ErrorCorrectionLevel.Q)
     qrcode.write(url)
     qrcode.make()
     setMatrix(qrcode.getMatrix())
@@ -45,7 +46,7 @@ export const Share = () => {
   const handleShare = () =>
     navigator.share({
       title: 'I Seek You',
-      text: `Share from ${config.name} ${session.id}`,
+      text: `Share from ${config.name} #${session.id}`,
       url: url(),
     })
 
@@ -59,21 +60,38 @@ export const Share = () => {
 
   return (
     <>
-      <Title>Share - I Seek You</Title>
+      <Show when={open()}>
+        <Title>Share - I Seek You</Title>
+      </Show>
 
       <Avatar name="Share" href="/share" tooltip="Share Your Link">
         <RiDeviceQrCodeFill class="w-8 h-8" text="inherit" />
       </Avatar>
 
-      <Modal title="Share" size="sm" isOpen={open()} onClose={handleClose}>
+      <Modal title="Share" size="xs" isOpen={open()} onClose={handleClose}>
         <div flex="~ col" gap="3">
           <div
-            role="figure"
-            aria-label="QR Code"
+            role="tooltip"
+            aria-label={url()}
+            data-position="top"
+            pos="relative"
             m="x-3"
             flex="~ col"
             rounded="sm"
           >
+            <img
+              src={Logo}
+              alt="I Seek You Logo"
+              pos="absolute"
+              top="1/2"
+              left="1/2"
+              z="1"
+              w="16"
+              h="16"
+              transform="~ -translate-x-1/2 -translate-y-1/2"
+              shadow="xl"
+              rounded="full"
+            />
             <For each={matrix()}>
               {row => (
                 <div
@@ -99,22 +117,6 @@ export const Share = () => {
               )}
             </For>
           </div>
-
-          <input
-            aria-label="Your Link"
-            type="text"
-            value={url()}
-            placeholder="Your Link"
-            m="x-3"
-            p="x-4 y-2"
-            border="1 transparent hover:rose-500"
-            bg="light-600 dark:dark-400"
-            text="center gray-800 dark:gray-300"
-            outline="none"
-            ring="focus:4 rose-500"
-            transition="border"
-            rounded="sm"
-          />
 
           <section flex="~" justify="end" gap="3">
             <button

@@ -3,7 +3,7 @@ import {
   RiDeviceSignalWifiErrorFill,
   RiDeviceSignalWifiFill,
 } from 'solid-icons/ri'
-import { createEffect, createSignal, Match, Switch } from 'solid-js'
+import { createEffect, createSignal, Match, Show, Switch } from 'solid-js'
 import { Title } from 'solid-meta'
 import { Modal } from '../Modal'
 import { Custom } from './server/Custom'
@@ -32,7 +32,9 @@ export const Server = () => {
 
   return (
     <>
-      <Title>Server - I Seek You</Title>
+      <Show when={open()}>
+        <Title>Server - I Seek You</Title>
+      </Show>
 
       <Link
         role="tooltip"

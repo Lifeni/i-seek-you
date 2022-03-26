@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'solid-app-router'
 import { RiSystemSettingsFill } from 'solid-icons/ri'
-import { createEffect, createSignal } from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import { Title } from 'solid-meta'
 import { Modal } from '../Modal'
 import { Password } from './settings/Password'
@@ -17,7 +17,9 @@ export const Settings = () => {
 
   return (
     <>
-      <Title>Settings - I Seek You</Title>
+      <Show when={open()}>
+        <Title>Settings - I Seek You</Title>
+      </Show>
 
       <Link
         role="tooltip"

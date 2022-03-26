@@ -28,8 +28,11 @@ export const Note = () => {
         <RiDevicePhoneFindFill class="w-8 h-8" text="inherit" />
       </span>
 
-      <span font="bold" select="none">
-        Seeking{suffix()}
+      <span pos="relative" font="bold" select="none">
+        Seeking
+        <span pos="absolute" left="full">
+          {suffix()}
+        </span>
       </span>
     </div>
   )

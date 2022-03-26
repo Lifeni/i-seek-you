@@ -26,7 +26,6 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />}>
             <Route path="/+" />
-            <Route path="/auth/:id" />
             <Route path="/channels/:id" />
             <Route path="/server" />
             <Route path="/settings" />
@@ -42,13 +41,13 @@ const App = () => {
 
 render(
   () => (
-    <SessionProvider>
-      <ConfigProvider>
-        <MetaProvider>
+    <MetaProvider>
+      <SessionProvider>
+        <ConfigProvider>
           <App />
-        </MetaProvider>
-      </ConfigProvider>
-    </SessionProvider>
+        </ConfigProvider>
+      </SessionProvider>
+    </MetaProvider>
   ),
   document.getElementById('root') as HTMLElement
 )

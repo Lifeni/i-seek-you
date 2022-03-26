@@ -4,7 +4,7 @@ import { Portal } from 'solid-js/web'
 
 interface ModalProps extends JSX.HTMLAttributes<HTMLDivElement> {
   title?: string
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'xs' | 'sm' | 'md' | 'lg'
   isOpen: boolean
   onClose: () => void
 }
@@ -43,7 +43,9 @@ export const Modal = (props: ModalProps) => {
           w="full"
           h="auto"
           max-w={
-            props.size === 'sm'
+            props.size === 'xs'
+              ? '75'
+              : props.size === 'sm'
               ? '90'
               : props.size === 'md'
               ? '120'
