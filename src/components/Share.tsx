@@ -7,11 +7,11 @@ import {
 } from 'solid-icons/ri'
 import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 import { Title } from 'solid-meta'
-import Logo from '../../assets/logo.svg'
-import { useConfig } from '../../context/Config'
-import { useSession } from '../../context/Session'
-import { Avatar } from '../dashboard/Avatar'
-import { Modal } from '../Modal'
+import Logo from '../assets/logo.svg'
+import { useConfig } from '../context/Config'
+import { useSession } from '../context/Session'
+import { Modal } from './base/Modal'
+import { Action } from './lobby/Figure'
 
 export const Share = () => {
   const [session] = useSession()
@@ -64,9 +64,9 @@ export const Share = () => {
         <Title>Share - I Seek You</Title>
       </Show>
 
-      <Avatar name="Share" href="/share" tooltip="Share Your Link">
+      <Action name="Share" href="/share" tooltip="Share Your Link">
         <RiDeviceQrCodeFill class="w-8 h-8" text="inherit" />
-      </Avatar>
+      </Action>
 
       <Modal title="Share" size="xs" isOpen={open()} onClose={handleClose}>
         <div flex="~ col" gap="3">
@@ -76,44 +76,48 @@ export const Share = () => {
             data-position="top"
             pos="relative"
             m="x-3"
-            flex="~ col"
+            grid="~ row"
+            style={{
+              'grid-template-columns': `repeat(${len()}, 1fr)`,
+            }}
             rounded="sm"
           >
-            <img
-              src={Logo}
-              alt="I Seek You Logo"
+            <div
               pos="absolute"
-              top="1/2"
-              left="1/2"
+              top="0"
+              left="0"
               z="1"
-              w="16"
-              h="16"
-              transform="~ -translate-x-1/2 -translate-y-1/2"
-              shadow="xl"
-              rounded="full"
-            />
+              w="full"
+              h="full"
+              flex="~"
+              items="center"
+              justify="center"
+              pointer="none"
+            >
+              <img
+                src={Logo}
+                alt="I Seek You Logo"
+                w="16"
+                h="16"
+                shadow="xl"
+                rounded="full"
+              />
+            </div>
+
             <For each={matrix()}>
               {row => (
-                <div
-                  w="full"
-                  grid="~ row"
-                  style={{
-                    'grid-template-columns': `repeat(${len()}, 1fr)`,
-                  }}
-                >
-                  <For each={row}>
-                    {cube => (
-                      <div
-                        aspect="square"
-                        bg={
-                          cube
-                            ? 'gray-800 dark:gray-300'
-                            : 'light-100 dark:dark-800'
-                        }
-                      ></div>
-                    )}
-                  </For>
-                </div>
+                <For each={row}>
+                  {cube => (
+                    <div
+                      aspect="square"
+                      bg={
+                        cube
+                          ? 'gray-800 dark:gray-300'
+                          : 'light-100 dark:dark-800'
+                      }
+                    />
+                  )}
+                </For>
               )}
             </For>
           </div>

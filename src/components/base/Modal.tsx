@@ -61,7 +61,7 @@ export const Modal = (props: ModalProps) => {
           rounded="md"
           shadow="2xl"
           transform={props.isOpen ? '~ scale-100' : '~ scale-96'}
-          transition="transform"
+          transition="transform ease-out"
         >
           <Show when={props.title}>
             <div w="full" m="b-3" flex="~" items="center">

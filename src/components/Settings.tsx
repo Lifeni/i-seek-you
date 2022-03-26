@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from 'solid-app-router'
 import { RiSystemSettingsFill } from 'solid-icons/ri'
 import { createEffect, createSignal, Show } from 'solid-js'
 import { Title } from 'solid-meta'
-import { Modal } from '../Modal'
+import { Modal } from './base/Modal'
 import { Password } from './settings/Password'
 import { Profile } from './settings/Profile'
 

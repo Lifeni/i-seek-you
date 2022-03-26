@@ -7,8 +7,8 @@ import { ConfigProvider } from './context/Config'
 import { SessionProvider } from './context/Session'
 import './libs/tooltip.css'
 
-const Home = lazy(() => import('./pages/index'))
-const NotFound = lazy(() => import('./pages/[...all]'))
+const Home = lazy(() => import('./pages/Home'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 const App = () => {
   return (

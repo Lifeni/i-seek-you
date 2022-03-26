@@ -2,8 +2,8 @@ import { useLocation, useNavigate } from 'solid-app-router'
 import { RiCommunicationChatNewFill } from 'solid-icons/ri'
 import { createEffect, createSignal, Show } from 'solid-js'
 import { Title } from 'solid-meta'
-import { Avatar } from '../dashboard/Avatar'
-import { Modal } from '../Modal'
+import { Action } from './lobby/Figure'
+import { Modal } from './base/Modal'
 
 export const Join = () => {
   const [id, setId] = createSignal('')
@@ -44,9 +44,9 @@ export const Join = () => {
         <Title>Join - I Seek You</Title>
       </Show>
 
-      <Avatar href="/+" name="Join" tooltip="Join a Channel">
+      <Action href="/+" name="Join" tooltip="Join a Channel">
         <RiCommunicationChatNewFill class="w-8 h-8" text="inherit" />
-      </Avatar>
+      </Action>
 
       <Modal size="sm" isOpen={open()} onClose={handleClose}>
         <input

@@ -1,7 +1,7 @@
 import { Toggle } from 'solid-headless'
 import { RiOthersDoorLockFill } from 'solid-icons/ri'
 import { createSignal, Show } from 'solid-js'
-import { useConfig } from '../../../context/Config'
+import { useConfig } from '../../context/Config'
 
 export const Password = () => {
   const [config, { setPassword }] = useConfig()

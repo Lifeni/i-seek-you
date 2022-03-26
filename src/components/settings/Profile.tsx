@@ -1,5 +1,5 @@
 import { RiUserAccountCircleFill } from 'solid-icons/ri'
-import { useConfig } from '../../../context/Config'
+import { useConfig } from '../../context/Config'
 import { Emoji } from './Emoji'
 
 export const Profile = () => {
