@@ -35,4 +35,7 @@ export const keyframes = {
 
 export const safelist = []
 
-export const plugins = [require('windicss/plugin/aspect-ratio')]
+export const plugins = [
+  require('windicss/plugin/aspect-ratio'),
+  require('@windicss/plugin-animations'),
+]

@@ -13,15 +13,21 @@ export const Password = () => {
   }
 
   return (
-    <fieldset w="full" p="3">
+    <fieldset w="full" p="x-3 y-5">
       <legend
+        h="8"
+        p="2 r-3"
         flex="~"
+        justify="center"
         items="center"
         text="sm gray-500 dark:gray-400"
         font="bold"
+        rounded="full"
+        bg="light-600 dark:dark-400"
         gap="2"
       >
-        <RiOthersDoorLockFill w="4" h="4" /> Password
+        <RiOthersDoorLockFill w="4" h="4" />
+        Password
       </legend>
       <div w="full" flex="~ col" gap="2">
         <label for="connection-password" flex="~" items="center">

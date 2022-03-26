@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@nuintun/qrcode': ^3.1.1
+  '@windicss/plugin-animations': ^1.0.9
   commitizen: ^4.2.4
   cz-conventional-changelog: ^3.3.0
   gemoji: ^7.1.0
@@ -31,6 +32,7 @@ dependencies:
   solid-meta: 0.27.3_solid-js@1.3.13
 
 devDependencies:
+  '@windicss/plugin-animations': 1.0.9
   commitizen: 4.2.4
   cz-conventional-changelog: 3.3.0
   husky: 7.0.4
@@ -492,6 +494,10 @@ packages:
       windicss: 3.5.1
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /@windicss/plugin-animations/1.0.9:
+    resolution: {integrity: sha512-9WsQsPzLurkwV5zaMCwmylxfSHlQ1pPmzud4ysvMkMBRB7obub9ESmqlHefcCjEhatz/ZROi1U1XOuOPPUO1nA==}
     dev: true
 
   /@windicss/plugin-utils/1.8.3:

@@ -1,16 +1,24 @@
 import { RiSystemCloseFill } from 'solid-icons/ri'
-import { children, Show, type JSX } from 'solid-js'
+import { createSignal, Show, type JSX } from 'solid-js'
 import { Portal } from 'solid-js/web'
 
 interface ModalProps extends JSX.HTMLAttributes<HTMLDivElement> {
   title?: string
   size?: 'xs' | 'sm' | 'md' | 'lg'
   isOpen: boolean
-  onClose: () => void
+  onClose?: () => void
 }
 
 export const Modal = (props: ModalProps) => {
-  const elements = children(() => props.children)
+  const [shake, setShake] = createSignal(false)
+
+  const handleClose = () => {
+    if (props.onClose) props.onClose()
+    else {
+      setShake(true)
+      setTimeout(() => setShake(false), 750)
+    }
+  }
 
   return (
     <Portal>
@@ -37,7 +45,7 @@ export const Modal = (props: ModalProps) => {
           w="screen"
           h="screen"
           bg="black opacity-30"
-          onClick={props.onClose}
+          onClick={handleClose}
         />
         <div
           w="full"
@@ -62,6 +70,7 @@ export const Modal = (props: ModalProps) => {
           shadow="2xl"
           transform={props.isOpen ? '~ scale-100' : '~ scale-96'}
           transition="transform ease-out"
+          animate={shake() ? 'shakeX duration-0.75s' : ''}
         >
           <Show when={props.title}>
             <div w="full" m="b-3" flex="~" items="center">
@@ -78,14 +87,14 @@ export const Modal = (props: ModalProps) => {
                 p="3"
                 border="none"
                 bg="transparent hover:light-600 dark:hover:dark-400"
-                onClick={props.onClose}
+                onClick={handleClose}
               >
                 <RiSystemCloseFill class="w-6 h-6" />
               </button>
             </div>
           </Show>
           <div flex="~ col" gap="3">
-            {elements}
+            {props.children}
           </div>
         </div>
       </div>

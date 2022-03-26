@@ -6,12 +6,17 @@ export const Profile = () => {
   const [config, { setName }] = useConfig()
 
   return (
-    <fieldset w="full" p="3">
+    <fieldset w="full" p="x-3 y-5">
       <legend
+        h="8"
+        p="2 r-3"
         flex="~"
+        justify="center"
         items="center"
         text="sm gray-500 dark:gray-400"
         font="bold"
+        rounded="full"
+        bg="light-600 dark:dark-400"
         gap="2"
       >
         <RiUserAccountCircleFill w="4" h="4" /> Your Profile

@@ -1,5 +1,6 @@
 import { RiDevicePhoneFindFill } from 'solid-icons/ri'
 import { createSignal, For, onMount } from 'solid-js'
+import { ChannelProvider } from '../../context/Channel'
 import { Channels } from '../Channels'
 import { Join } from '../Join'
 import { Share } from '../Share'
@@ -41,7 +42,9 @@ export const Others = () => (
     <For each={examples} fallback={<Seeking />}>
       {item => <Peer {...item} />}
     </For>
-    <Channels />
+    <ChannelProvider>
+      <Channels />
+    </ChannelProvider>
     <Join />
   </div>
 )
