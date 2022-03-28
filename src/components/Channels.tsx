@@ -1,5 +1,4 @@
 import { useLocation, useNavigate } from 'solid-app-router'
-import { RiSystemCloseFill } from 'solid-icons/ri'
 import { createEffect, createSignal, Match, Show, Switch } from 'solid-js'
 import { Title } from 'solid-meta'
 import { useChannel } from '../context/Channel'
@@ -28,27 +27,13 @@ export const Channels = () => {
         <Title>Channels #{id()} - I Seek You</Title>
       </Show>
 
-      <Modal size="lg" isOpen={open()}>
-        <div w="full" m="b-3" p="x-3 t-2" flex="~" items="center">
-          <h1 text="lg" font="bold" m="0" p="x-3" flex="1">
-            Channels #{id()}
-          </h1>
-
-          <button
-            role="tooltip"
-            aria-label="Disconnect"
-            data-position="top"
-            flex="~"
-            rounded="full"
-            p="3"
-            border="none"
-            text="inherit hover:(light-100 dark:light-600)"
-            bg="transparent hover:rose-500"
-            onClick={handleClose}
-          >
-            <RiSystemCloseFill class="w-6 h-6" />
-          </button>
-        </div>
+      <Modal
+        title={`Channels #${id()}`}
+        size="lg"
+        isFocus
+        isOpen={open()}
+        onClose={handleClose}
+      >
         <div
           w="full"
           min-h="50vh"

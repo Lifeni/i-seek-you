@@ -32,6 +32,16 @@ const EmojiList = [
   { name: 'GitHub Custom Emoji', icon: '📎' },
 ]
 
+const emojis = gemoji.reduce((emojis, emoji) => {
+  const name = emoji.category
+  const list = emojis.find(i => i.name === name)
+  const item = { emoji: emoji.emoji, description: emoji.description }
+  const icon = EmojiList.find(i => i.name === name)?.icon ?? ''
+  if (list) list.list.push(item)
+  else emojis.push({ name, icon, list: [item] })
+  return emojis
+}, [] as Emojis)
+
 export const Emoji = () => {
   const [config, { setEmoji }] = useConfig()
   const location = useLocation()
@@ -40,16 +50,6 @@ export const Emoji = () => {
     location.pathname === '/settings' && location.hash === 'emoji'
 
   let panel: HTMLElement
-
-  const emojis = gemoji.reduce((emojis, emoji) => {
-    const name = emoji.category
-    const list = emojis.find(i => i.name === name)
-    const item = { emoji: emoji.emoji, description: emoji.description }
-    const icon = EmojiList.find(i => i.name === name)?.icon ?? ''
-    if (list) list.list.push(item)
-    else emojis.push({ name, icon, list: [item] })
-    return emojis
-  }, [] as Emojis)
 
   const handleScroll = (e: MouseEvent) => {
     const icon = (e.target as HTMLDivElement).dataset.id
@@ -151,7 +151,7 @@ export const Emoji = () => {
                   )}
                 </For>
               </nav>
-              <article ref={el => (panel = el)} p="x-2 b-2">
+              <article ref={el => (panel = el)} class="px-2 pb-2">
                 <For each={emojis}>
                   {list => (
                     <section>

@@ -13,28 +13,28 @@ type OthersInfo = {
   emoji: string
 }
 
-const examples = [
-  {
-    name: 'Example 1',
-    id: '0000',
-    emoji: '🤖',
-    password: false,
-  },
-  {
-    name: 'Example 2',
-    id: '1111',
-    emoji: '💀',
-    password: true,
-  },
-  {
-    name: '',
-    id: '2222',
-    emoji: '😶',
-    password: false,
-  },
-]
+// const examples = [
+//   {
+//     name: 'Example 1',
+//     id: '0000',
+//     emoji: '🤖',
+//     password: false,
+//   },
+//   {
+//     name: 'Example 2',
+//     id: '1111',
+//     emoji: '💀',
+//     password: true,
+//   },
+//   {
+//     name: '',
+//     id: '2222',
+//     emoji: '😶',
+//     password: false,
+//   },
+// ]
 
-// const examples: OthersInfo[] = []
+const examples: OthersInfo[] = []
 
 export const Others = () => (
   <div flex="~  1" items="center" justify="center" z="10" gap="6 sm:8">

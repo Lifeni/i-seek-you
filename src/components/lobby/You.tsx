@@ -1,12 +1,12 @@
 import { Link } from 'solid-app-router'
 import { createSignal, For } from 'solid-js'
 import { useConfig } from '../../context/Config'
-import { useSession } from '../../context/Session'
+import { useConnection } from '../../context/Connection'
 
 export const You = () => {
   const [copied, setCopied] = createSignal(false)
   const [config] = useConfig()
-  const [session] = useSession()
+  const [session] = useConnection()
 
   const handleCopyID = () => {
     navigator.clipboard.writeText(

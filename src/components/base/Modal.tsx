@@ -5,19 +5,20 @@ import { Portal } from 'solid-js/web'
 interface ModalProps extends JSX.HTMLAttributes<HTMLDivElement> {
   title?: string
   size?: 'xs' | 'sm' | 'md' | 'lg'
+  isFocus?: boolean
   isOpen: boolean
-  onClose?: () => void
+  onClose: () => void
 }
 
 export const Modal = (props: ModalProps) => {
   const [shake, setShake] = createSignal(false)
 
   const handleClose = () => {
-    if (props.onClose) props.onClose()
-    else {
+    if (props.isFocus) {
       setShake(true)
       setTimeout(() => setShake(false), 750)
     }
+    props.onClose()
   }
 
   return (
@@ -80,13 +81,22 @@ export const Modal = (props: ModalProps) => {
 
               <button
                 role="tooltip"
-                aria-label="Close"
+                aria-label={props.isFocus ? 'Disconnect' : 'Close'}
                 data-position="top"
                 flex="~"
                 rounded="full"
                 p="3"
                 border="none"
-                bg="transparent hover:light-600 dark:hover:dark-400"
+                text={
+                  props.isFocus
+                    ? 'inherit hover:(light-100 dark:light-600)'
+                    : 'inherit'
+                }
+                bg={
+                  props.isFocus
+                    ? 'transparent hover:rose-500'
+                    : 'transparent hover:light-600 dark:hover:dark-400'
+                }
                 onClick={handleClose}
               >
                 <RiSystemCloseFill class="w-6 h-6" />

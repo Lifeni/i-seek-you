@@ -57,7 +57,7 @@ export const Peer = (props: PeerProps) => (
   </div>
 )
 
-interface ActionProps extends JSX.HTMLAttributes<HTMLAnchorElement> {
+interface ActionProps extends JSX.HTMLAttributes<HTMLSpanElement> {
   href: string
   name: string | JSX.Element
   tooltip: string
@@ -69,11 +69,11 @@ export const Action = (props: ActionProps) => (
       role="tooltip"
       aria-label={props.tooltip}
       data-position="top"
+      href={props.href}
       pos="relative"
       w="18"
       h="18"
       flex="~"
-      {...props}
     >
       <span
         w="18"
@@ -83,6 +83,7 @@ export const Action = (props: ActionProps) => (
         items="center"
         bg="light-600 dark:dark-400"
         rounded="full"
+        {...props}
       >
         {props.children}
       </span>

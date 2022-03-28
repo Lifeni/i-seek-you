@@ -99,7 +99,6 @@ export const Server = () => {
               id="webrtc-server"
               type="text"
               name="webrtc-server"
-              maxLength="18"
               placeholder="https://server.i-seek-you.dist.run"
               flex="~ 1"
               m="t-1"

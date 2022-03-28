@@ -9,12 +9,12 @@ import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 import { Title } from 'solid-meta'
 import Logo from '../assets/logo.svg'
 import { useConfig } from '../context/Config'
-import { useSession } from '../context/Session'
+import { useConnection } from '../context/Connection'
 import { Modal } from './base/Modal'
 import { Action } from './lobby/Figure'
 
 export const Share = () => {
-  const [session] = useSession()
+  const [session] = useConnection()
   const [config] = useConfig()
   const [copied, setCopied] = createSignal(false)
   const [shareable, setShareable] = createSignal(false)

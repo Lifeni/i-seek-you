@@ -34,7 +34,7 @@ const defaultConfig: Config = [
     emoji: emojiList[Math.floor(Math.random() * emojiList.length)],
     name: 'You',
     password: '',
-    server: 'https://server.i-seek-you.dist.run',
+    server: 'wss://server.i-seek-you.dist.run',
   },
   {
     setEmoji: () => {},
