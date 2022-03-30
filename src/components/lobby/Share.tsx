@@ -7,11 +7,11 @@ import {
 } from 'solid-icons/ri'
 import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 import { Title } from 'solid-meta'
-import Logo from '../assets/logo.svg'
-import { useConfig } from '../context/Config'
-import { useConnection } from '../context/Connection'
-import { Modal } from './base/Modal'
-import { Action } from './lobby/Figure'
+import Logo from '../../assets/logo.svg'
+import { useConfig } from '../../context/Config'
+import { useConnection } from '../../context/Connection'
+import { Modal } from '../base/Modal'
+import { Action } from '../lobby/Figure'
 
 export const Share = () => {
   const [session] = useConnection()
@@ -135,10 +135,7 @@ export const Share = () => {
               cursor={shareable() ? 'pointer' : 'not-allowed'}
               onClick={handleShare}
             >
-              <RiSystemShareFill
-                class="w-6 h-6"
-                text="gray-800 dark:gray-300"
-              />
+              <RiSystemShareFill w="6" h="6" text="gray-800 dark:gray-300" />
             </button>
             <button
               role="tooltip"
@@ -151,7 +148,8 @@ export const Share = () => {
               onClick={handleCopy}
             >
               <RiDocumentFileCopy2Fill
-                class="w-6 h-6"
+                w="6"
+                h="6"
                 text="gray-800 dark:gray-300"
               />
             </button>

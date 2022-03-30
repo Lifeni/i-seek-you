@@ -4,8 +4,8 @@ import { Title } from 'solid-meta'
 import { version } from '../../package.json'
 import { Others } from '../components/lobby/Others'
 import { You } from '../components/lobby/You'
-import { Server } from '../components/Server'
-import { Settings } from '../components/Settings'
+import { Server } from '../components/toolbar/Server'
+import { Settings } from '../components/toolbar/settings'
 
 const Home: Component = () => (
   <>

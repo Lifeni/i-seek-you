@@ -99,7 +99,7 @@ export const Modal = (props: ModalProps) => {
                 }
                 onClick={handleClose}
               >
-                <RiSystemCloseFill class="w-6 h-6" />
+                <RiSystemCloseFill w="6" h="6" />
               </button>
             </div>
           </Show>

@@ -5,8 +5,8 @@ import {
 } from 'solid-icons/ri'
 import { createEffect, createSignal, Match, Show, Switch } from 'solid-js'
 import { Title } from 'solid-meta'
-import { useConfig } from '../context/Config'
-import { Modal } from './base/Modal'
+import { useConfig } from '../../context/Config'
+import { Modal } from '../base/Modal'
 
 type StatusType = 'connected' | 'error' | 'local'
 
@@ -50,35 +50,28 @@ export const Server = () => {
       >
         <Switch>
           <Match when={status() === 'local'}>
-            <RiDeviceSignalWifiFill
-              class="w-6 h-6"
-              text="gray-800 dark:gray-300"
-            />
+            <RiDeviceSignalWifiFill w="6" h="6" text="gray-800 dark:gray-300" />
           </Match>
           <Match when={status() === 'connected'}>
-            <RiDeviceSignalWifiFill class="w-6 h-6" text="green-500" />
+            <RiDeviceSignalWifiFill w="6" h="6" text="green-500" />
           </Match>
           <Match when={status() === 'error'}>
-            <RiDeviceSignalWifiErrorFill class="w-6 h-6" text="red-500" />
+            <RiDeviceSignalWifiErrorFill w="6" h="6" text="red-500" />
           </Match>
         </Switch>
       </Link>
 
       <Modal title="Server" size="sm" isOpen={open()} onClose={handleClose}>
-        <fieldset w="full" p="x-3 y-5">
+        <fieldset w="full" p="3">
           <legend
-            h="8"
-            p="2 r-3"
             flex="~"
             justify="center"
             items="center"
             text="sm gray-500 dark:gray-400"
             font="bold"
-            rounded="full"
-            bg="light-600 dark:dark-400"
             gap="2"
           >
-            <RiDeviceSignalWifiFill /> WebRTC Server
+            <RiDeviceSignalWifiFill w="4.5" h="4.5" /> WebRTC Server
           </legend>
           <div w="full" flex="~ col" gap="2">
             <p text="sm gray-500 dark:gray-400">

@@ -1,25 +1,21 @@
 import { RiUserAccountCircleFill } from 'solid-icons/ri'
-import { useConfig } from '../../context/Config'
+import { useConfig } from '../../../context/Config'
 import { Emoji } from './Emoji'
 
 export const Profile = () => {
   const [config, { setName }] = useConfig()
 
   return (
-    <fieldset w="full" p="x-3 y-5">
+    <fieldset w="full" p="3">
       <legend
-        h="8"
-        p="2 r-3"
         flex="~"
         justify="center"
         items="center"
         text="sm gray-500 dark:gray-400"
         font="bold"
-        rounded="full"
-        bg="light-600 dark:dark-400"
         gap="2"
       >
-        <RiUserAccountCircleFill w="4" h="4" /> Your Profile
+        <RiUserAccountCircleFill w="4.5" h="4.5" /> Your Profile
       </legend>
       <div w="full" flex="~" items="center" gap="6">
         <Emoji />

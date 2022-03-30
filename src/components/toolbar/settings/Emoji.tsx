@@ -8,7 +8,7 @@ import {
 } from 'solid-headless'
 import { For } from 'solid-js'
 import { Portal } from 'solid-js/web'
-import { useConfig } from '../../context/Config'
+import { useConfig } from '../../../context/Config'
 
 type Emojis = {
   name: string

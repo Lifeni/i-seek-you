@@ -2,52 +2,74 @@ import { RiDevicePhoneFindFill } from 'solid-icons/ri'
 import { createSignal, For, onMount } from 'solid-js'
 import { ChannelProvider } from '../../context/Channel'
 import { Channels } from '../Channels'
-import { Join } from '../Join'
-import { Share } from '../Share'
+import { Join } from './Join'
+import { Share } from './Share'
 import { Action, Peer } from './Figure'
+import { useConfig } from '../../context/Config'
+import { useConnection } from '../../context/Connection'
 
-type OthersInfo = {
+type PeersInfo = {
   name: string
   id: string
   password: boolean
   emoji: string
 }
 
-// const examples = [
-//   {
-//     name: 'Example 1',
-//     id: '0000',
-//     emoji: '🤖',
-//     password: false,
-//   },
-//   {
-//     name: 'Example 2',
-//     id: '1111',
-//     emoji: '💀',
-//     password: true,
-//   },
-//   {
-//     name: '',
-//     id: '2222',
-//     emoji: '😶',
-//     password: false,
-//   },
-// ]
+export const Others = () => {
+  const [config] = useConfig()
+  const [connection, { setId }] = useConnection()
+  const [peers, setPeers] = createSignal<PeersInfo[]>([])
 
-const examples: OthersInfo[] = []
+  onMount(() => {
+    const ws = new WebSocket(config.server)
+    ws.onopen = () => {
+      ws.send(
+        JSON.stringify({
+          type: 'hello',
+          name: config.name,
+          password: !!config.password,
+          emoji: config.emoji,
+        })
+      )
 
-export const Others = () => (
-  <div flex="~  1" items="center" justify="center" z="10" gap="6 sm:8">
-    <Share />
-    <For each={examples} fallback={<Seeking />}>
-      {item => <Peer {...item} />}
-    </For>
-    <ChannelProvider>
-      <Channels />
-    </ChannelProvider>
-    <Join />
-  </div>
-)
+      setInterval(() => {
+        ws.send(JSON.stringify({ type: 'ping' }))
+      }, 5000)
+    }
+
+    ws.onmessage = (e: MessageEvent) => {
+      const data = JSON.parse(e.data)
+      switch (data.type) {
+        case 'id': {
+          setId(data.data)
+          break
+        }
+        case 'lobby': {
+          const lobby = data.data as PeersInfo[]
+          setPeers(lobby.filter(peer => peer.id !== connection.id))
+          break
+        }
+      }
+    }
+
+    ws.onclose = () => {
+      setPeers([])
+    }
+  })
+
+  return (
+    <div flex="~  1" items="center" justify="center" z="10" gap="6 sm:8">
+      <Share />
+      <For each={peers()} fallback={<Seeking />}>
+        {item => <Peer {...item} />}
+      </For>
+      <ChannelProvider>
+        <Channels />
+      </ChannelProvider>
+      <Join />
+    </div>
+  )
+}
 
 const Seeking = () => {
   const [suffix, setSuffix] = createSignal('')
@@ -73,7 +95,7 @@ const Seeking = () => {
       text="light-100 dark:light-600"
       bg="rose-500"
     >
-      <RiDevicePhoneFindFill class="w-8 h-8" text="inherit" />
+      <RiDevicePhoneFindFill w="8" h="8" text="inherit" />
     </Action>
   )
 }

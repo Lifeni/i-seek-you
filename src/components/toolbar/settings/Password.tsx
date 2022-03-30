@@ -1,7 +1,7 @@
 import { Toggle } from 'solid-headless'
 import { RiOthersDoorLockFill } from 'solid-icons/ri'
 import { createSignal, Show } from 'solid-js'
-import { useConfig } from '../../context/Config'
+import { useConfig } from '../../../context/Config'
 
 export const Password = () => {
   const [config, { setPassword }] = useConfig()
@@ -13,20 +13,16 @@ export const Password = () => {
   }
 
   return (
-    <fieldset w="full" p="x-3 y-5">
+    <fieldset w="full" p="3">
       <legend
-        h="8"
-        p="2 r-3"
         flex="~"
         justify="center"
         items="center"
         text="sm gray-500 dark:gray-400"
         font="bold"
-        rounded="full"
-        bg="light-600 dark:dark-400"
         gap="2"
       >
-        <RiOthersDoorLockFill w="4" h="4" />
+        <RiOthersDoorLockFill w="4.5" h="4.5" />
         Password
       </legend>
       <div w="full" flex="~ col" gap="2">

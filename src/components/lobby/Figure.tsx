@@ -47,7 +47,7 @@ export const Peer = (props: PeerProps) => (
           rounded="full"
           bg="light-600 dark:dark-400"
         >
-          <RiSystemLock2Fill class="w-4 h-4" />
+          <RiSystemLock2Fill w="4" h="4" />
         </span>
       </Show>
     </Link>

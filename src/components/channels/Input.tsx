@@ -31,10 +31,7 @@ export const Input = () => {
         bg="rose-500"
         shadow="lg"
       >
-        <RiBusinessSendPlaneFill
-          class="w-6 h-6"
-          text="light-100 dark:light-600"
-        />
+        <RiBusinessSendPlaneFill w="6" h="6" text="light-100 dark:light-600" />
       </button>
     </div>
   )

@@ -35,7 +35,7 @@ export const Mode = () => {
                   : 'inherit'
               }
             >
-              <Dynamic component={item.icon} class="w-6 h-6" />
+              <Dynamic component={item.icon} w="6" h="6" />
             </span>
           )}
         </For>
