@@ -30,7 +30,7 @@ export const Channels = () => {
       <Modal
         title={`Channels #${id()}`}
         size="lg"
-        isFocus
+        isCloseable
         isOpen={open()}
         onClose={handleClose}
       >

@@ -1,9 +1,10 @@
 import { useLocation, useNavigate } from 'solid-app-router'
 import { RiCommunicationChatNewFill } from 'solid-icons/ri'
-import { createEffect, createSignal, Show } from 'solid-js'
+import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { Title } from 'solid-meta'
 import { Action } from './Figure'
 import { Modal } from '../../base/Modal'
+import tinykeys from 'tinykeys'
 
 export const Join = () => {
   const [id, setId] = createSignal('')
@@ -17,17 +18,23 @@ export const Join = () => {
   createEffect(() => {
     if (location.pathname === '/+') {
       setOpen(true)
-      if (input) setTimeout(() => input.focus(), 100)
+      if (input) setTimeout(() => input.focus(), 200)
     } else setOpen(false)
   })
 
   const handleClose = () => navigate('/')
-  const handleEnter = (e: KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      navigate(`/channels/${id()}`)
-      setId('')
+
+  onMount(() => {
+    if (input) {
+      const unbind = tinykeys(input, {
+        Enter: () => {
+          navigate(`/channels/${id()}`)
+          setId('')
+        },
+      })
+      onCleanup(() => unbind())
     }
-  }
+  })
 
   const handleInput = (e: InputEvent) => {
     const value = (e.target as HTMLInputElement).value
@@ -70,8 +77,8 @@ export const Join = () => {
           transition="border"
           outline="none"
           rounded="md"
+          value={id()}
           onInput={handleInput}
-          onKeyDown={handleEnter}
         />
       </Modal>
     </>

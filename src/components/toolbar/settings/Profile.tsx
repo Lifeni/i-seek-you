@@ -1,9 +1,21 @@
+import { useNavigate } from 'solid-app-router'
 import { RiUserAccountCircleFill } from 'solid-icons/ri'
+import { onMount, onCleanup } from 'solid-js'
+import tinykeys from 'tinykeys'
 import { useConfig } from '../../../context/Config'
 import { Emoji } from './Emoji'
 
 export const Profile = () => {
   const [config, { setName }] = useConfig()
+  const navigate = useNavigate()
+  let input: HTMLInputElement
+
+  onMount(() => {
+    if (input) {
+      const unbind = tinykeys(input, { Enter: () => navigate('/') })
+      onCleanup(() => unbind())
+    }
+  })
 
   return (
     <fieldset w="full" p="3">
@@ -28,6 +40,7 @@ export const Profile = () => {
             </span>
           </span>
           <input
+            ref={el => (input = el)}
             type="text"
             name="device-name"
             maxLength="18"

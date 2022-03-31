@@ -1,6 +1,8 @@
+import { useNavigate } from 'solid-app-router'
 import { Toggle } from 'solid-headless'
 import { RiOthersDoorLockFill } from 'solid-icons/ri'
-import { createSignal, Show } from 'solid-js'
+import { createSignal, onCleanup, onMount, Show } from 'solid-js'
+import tinykeys from 'tinykeys'
 import { useConfig } from '../../../context/Config'
 
 export const Password = () => {
@@ -11,6 +13,16 @@ export const Password = () => {
     setEnabled(stat => !stat)
     if (!enabled()) setPassword('')
   }
+
+  const navigate = useNavigate()
+  let input: HTMLInputElement
+
+  onMount(() => {
+    if (input && enabled()) {
+      const unbind = tinykeys(input, { Enter: () => navigate('/') })
+      onCleanup(() => unbind())
+    }
+  })
 
   return (
     <fieldset w="full" p="3">
@@ -69,6 +81,7 @@ export const Password = () => {
 
         <Show when={enabled()}>
           <input
+            ref={el => (input = el)}
             id="connection-password"
             type="text"
             name="connection-password"

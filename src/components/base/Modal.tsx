@@ -1,29 +1,50 @@
 import { RiSystemCloseFill } from 'solid-icons/ri'
-import { createSignal, Show, type JSX } from 'solid-js'
+import {
+  createEffect,
+  createSignal,
+  onCleanup,
+  onMount,
+  Show,
+  type JSX,
+} from 'solid-js'
 import { Portal } from 'solid-js/web'
+import tinykeys from 'tinykeys'
 
 interface ModalProps extends JSX.HTMLAttributes<HTMLDivElement> {
   title?: string
   size?: 'xs' | 'sm' | 'md' | 'lg'
-  isFocus?: boolean
+  isCloseable?: boolean
   isOpen: boolean
   onClose: () => void
 }
 
 export const Modal = (props: ModalProps) => {
   const [shake, setShake] = createSignal(false)
+  let modal: HTMLDivElement, close: HTMLButtonElement
 
   const handleClose = () => {
-    if (props.isFocus) {
+    if (props.isCloseable) {
       setShake(true)
       setTimeout(() => setShake(false), 500)
     }
     props.onClose()
   }
 
+  createEffect(() => {
+    if (close && props.isOpen) setTimeout(() => close.focus(), 200)
+  })
+
+  onMount(() => {
+    if (modal) {
+      const unbind = tinykeys(modal, { Escape: handleClose })
+      onCleanup(() => unbind())
+    }
+  })
+
   return (
     <Portal>
       <div
+        ref={el => (modal = el)}
         aria-hidden={!props.isOpen}
         pos="fixed"
         top="0"
@@ -72,6 +93,7 @@ export const Modal = (props: ModalProps) => {
           transform={props.isOpen ? '~ scale-100' : '~ scale-96'}
           transition="transform ease-out"
           animate={shake() ? 'headShake duration-0.75s' : ''}
+          tabIndex={props.isOpen ? '1' : '-1'}
         >
           <Show when={props.title}>
             <div w="full" m="b-3" flex="~" items="center">
@@ -80,20 +102,21 @@ export const Modal = (props: ModalProps) => {
               </h1>
 
               <button
+                ref={el => (close = el)}
                 role="tooltip"
-                aria-label={props.isFocus ? 'Disconnect' : 'Close'}
+                aria-label={props.isCloseable ? 'Disconnect' : 'Close'}
                 data-position="top"
                 flex="~"
                 rounded="full"
                 p="3"
                 border="none"
                 text={
-                  props.isFocus
+                  props.isCloseable
                     ? 'inherit hover:(light-100 dark:light-600)'
                     : 'inherit'
                 }
                 bg={
-                  props.isFocus
+                  props.isCloseable
                     ? 'transparent hover:rose-500'
                     : 'transparent hover:light-600 dark:hover:dark-400'
                 }

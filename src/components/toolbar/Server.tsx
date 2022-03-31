@@ -3,8 +3,17 @@ import {
   RiDeviceSignalWifiErrorFill,
   RiDeviceSignalWifiFill,
 } from 'solid-icons/ri'
-import { createEffect, createSignal, Match, Show, Switch } from 'solid-js'
+import {
+  createEffect,
+  createSignal,
+  Match,
+  onCleanup,
+  onMount,
+  Show,
+  Switch,
+} from 'solid-js'
 import { Title } from 'solid-meta'
+import tinykeys from 'tinykeys'
 import { useConfig } from '../../context/Config'
 import { Modal } from '../base/Modal'
 
@@ -26,10 +35,18 @@ export const Server = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [open, setOpen] = createSignal(false)
+  let input: HTMLInputElement
 
   createEffect(() => setOpen(location.pathname === '/server'))
 
   const handleClose = () => navigate('/')
+
+  onMount(() => {
+    if (input) {
+      const unbind = tinykeys(input, { Enter: handleClose })
+      onCleanup(() => unbind())
+    }
+  })
 
   return (
     <>
@@ -89,6 +106,7 @@ export const Server = () => {
             </p>
 
             <input
+              ref={el => (input = el)}
               id="webrtc-server"
               type="text"
               name="webrtc-server"
