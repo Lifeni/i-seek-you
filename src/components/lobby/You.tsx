@@ -1,5 +1,6 @@
 import { Link } from 'solid-app-router'
-import { createSignal, For } from 'solid-js'
+import { createSignal, onCleanup, onMount } from 'solid-js'
+import colors from 'windicss/colors'
 import { useConfig } from '../../context/Config'
 import { useConnection } from '../../context/Connection'
 
@@ -58,35 +59,74 @@ export const You = () => {
   )
 }
 
-const Ripple = () => (
-  <div
-    aria-label="hidden"
-    pos="absolute"
-    left="50%"
-    top="50%"
-    pointer="none"
-    z="0"
-  >
-    <For each={[1, 2, 3, 4, 5]}>
-      {item => (
-        <span
-          pos="absolute"
-          left="50%"
-          top="50%"
-          transform="~ -translate-x-1/2 -translate-y-1/2"
-          flex="~"
-          border="light-600 dark:dark-400 6"
-          rounded="full"
-          animate="ripple motion-reduce:none"
-          style={{
-            '--from': (item - 1) * 0.2,
-            '--to': item * 0.2,
-            '--size-from': 'calc(var(--from) * max(100vh, 100vw))',
-            '--size-to': 'calc(var(--to) * max(100vh, 100vw))',
-            'will-change': 'opacity',
-          }}
-        />
-      )}
-    </For>
-  </div>
-)
+const Ripple = () => {
+  let ripple: HTMLCanvasElement
+
+  onMount(() => {
+    if (!ripple) return
+
+    const ctx = ripple.getContext('2d')
+    let w: number, h: number, x: number, y: number, r: number
+    let d = 0
+
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    const check = () =>
+      media.matches ? colors.dark['400'] : colors.light['600']
+    let color = check()
+    media.addEventListener('change', () => (color = check()))
+
+    const init = () => {
+      w = window.innerWidth
+      h = window.innerHeight
+      ripple.width = w
+      ripple.height = h
+      x = w / 2
+      y = h - 128
+      r = Math.min(w, h)
+      draw()
+    }
+
+    const draw = () => {
+      if (!ctx) return
+      ctx.clearRect(0, 0, w, h)
+      ctx.lineWidth = 6
+
+      for (let i = 0; i < 1; i += 0.2) {
+        const t = i + d
+        ctx.beginPath()
+        ctx.strokeStyle = `${color}${Math.round((1 - t) * 255).toString(16)}`
+        ctx.arc(x, y, r * t, 0, Math.PI * 2)
+        ctx.stroke()
+      }
+      d += 0.002
+      if (d > 0.2) d -= 0.2
+    }
+
+    const animate = () => {
+      draw()
+      window.requestAnimationFrame(animate)
+    }
+
+    init()
+    animate()
+
+    window.addEventListener('resize', init)
+    onCleanup(() => {
+      window.removeEventListener('resize', init)
+    })
+  })
+
+  return (
+    <canvas
+      ref={el => (ripple = el)}
+      aria-label="hidden"
+      pos="fixed"
+      left="0"
+      top="0"
+      w="100vw"
+      h="100vh"
+      pointer="none"
+      z="0"
+    />
+  )
+}

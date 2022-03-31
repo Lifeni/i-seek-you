@@ -53,7 +53,7 @@ export const Password = () => {
                 rounded="full"
                 bg="white"
                 transform="~"
-                transition="transform"
+                transition="transform ease"
                 shadow="md"
               >
                 <span

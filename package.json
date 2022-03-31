@@ -6,6 +6,7 @@
   "scripts": {
     "start": "vite",
     "dev": "vite --debug",
+    "preview": "vite build && vite preview",
     "build": "vite build",
     "serve": "vite preview",
     "prepare": "husky install",
@@ -28,6 +29,7 @@
     "email": "liangfengning@foxmail.com"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.181",
     "@windicss/plugin-animations": "^1.0.9",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
@@ -42,6 +44,10 @@
   },
   "dependencies": {
     "@nuintun/qrcode": "^3.1.1",
+    "@solid-primitives/debounce": "^1.2.0",
+    "@solid-primitives/event-listener": "^1.5.0",
+    "@solid-primitives/media": "^1.2.0",
+    "@solid-primitives/storage": "^1.1.1",
     "gemoji": "^7.1.0",
     "lodash": "^4.17.21",
     "solid-app-router": "^0.3.2",
