@@ -3,7 +3,7 @@ import { RiCommunicationChatNewFill } from 'solid-icons/ri'
 import { createEffect, createSignal, Show } from 'solid-js'
 import { Title } from 'solid-meta'
 import { Action } from './Figure'
-import { Modal } from '../base/Modal'
+import { Modal } from '../../base/Modal'
 
 export const Join = () => {
   const [id, setId] = createSignal('')

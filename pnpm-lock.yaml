@@ -4,6 +4,7 @@ specifiers:
   '@nuintun/qrcode': ^3.1.1
   '@solid-primitives/debounce': ^1.2.0
   '@solid-primitives/event-listener': ^1.5.0
+  '@solid-primitives/fetch': ^1.0.6
   '@solid-primitives/media': ^1.2.0
   '@solid-primitives/storage': ^1.1.1
   '@types/lodash': ^4.14.181
@@ -30,6 +31,7 @@ dependencies:
   '@nuintun/qrcode': 3.1.1
   '@solid-primitives/debounce': 1.2.0_solid-js@1.3.13
   '@solid-primitives/event-listener': 1.5.0_solid-js@1.3.13
+  '@solid-primitives/fetch': 1.0.6_solid-js@1.3.13
   '@solid-primitives/media': 1.2.0_solid-js@1.3.13
   '@solid-primitives/storage': 1.1.1_solid-js@1.3.13
   gemoji: 7.1.0
@@ -482,6 +484,17 @@ packages:
       '@solid-primitives/rootless': 0.0.101_solid-js@1.3.13
       '@solid-primitives/utils': 0.2.2_solid-js@1.3.13
       solid-js: 1.3.13
+    dev: false
+
+  /@solid-primitives/fetch/1.0.6_solid-js@1.3.13:
+    resolution: {integrity: sha512-0JLKh7mqf+0+dK3F2DA/DEcAXje4v4eTL7FtfqbqtNKuxWQIp2iesns2hacuGIelaroi64h8IENe076jdIiBvA==}
+    peerDependencies:
+      solid-js: ^1.3.1
+    dependencies:
+      node-fetch: 2.6.7
+      solid-js: 1.3.13
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@solid-primitives/media/1.2.0_solid-js@1.3.13:
@@ -1756,6 +1769,18 @@ packages:
     hasBin: true
     dev: true
 
+  /node-fetch/2.6.7:
+    resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
+    engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
+    dev: false
+
   /node-releases/2.0.1:
     resolution: {integrity: sha512-CqyzN6z7Q6aMeF/ktcMVTzhAHCEpf8SOarwpzpf8pNBY2k5/oM34UHldUwp8VKI7uxct2HxSRdJjBaZeESzcxA==}
     dev: true
@@ -2234,6 +2259,10 @@ packages:
       is-number: 7.0.0
     dev: true
 
+  /tr46/0.0.3:
+    resolution: {integrity: sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=}
+    dev: false
+
   /ts-node/10.6.0_f01b7c141b75a45db67b7d9ae4c261df:
     resolution: {integrity: sha512-CJen6+dfOXolxudBQXnVjRVvYTmTWbyz7cn+xq2XTsvnaXbHqr4gXSCNbS2Jj8yTZMuGwUoBESLaOkLascVVvg==}
     hasBin: true
@@ -2359,6 +2388,17 @@ packages:
     optionalDependencies:
       fsevents: 2.3.2
     dev: true
+
+  /webidl-conversions/3.0.1:
+    resolution: {integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=}
+    dev: false
+
+  /whatwg-url/5.0.0:
+    resolution: {integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0=}
+    dependencies:
+      tr46: 0.0.3
+      webidl-conversions: 3.0.1
+    dev: false
 
   /which/1.3.1:
     resolution: {integrity: sha512-HxJdYWq1MTIQbJ3nw0cqssHoTNU267KlrDuGZ1WYlxDStUtKUhOaJmh112/TZmHxxUfuJqPXSOm7tDyas0OSIQ==}

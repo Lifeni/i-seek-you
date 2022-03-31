@@ -46,6 +46,7 @@
     "@nuintun/qrcode": "^3.1.1",
     "@solid-primitives/debounce": "^1.2.0",
     "@solid-primitives/event-listener": "^1.5.0",
+    "@solid-primitives/fetch": "^1.0.6",
     "@solid-primitives/media": "^1.2.0",
     "@solid-primitives/storage": "^1.1.1",
     "gemoji": "^7.1.0",

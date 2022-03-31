@@ -1,4 +1,3 @@
-import { Link } from 'solid-app-router'
 import { createSignal, onCleanup, onMount } from 'solid-js'
 import colors from 'windicss/colors'
 import { useConfig } from '../../context/Config'
@@ -6,6 +5,7 @@ import { useConnection } from '../../context/Connection'
 
 export const You = () => {
   const [copied, setCopied] = createSignal(false)
+  const [animate, setAnimate] = createSignal(false)
   const [config] = useConfig()
   const [session] = useConnection()
 
@@ -15,6 +15,11 @@ export const You = () => {
     )
     setCopied(true)
     setTimeout(() => setCopied(false), 3000)
+  }
+
+  const handleAnimate = () => {
+    setAnimate(true)
+    setTimeout(() => setAnimate(false), 1000)
   }
 
   return (
@@ -28,17 +33,15 @@ export const You = () => {
         items="center"
       >
         <Ripple />
-        <Link
-          role="tooltip"
-          aria-label="Change Your Emoji"
-          data-position="top"
-          href="/settings#emoji"
+        <button
           z="1"
           text="4.5rem"
           select="none"
+          animate={animate() ? 'rubberBand duration-0.75s' : ''}
+          onClick={handleAnimate}
         >
           {config.emoji}
-        </Link>
+        </button>
       </div>
 
       <button

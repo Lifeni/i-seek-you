@@ -16,7 +16,7 @@ export const Modal = (props: ModalProps) => {
   const handleClose = () => {
     if (props.isFocus) {
       setShake(true)
-      setTimeout(() => setShake(false), 750)
+      setTimeout(() => setShake(false), 500)
     }
     props.onClose()
   }
@@ -71,7 +71,7 @@ export const Modal = (props: ModalProps) => {
           shadow="2xl"
           transform={props.isOpen ? '~ scale-100' : '~ scale-96'}
           transition="transform ease-out"
-          animate={shake() ? 'shakeX duration-0.75s' : ''}
+          animate={shake() ? 'headShake duration-0.75s' : ''}
         >
           <Show when={props.title}>
             <div w="full" m="b-3" flex="~" items="center">
