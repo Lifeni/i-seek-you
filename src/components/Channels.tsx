@@ -3,9 +3,11 @@ import { createEffect, createSignal, Match, Show, Switch } from 'solid-js'
 import { Title } from 'solid-meta'
 import { useChannel } from '../context/Channel'
 import { Modal } from './base/Modal'
-import { Controls } from './channels/Controls'
-import { Input } from './channels/Input'
-import { Mode } from './channels/Mode'
+import { Controls } from './channels/voice/Controls'
+import { Input } from './channels/message/Input'
+import { Voice } from './channels/Voice'
+import { Message } from './channels/Message'
+import { Loading } from './channels/Loading'
 
 export const Channels = () => {
   const [channel] = useChannel()
@@ -30,7 +32,7 @@ export const Channels = () => {
       <Modal
         title={`Channels #${id()}`}
         size="lg"
-        isCloseable
+        isUncloseable={true}
         isOpen={open()}
         onClose={handleClose}
       >
@@ -43,22 +45,28 @@ export const Channels = () => {
           p="x-3"
         >
           <span text="lg gray-500 dark:gray-400">
-            <Show when={channel.mode === 'text'} fallback="Voice Mode">
-              Text Mode
-            </Show>
+            <Switch fallback={<Loading />}>
+              <Match when={channel.mode === 'message'}>
+                <Message />
+              </Match>
+              <Match when={channel.mode === 'voice'}>
+                <Voice />
+              </Match>
+            </Switch>
           </span>
         </div>
-        <div w="full" flex="~" items="end" p="x-6 b-6" gap="4">
-          <Mode />
-          <Switch>
-            <Match when={channel.mode === 'text'}>
-              <Input />
-            </Match>
-            <Match when={channel.mode === 'voice'}>
-              <Controls />
-            </Match>
-          </Switch>
-        </div>
+        <Show when={channel.mode !== 'loading'}>
+          <div w="full" flex="~" items="end" gap="4">
+            <Switch>
+              <Match when={channel.mode === 'message'}>
+                <Input />
+              </Match>
+              <Match when={channel.mode === 'voice'}>
+                <Controls />
+              </Match>
+            </Switch>
+          </div>
+        </Show>
       </Modal>
     </>
   )

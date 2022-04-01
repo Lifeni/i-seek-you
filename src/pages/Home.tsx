@@ -13,6 +13,7 @@ const Home: Component = () => (
 
     <header
       role="toolbar"
+      pos="relative"
       w="full"
       flex="~"
       justify="between"

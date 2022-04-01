@@ -1,11 +1,11 @@
 import { createContext, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-type ChannelMode = 'text' | 'voice'
+type ChannelMode = 'message' | 'voice' | 'loading'
 
 type Channel = [{ mode: ChannelMode }, { setMode: (mode: ChannelMode) => void }]
 
-const defaultChannel: Channel = [{ mode: 'text' }, { setMode: () => {} }]
+const defaultChannel: Channel = [{ mode: 'message' }, { setMode: () => {} }]
 
 export const ChannelContext = createContext<Channel>(defaultChannel)
 

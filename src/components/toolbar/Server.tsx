@@ -35,15 +35,16 @@ export const Server = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const [open, setOpen] = createSignal(false)
-  let input: HTMLInputElement
+  const [input, setInput] = createSignal<HTMLInputElement>()
 
   createEffect(() => setOpen(location.pathname === '/server'))
 
   const handleClose = () => navigate('/')
 
   onMount(() => {
-    if (input) {
-      const unbind = tinykeys(input, { Enter: handleClose })
+    const el = input()
+    if (el) {
+      const unbind = tinykeys(el, { Enter: handleClose })
       onCleanup(() => unbind())
     }
   })
@@ -106,7 +107,7 @@ export const Server = () => {
             </p>
 
             <input
-              ref={el => (input = el)}
+              ref={setInput}
               id="webrtc-server"
               type="text"
               name="webrtc-server"

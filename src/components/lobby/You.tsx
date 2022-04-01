@@ -34,6 +34,7 @@ export const You = () => {
       >
         <Ripple />
         <button
+          pos="relative"
           z="1"
           text="4.5rem"
           select="none"
@@ -45,9 +46,7 @@ export const You = () => {
       </div>
 
       <button
-        role="tooltip"
-        aria-label={copied() ? '✅ Copied' : `Copy Your Link`}
-        data-position="top"
+        pos="relative"
         text="lg inherit"
         bg="inherit"
         font="sans bold"
@@ -56,19 +55,26 @@ export const You = () => {
         z="1"
         onClick={handleCopyID}
       >
-        {config.name} #{session.id}
+        <span
+          role="tooltip"
+          aria-label={copied() ? '✅ Copied' : `Copy Your Link`}
+          data-position="top"
+        >
+          {config.name} #{session.id}
+        </span>
       </button>
     </div>
   )
 }
 
 const Ripple = () => {
-  let ripple: HTMLCanvasElement
+  const [ripple, setRipple] = createSignal<HTMLCanvasElement>()
 
   onMount(() => {
-    if (!ripple) return
+    const el = ripple()
+    if (!el) return
 
-    const ctx = ripple.getContext('2d')
+    const ctx = el.getContext('2d')
     let w: number, h: number, x: number, y: number, r: number
     let d = 0
 
@@ -81,8 +87,8 @@ const Ripple = () => {
     const init = () => {
       w = window.innerWidth
       h = window.innerHeight
-      ripple.width = w
-      ripple.height = h
+      el.width = w
+      el.height = h
       x = w / 2
       y = h - 128
       r = Math.min(w, h)
@@ -114,14 +120,12 @@ const Ripple = () => {
     animate()
 
     window.addEventListener('resize', init)
-    onCleanup(() => {
-      window.removeEventListener('resize', init)
-    })
+    onCleanup(() => window.removeEventListener('resize', init))
   })
 
   return (
     <canvas
-      ref={el => (ripple = el)}
+      ref={setRipple}
       aria-label="hidden"
       pos="fixed"
       left="0"

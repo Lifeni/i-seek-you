@@ -50,6 +50,7 @@ interface StyleAttrs {
   ring?: string
   backdrop?: string
   aspect?: string
+  resize?: string
 }
 
 declare module 'solid-js' {

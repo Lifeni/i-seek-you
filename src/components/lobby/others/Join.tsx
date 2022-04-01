@@ -8,25 +8,26 @@ import tinykeys from 'tinykeys'
 
 export const Join = () => {
   const [id, setId] = createSignal('')
+  const [input, setInput] = createSignal<HTMLInputElement>()
 
   const navigate = useNavigate()
   const location = useLocation()
   const [open, setOpen] = createSignal(false)
 
-  let input: HTMLInputElement
-
   createEffect(() => {
     if (location.pathname === '/+') {
       setOpen(true)
-      if (input) setTimeout(() => input.focus(), 200)
+      const el = input()
+      if (el) setTimeout(() => el.focus(), 200)
     } else setOpen(false)
   })
 
   const handleClose = () => navigate('/')
 
   onMount(() => {
-    if (input) {
-      const unbind = tinykeys(input, {
+    const el = input()
+    if (el) {
+      const unbind = tinykeys(el, {
         Enter: () => {
           navigate(`/channels/${id()}`)
           setId('')
@@ -57,8 +58,7 @@ export const Join = () => {
 
       <Modal size="sm" isOpen={open()} onClose={handleClose}>
         <input
-          ref={el => (input = el)}
-          class="px-4 py-2.5"
+          ref={setInput}
           aria-label="Enter a 4-digit ID to Connect"
           type="text"
           name="connect-id"

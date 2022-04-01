@@ -15,11 +15,12 @@ export const Password = () => {
   }
 
   const navigate = useNavigate()
-  let input: HTMLInputElement
+  const [input, setInput] = createSignal<HTMLInputElement>()
 
   onMount(() => {
-    if (input && enabled()) {
-      const unbind = tinykeys(input, { Enter: () => navigate('/') })
+    const el = input()
+    if (el && enabled()) {
+      const unbind = tinykeys(el, { Enter: () => navigate('/') })
       onCleanup(() => unbind())
     }
   })
@@ -81,7 +82,7 @@ export const Password = () => {
 
         <Show when={enabled()}>
           <input
-            ref={el => (input = el)}
+            ref={setInput}
             id="connection-password"
             type="text"
             name="connection-password"

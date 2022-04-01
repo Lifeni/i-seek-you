@@ -13,30 +13,34 @@ import tinykeys from 'tinykeys'
 interface ModalProps extends JSX.HTMLAttributes<HTMLDivElement> {
   title?: string
   size?: 'xs' | 'sm' | 'md' | 'lg'
-  isCloseable?: boolean
+  isUncloseable?: boolean
   isOpen: boolean
   onClose: () => void
 }
 
 export const Modal = (props: ModalProps) => {
   const [shake, setShake] = createSignal(false)
-  let modal: HTMLDivElement, close: HTMLButtonElement
+  const [modal, setModal] = createSignal<HTMLDivElement>()
+  const [close, setClose] = createSignal<HTMLButtonElement>()
 
   const handleClose = () => {
-    if (props.isCloseable) {
+    if (props.isUncloseable) {
       setShake(true)
       setTimeout(() => setShake(false), 500)
+    } else {
+      props.onClose()
     }
-    props.onClose()
   }
 
   createEffect(() => {
-    if (close && props.isOpen) setTimeout(() => close.focus(), 200)
+    const el = close()
+    if (el && props.isOpen) setTimeout(() => el.focus(), 200)
   })
 
   onMount(() => {
-    if (modal) {
-      const unbind = tinykeys(modal, { Escape: handleClose })
+    const el = modal()
+    if (el) {
+      const unbind = tinykeys(el, { Escape: handleClose })
       onCleanup(() => unbind())
     }
   })
@@ -44,16 +48,17 @@ export const Modal = (props: ModalProps) => {
   return (
     <Portal>
       <div
-        ref={el => (modal = el)}
+        ref={setModal}
         aria-hidden={!props.isOpen}
         pos="fixed"
         top="0"
         left="0"
+        z="1000"
         w="screen"
         h="screen"
-        z="1000"
         p="4"
-        display={props.isOpen ? 'flex visible' : 'flex invisible'}
+        flex="~"
+        display={props.isOpen ? 'visible' : 'invisible'}
         opacity={props.isOpen ? '100' : '0'}
         items="center"
         justify="center"
@@ -70,6 +75,7 @@ export const Modal = (props: ModalProps) => {
           onClick={handleClose}
         />
         <div
+          pos="relative"
           w="full"
           h="auto"
           max-w={
@@ -102,25 +108,27 @@ export const Modal = (props: ModalProps) => {
               </h1>
 
               <button
-                ref={el => (close = el)}
+                ref={setClose}
                 role="tooltip"
-                aria-label={props.isCloseable ? 'Disconnect' : 'Close'}
+                aria-label={props.isUncloseable ? 'Disconnect' : 'Close'}
                 data-position="top"
                 flex="~"
                 rounded="full"
-                p="3"
+                w="11"
+                h="11"
+                p="2.5"
                 border="none"
                 text={
-                  props.isCloseable
+                  props.isUncloseable
                     ? 'inherit hover:(light-100 dark:light-600)'
                     : 'inherit'
                 }
                 bg={
-                  props.isCloseable
+                  props.isUncloseable
                     ? 'transparent hover:rose-500'
                     : 'transparent hover:light-600 dark:hover:dark-400'
                 }
-                onClick={handleClose}
+                onClick={props.onClose}
               >
                 <RiSystemCloseFill w="6" h="6" />
               </button>

@@ -1,13 +1,11 @@
-import { createFetch } from '@solid-primitives/fetch'
-import { gemoji } from 'gemoji'
-import { useLocation, useNavigate } from 'solid-app-router'
+import { useNavigate } from 'solid-app-router'
 import {
   Popover,
   PopoverButton,
   PopoverPanel,
   Transition,
 } from 'solid-headless'
-import { createEffect, createResource, For, Show, Suspense } from 'solid-js'
+import { createResource, createSignal, For, Show } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import { useConfig } from '../../../context/Config'
 
@@ -23,12 +21,12 @@ type Emojis = {
 export const Emoji = () => {
   const [config, { setEmoji }] = useConfig()
   const navigate = useNavigate()
-
-  let panel: HTMLElement
+  const [panel, setPanel] = createSignal<HTMLElement>()
 
   const handleScroll = (e: MouseEvent) => {
     const icon = (e.target as HTMLDivElement).dataset.id
-    if (icon && panel) panel.querySelector(`#${icon}`)?.scrollIntoView()
+    const el = panel()
+    if (icon && el) el.querySelector(`#${icon}`)?.scrollIntoView()
   }
 
   const handleClick = (e: MouseEvent) => {
@@ -144,7 +142,7 @@ export const Emoji = () => {
                         )}
                       </For>
                     </nav>
-                    <article ref={el => (panel = el)} class="px-2 pb-2">
+                    <article ref={setPanel} p="x-2 b-2">
                       <For each={emojis()}>
                         {list => (
                           <section>

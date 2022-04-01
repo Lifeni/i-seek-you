@@ -65,7 +65,7 @@ export const Share = () => {
       </Show>
 
       <Action name="Share" href="/share" tooltip="Share Your Link">
-        <RiDeviceQrCodeFill class="w-8 h-8" text="inherit" />
+        <RiDeviceQrCodeFill w="8" h="8" text="inherit" />
       </Action>
 
       <Modal title="Share" size="xs" isOpen={open()} onClose={handleClose}>
@@ -122,36 +122,46 @@ export const Share = () => {
             </For>
           </div>
 
-          <section flex="~" justify="end" gap="3">
+          <section flex="~" justify="end" p="b-1">
             <button
               role="tooltip"
               aria-label={shareable() ? 'Share' : '🚫 Browser Not Support'}
               data-position="top"
               disabled={!shareable()}
               flex="~"
-              rounded="full"
-              p="3"
+              items="center"
+              gap="2"
+              rounded="sm"
+              p="x-3 y-2"
               bg="transparent hover:light-600 dark:hover:dark-400"
               cursor={shareable() ? 'pointer' : 'not-allowed'}
               onClick={handleShare}
             >
-              <RiSystemShareFill w="6" h="6" text="gray-800 dark:gray-300" />
+              <RiSystemShareFill w="5" h="5" text="gray-800 dark:gray-300" />
+              <span text="sm" font="bold">
+                Share
+              </span>
             </button>
             <button
               role="tooltip"
               aria-label={copied() ? '✅ Copied' : `Copy Your Link`}
               data-position="top"
               flex="~"
-              rounded="full"
-              p="3"
+              items="center"
+              gap="2"
+              rounded="sm"
+              p="x-3 y-2"
               bg="transparent hover:light-600 dark:hover:dark-400"
               onClick={handleCopy}
             >
               <RiDocumentFileCopy2Fill
-                w="6"
-                h="6"
+                w="5"
+                h="5"
                 text="gray-800 dark:gray-300"
               />
+              <span text="sm" font="bold">
+                Copy
+              </span>
             </button>
           </section>
         </div>

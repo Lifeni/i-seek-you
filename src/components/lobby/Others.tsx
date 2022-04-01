@@ -58,7 +58,14 @@ export const Others = () => {
   })
 
   return (
-    <div flex="~  1" items="center" justify="center" z="10" gap="6 sm:8">
+    <div
+      pos="relative"
+      flex="~  1"
+      items="center"
+      justify="center"
+      z="10"
+      gap="6 sm:8"
+    >
       <Share />
       <For each={peers()} fallback={<Seeking />}>
         {item => <Peer {...item} />}
@@ -95,7 +102,7 @@ const Seeking = () => {
       text="light-100 dark:light-600"
       bg="rose-500"
     >
-      <RiDevicePhoneFindFill w="8" h="8" text="inherit" />
+      <RiDevicePhoneFindFill w="8" h="8" text="light-100 dark:light-600" />
     </Action>
   )
 }
