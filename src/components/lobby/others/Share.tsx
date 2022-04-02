@@ -131,7 +131,7 @@ export const Share = () => {
               flex="~"
               items="center"
               gap="2"
-              rounded="sm"
+              rounded="~"
               p="x-3 y-2"
               bg="transparent hover:light-600 dark:hover:dark-400"
               cursor={shareable() ? 'pointer' : 'not-allowed'}
@@ -149,7 +149,7 @@ export const Share = () => {
               flex="~"
               items="center"
               gap="2"
-              rounded="sm"
+              rounded="~"
               p="x-3 y-2"
               bg="transparent hover:light-600 dark:hover:dark-400"
               onClick={handleCopy}

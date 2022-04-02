@@ -128,7 +128,7 @@ export const Modal = (props: ModalProps) => {
                     ? 'transparent hover:rose-500'
                     : 'transparent hover:light-600 dark:hover:dark-400'
                 }
-                onClick={props.onClose}
+                onClick={() => props.onClose()}
               >
                 <RiSystemCloseFill w="6" h="6" />
               </button>

@@ -1,6 +1,13 @@
 import { useLocation, useNavigate } from 'solid-app-router'
 import { RiCommunicationChatNewFill } from 'solid-icons/ri'
-import { createEffect, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import {
+  createEffect,
+  createSignal,
+  onCleanup,
+  onMount,
+  Show,
+  untrack,
+} from 'solid-js'
 import { Title } from 'solid-meta'
 import { Action } from './Figure'
 import { Modal } from '../../base/Modal'
@@ -28,10 +35,11 @@ export const Join = () => {
     const el = input()
     if (el) {
       const unbind = tinykeys(el, {
-        Enter: () => {
-          navigate(`/channels/${id()}`)
-          setId('')
-        },
+        Enter: () =>
+          untrack(() => {
+            navigate(`/channels/${id()}`)
+            setId('')
+          }),
       })
       onCleanup(() => unbind())
     }

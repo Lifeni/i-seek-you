@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 interface StyleAttrs {
   bg?: string
   text?: string
@@ -41,7 +43,7 @@ interface StyleAttrs {
   pointer?: string
   leading?: string
   whitespace?: string
-  group?: string | boolean
+  group?: string
   animate?: string
   list?: string
   before?: string

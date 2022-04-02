@@ -12,7 +12,8 @@
     "prepare": "husky install",
     "cz": "cz",
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
-    "posttest": "npm run format"
+    "posttest": "npm run format",
+    "check": "npx eslint ."
   },
   "author": {
     "name": "Lifeni",
@@ -30,9 +31,15 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.181",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
     "@windicss/plugin-animations": "^1.0.9",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.12.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-solid": "^0.4.6",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.7",
     "prettier": "^2.6.1",
@@ -59,7 +66,8 @@
     "tinykeys": "^1.4.0"
   },
   "lint-staged": {
-    "*.{ts,tsx,css,md}": "prettier --write"
+    "*.{ts,tsx,css,md}": "prettier --write",
+    "*.{ts,tsx}": "eslint ."
   },
   "config": {
     "commitizen": {

@@ -115,7 +115,7 @@ export const Password = () => {
             text="rose-500 hover:underline"
             font="bold"
           >
-            Learn more
+            Learn More
           </a>
         </p>
       </div>

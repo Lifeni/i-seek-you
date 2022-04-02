@@ -9,7 +9,7 @@ import { Dynamic } from 'solid-js/web'
 import { useChannel } from '../../../context/Channel'
 
 export const Input = () => {
-  const [channel, { setMode }] = useChannel()
+  const [, { setMode }] = useChannel()
   const [text, setText] = createSignal('')
 
   const handleInput = (e: InputEvent) => {
@@ -17,6 +17,14 @@ export const Input = () => {
     setText(target.value)
     target.style.height = `44px`
     target.style.height = `${target.scrollHeight}px`
+  }
+
+  const handleSend = () => {
+    const message = text()
+    if (message) {
+      console.log(message)
+      setText('')
+    }
   }
 
   return (
@@ -48,7 +56,7 @@ export const Input = () => {
         <Action
           title="Send"
           icon={RiBusinessSendPlaneFill}
-          onClick={() => {}}
+          onClick={() => handleSend()}
         />
       </div>
     </div>
@@ -74,7 +82,7 @@ const Action = (props: ActionProps) => (
     rounded="full"
     text="inherit"
     bg="hover:(light-600 dark:dark-400)"
-    onClick={props.onClick}
+    onClick={() => props.onClick()}
   >
     <Dynamic component={props.icon} w="5" h="5" />
   </button>

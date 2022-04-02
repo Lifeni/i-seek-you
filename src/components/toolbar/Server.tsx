@@ -23,7 +23,7 @@ export const Server = () => {
   const [config, { setServer }] = useConfig()
   const [status, setStatus] = createSignal<StatusType>('local')
 
-  const statusText =
+  const statusText = () =>
     status() === 'local'
       ? 'Local Mode'
       : status() === 'connected'
@@ -47,6 +47,7 @@ export const Server = () => {
       const unbind = tinykeys(el, { Enter: handleClose })
       onCleanup(() => unbind())
     }
+    setStatus('connected')
   })
 
   return (
@@ -57,7 +58,7 @@ export const Server = () => {
 
       <Link
         role="tooltip"
-        aria-label={statusText}
+        aria-label={statusText()}
         data-position="bottom-right"
         href="/server"
         flex="~"
@@ -102,7 +103,7 @@ export const Server = () => {
                 text="rose-500 hover:underline"
                 font="bold"
               >
-                Read docs
+                Read Docs
               </a>
             </p>
 

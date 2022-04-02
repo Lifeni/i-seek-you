@@ -10,13 +10,14 @@ import {
   RiMediaMicOffFill,
   RiMediaPictureInPicture2Fill,
   RiMediaPictureInPictureExitFill,
+  RiSystemEyeOffFill,
 } from 'solid-icons/ri'
 import { createSignal } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import { useChannel } from '../../../context/Channel'
 
 export const Controls = () => {
-  const [channel, { setMode }] = useChannel()
+  const [, { setMode }] = useChannel()
   const [camera, setCamera] = createSignal(false)
   const [voice, setVoice] = createSignal(false)
   const [screen, setScreen] = createSignal(false)
@@ -47,7 +48,7 @@ export const Controls = () => {
 
         <Action
           title="Share Screen"
-          icon={RiBusinessSlideshow3Fill}
+          icon={screen() ? RiBusinessSlideshow3Fill : RiSystemEyeOffFill}
           onClick={() => setScreen(v => !v)}
         />
       </div>
@@ -90,7 +91,7 @@ const Action = (props: ActionProps) => (
     rounded="full"
     text="inherit"
     bg="hover:(light-600 dark:dark-400)"
-    onClick={props.onClick}
+    onClick={() => props.onClick()}
   >
     <Dynamic component={props.icon} w="5" h="5" />
   </button>
