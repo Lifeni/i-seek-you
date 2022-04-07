@@ -10,24 +10,24 @@ interface PeerProps extends JSX.HTMLAttributes<HTMLAnchorElement> {
 }
 
 export const Peer = (props: PeerProps) => (
-  <div min-w="20" flex="~ col" items="center" gap="3">
+  <div min-w="20" flex="~ col" items="center" justify="center" gap="3">
     <Link
       role="tooltip"
       aria-label={`${props.password ? '🔒' : ''} ${props.name} #${props.id}`}
       data-position="top"
       href={`/channels/${props.id}`}
       pos="relative"
-      w="18"
-      h="18"
+      w="16 sm:18"
+      h="16 sm:18"
       flex="~"
     >
       <span
         flex="~"
         justify="center"
         items="center"
-        text="4.5rem center"
-        w="18"
-        h="18"
+        text="4rem sm:4.5rem center"
+        w="16 sm:18"
+        h="16 sm:18"
         select="none"
       >
         {props.emoji}
@@ -71,13 +71,13 @@ export const Action = (props: ActionProps) => (
       data-position="top"
       href={props.href}
       pos="relative"
-      w="18"
-      h="18"
+      w="16 sm:18"
+      h="16 sm:18"
       flex="~"
     >
       <span
-        w="18"
-        h="18"
+        w="16 sm:18"
+        h="16 sm:18"
         flex="~"
         justify="center"
         items="center"

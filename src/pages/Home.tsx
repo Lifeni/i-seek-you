@@ -1,39 +1,53 @@
 import { Outlet } from 'solid-app-router'
-import { type Component } from 'solid-js'
+import { onMount, type Component } from 'solid-js'
 import { Title } from 'solid-meta'
 import { version } from '../../package.json'
 import { Others } from '../components/lobby/Others'
 import { You } from '../components/lobby/You'
 import { Server } from '../components/toolbar/Server'
 import { Settings } from '../components/toolbar/Settings'
+import { useConnection } from '../context/Connection'
+import { connect, listen, ping } from '../utils/websocket'
 
-const Home: Component = () => (
-  <>
-    <Title>I Seek You</Title>
+const Home: Component = () => {
+  const [, { setId, setStatus }] = useConnection()
+  onMount(() => {
+    connect()
+    ping()
+    listen<{ id: string }>('id', data => {
+      setId(data.id)
+      setStatus('connected')
+    })
+  })
 
-    <header
-      role="toolbar"
-      pos="relative"
-      w="full"
-      flex="~"
-      justify="between"
-      items="center"
-      p="x-6 y-6 sm:x-8"
-      z="20"
-    >
-      <Server />
-      <Heading />
-      <Settings />
-    </header>
+  return (
+    <>
+      <Title>I Seek You</Title>
 
-    <main flex="~ col 1" p="8">
-      <Others />
-      <You />
-    </main>
+      <header
+        role="toolbar"
+        pos="relative"
+        w="full"
+        flex="~"
+        justify="between"
+        items="center"
+        p="x-6 y-6 sm:x-8"
+        z="20"
+      >
+        <Server />
+        <Heading />
+        <Settings />
+      </header>
 
-    <Outlet />
-  </>
-)
+      <main flex="~ col 1" p="8">
+        <Others />
+        <You />
+      </main>
+
+      <Outlet />
+    </>
+  )
+}
 
 const Heading = () => (
   <h1

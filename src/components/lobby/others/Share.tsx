@@ -14,7 +14,7 @@ import { Modal } from '../../base/Modal'
 import { Action } from './Figure'
 
 export const Share = () => {
-  const [session] = useConnection()
+  const [connection] = useConnection()
   const [config] = useConfig()
   const [copied, setCopied] = createSignal(false)
   const [shareable, setShareable] = createSignal(false)
@@ -30,30 +30,29 @@ export const Share = () => {
   const handleClose = () => navigate('/')
 
   onMount(() => {
-    const url = `https://${window.location.host}/channels/${session.id}`
-    setUrl(url)
+    if ('share' in navigator) setShareable(true)
+  })
 
+  createEffect(() => {
+    const url = `https://${window.location.host}/channels/${connection.id}`
+    setUrl(url)
     const qrcode = new Encoder()
     qrcode.setEncodingHint(true)
     qrcode.setErrorCorrectionLevel(ErrorCorrectionLevel.Q)
     qrcode.write(url)
     qrcode.make()
     setMatrix(qrcode.getMatrix())
-
-    if (typeof navigator.share === 'function') setShareable(true)
   })
 
   const handleShare = () =>
     navigator.share({
       title: 'I Seek You',
-      text: `Share from ${config.name} #${session.id}`,
+      text: `Share from ${config.name} #${connection.id}`,
       url: url(),
     })
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(
-      `https://${window.location.host}/channels/${session.id}`
-    )
+    navigator.clipboard.writeText(url())
     setCopied(true)
     setTimeout(() => setCopied(false), 3000)
   }
@@ -65,7 +64,7 @@ export const Share = () => {
       </Show>
 
       <Action name="Share" href="/share" tooltip="Share Your Link">
-        <RiDeviceQrCodeFill w="8" h="8" text="inherit" />
+        <RiDeviceQrCodeFill w="7 sm:8" h="7 sm:8" text="inherit" />
       </Action>
 
       <Modal title="Share" size="xs" isOpen={open()} onClose={handleClose}>
@@ -81,6 +80,8 @@ export const Share = () => {
               'grid-template-columns': `repeat(${len()}, 1fr)`,
             }}
             rounded="sm"
+            opacity={connection.id ? '100' : '0'}
+            transition="opacity"
           >
             <div
               pos="absolute"
@@ -103,7 +104,6 @@ export const Share = () => {
                 rounded="full"
               />
             </div>
-
             <For each={matrix()}>
               {row => (
                 <For each={row}>

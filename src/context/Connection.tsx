@@ -1,15 +1,20 @@
-import { createContext, useContext, type JSX } from 'solid-js'
+import { createContext, createEffect, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
 
-type Connection = [{ id: string }, { setId: (id: string) => void }]
+type Status = 'connected' | 'connecting' | 'closed' | 'error'
+
+type Connection = [
+  { id: string; status: Status; ping: number },
+  {
+    setId: (id: string) => void
+    setStatus: (status: Status) => void
+    setPing: (ping: number) => void
+  }
+]
 
 const defaultConnection: Connection = [
-  {
-    id: Math.floor(Math.random() * 10_000)
-      .toString()
-      .padStart(4, '0'),
-  },
-  { setId: () => {} },
+  { id: '', status: 'connecting', ping: 0 },
+  { setId: () => {}, setStatus: () => {}, setPing: () => {} },
 ]
 
 export const ConnectionContext = createContext<Connection>(defaultConnection)
@@ -23,8 +28,14 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
 
   const store: Connection = [
     connection,
-    { setId: (id: string) => setConnection('id', () => id) },
+    {
+      setId: (id: string) => setConnection('id', () => id),
+      setStatus: (status: Status) => setConnection('status', () => status),
+      setPing: (ping: number) => setConnection('ping', () => ping),
+    },
   ]
+
+  createEffect(() => console.log(connection.status))
 
   return (
     <ConnectionContext.Provider value={store}>

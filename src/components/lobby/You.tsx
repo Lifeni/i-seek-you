@@ -1,4 +1,4 @@
-import { createSignal, onCleanup, onMount } from 'solid-js'
+import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import colors from 'windicss/colors'
 import { useConfig } from '../../context/Config'
 import { useConnection } from '../../context/Connection'
@@ -7,6 +7,7 @@ export const You = () => {
   const [copied, setCopied] = createSignal(false)
   const [animate, setAnimate] = createSignal(false)
   const [config] = useConfig()
+  const [connection] = useConnection()
   const [session] = useConnection()
 
   const handleCopyID = () => {
@@ -21,6 +22,15 @@ export const You = () => {
     setAnimate(true)
     setTimeout(() => setAnimate(false), 1000)
   }
+
+  const statusText = () =>
+    connection.status === 'closed'
+      ? '🚫 Connection Closed'
+      : connection.status === 'connected'
+      ? 'Connected'
+      : connection.status === 'error'
+      ? '❌ Connection Error'
+      : 'Connecting...'
 
   return (
     <div flex="~ col" items="center" justify="center" p="b-3" gap="8">
@@ -44,25 +54,40 @@ export const You = () => {
           {config.emoji}
         </button>
       </div>
-
-      <button
-        pos="relative"
-        text="lg inherit"
-        bg="inherit"
-        font="sans bold"
-        leading="none"
-        select="none"
-        z="1"
-        onClick={handleCopyID}
+      <Show
+        when={connection.status === 'connected'}
+        fallback={
+          <span
+            pos="relative"
+            text="lg inherit"
+            font="bold"
+            leading="none"
+            select="none"
+            z="1"
+          >
+            {statusText()}
+          </span>
+        }
       >
-        <span
-          role="tooltip"
-          aria-label={copied() ? '✅ Copied' : `Copy Your Link`}
-          data-position="top"
+        <button
+          pos="relative"
+          text="lg inherit"
+          bg="inherit"
+          font="sans bold"
+          leading="none"
+          select="none"
+          z="1"
+          onClick={handleCopyID}
         >
-          {config.name} #{session.id}
-        </span>
-      </button>
+          <span
+            role="tooltip"
+            aria-label={copied() ? '✅ Copied' : `Copy Your Link`}
+            data-position="top"
+          >
+            {config.name} #{session.id}
+          </span>
+        </button>
+      </Show>
     </div>
   )
 }

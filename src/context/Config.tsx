@@ -1,5 +1,7 @@
-import { createContext, useContext, type JSX } from 'solid-js'
+import { debounce } from 'lodash'
+import { createContext, untrack, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { message } from '../utils/websocket'
 
 type Config = [
   {
@@ -64,6 +66,7 @@ export const ConfigProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
     setConfig(name, () => value)
     if (value && !once) localStorage.setItem(name, value)
     else if (!value) localStorage.removeItem(name)
+    if (!once && name !== 'server') sendMessage()
   }
 
   const store: Config = [
@@ -76,6 +79,15 @@ export const ConfigProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
       setServer: (server: string) => writeStore('server', server),
     },
   ]
+
+  const sendMessage = debounce(() => {
+    const data = untrack(() => ({
+      name: config.name,
+      password: !!config.password,
+      emoji: config.emoji,
+    }))
+    message('hi', data)
+  }, 1000)
 
   return (
     <ConfigContext.Provider value={store}>

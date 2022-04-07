@@ -61,7 +61,7 @@ export const Join = () => {
       </Show>
 
       <Action href="/+" name="Join" tooltip="Join a Channel">
-        <RiCommunicationChatNewFill w="8" h="8" text="inherit" />
+        <RiCommunicationChatNewFill w="7 sm:8" h="7 sm:8" text="inherit" />
       </Action>
 
       <Modal size="sm" isOpen={open()} onClose={handleClose}>
