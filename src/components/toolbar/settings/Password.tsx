@@ -3,11 +3,11 @@ import { Toggle } from 'solid-headless'
 import { RiOthersDoorLockFill } from 'solid-icons/ri'
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import tinykeys from 'tinykeys'
-import { useConfig } from '../../../context/Config'
+import { useSettings } from '../../../context/Settings'
 
 export const Password = () => {
-  const [config, { setPassword }] = useConfig()
-  const [enabled, setEnabled] = createSignal(!!config.password)
+  const [settings, { setPassword }] = useSettings()
+  const [enabled, setEnabled] = createSignal(!!settings.password)
 
   const handleToggle = () => {
     setEnabled(stat => !stat)
@@ -18,9 +18,9 @@ export const Password = () => {
   const [input, setInput] = createSignal<HTMLInputElement>()
 
   onMount(() => {
-    const el = input()
-    if (el && enabled()) {
-      const unbind = tinykeys(el, { Enter: () => navigate('/') })
+    const password = input()
+    if (password && enabled()) {
+      const unbind = tinykeys(password, { Enter: () => navigate('/') })
       onCleanup(() => unbind())
     }
   })
@@ -99,7 +99,7 @@ export const Password = () => {
             transition="border"
             cursor="disabled:not-allowed"
             outline="none"
-            value={config.password}
+            value={settings.password}
             onInput={e => setPassword((e.target as HTMLInputElement).value)}
           />
         </Show>

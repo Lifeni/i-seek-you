@@ -1,18 +1,17 @@
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import colors from 'windicss/colors'
-import { useConfig } from '../../context/Config'
+import { useSettings } from '../../context/Settings'
 import { useConnection } from '../../context/Connection'
 
 export const You = () => {
   const [copied, setCopied] = createSignal(false)
   const [animate, setAnimate] = createSignal(false)
-  const [config] = useConfig()
+  const [settings] = useSettings()
   const [connection] = useConnection()
-  const [session] = useConnection()
 
   const handleCopyID = () => {
     navigator.clipboard.writeText(
-      `https://${window.location.host}/channels/${session.id}`
+      `https://${window.location.host}/channels/${connection.id}`
     )
     setCopied(true)
     setTimeout(() => setCopied(false), 3000)
@@ -51,7 +50,7 @@ export const You = () => {
           animate={animate() ? 'rubberBand duration-0.75s' : ''}
           onClick={handleAnimate}
         >
-          {config.emoji}
+          {settings.emoji}
         </button>
       </div>
       <Show
@@ -84,7 +83,7 @@ export const You = () => {
             aria-label={copied() ? '✅ Copied' : `Copy Your Link`}
             data-position="top"
           >
-            {config.name} #{session.id}
+            {settings.name} #{connection.id}
           </span>
         </button>
       </Show>

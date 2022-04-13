@@ -2,11 +2,11 @@ import { useNavigate } from 'solid-app-router'
 import { RiUserAccountCircleFill } from 'solid-icons/ri'
 import { onMount, onCleanup, createSignal } from 'solid-js'
 import tinykeys from 'tinykeys'
-import { useConfig } from '../../../context/Config'
+import { useSettings } from '../../../context/Settings'
 import { Emoji } from './Emoji'
 
 export const Profile = () => {
-  const [config, { setName }] = useConfig()
+  const [settings, { setName }] = useSettings()
   const navigate = useNavigate()
   const [input, setInput] = createSignal<HTMLInputElement>()
 
@@ -37,7 +37,7 @@ export const Profile = () => {
           <span flex="~" items="baseline">
             <span flex="1">Your Name</span>
             <span text="sm gray-500 dark:gray-400">
-              {config.name.length}/18
+              {settings.name.length}/18
             </span>
           </span>
           <input
@@ -55,7 +55,7 @@ export const Profile = () => {
             ring="focus:4 rose-500"
             transition="border"
             outline="none"
-            value={config.name}
+            value={settings.name}
             onInput={e => setName((e.target as HTMLInputElement).value)}
           />
         </label>

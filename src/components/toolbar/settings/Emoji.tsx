@@ -7,7 +7,7 @@ import {
 } from 'solid-headless'
 import { createResource, createSignal, For, Show } from 'solid-js'
 import { Portal } from 'solid-js/web'
-import { useConfig } from '../../../context/Config'
+import { useSettings } from '../../../context/Settings'
 
 type Emojis = {
   name: string
@@ -19,7 +19,7 @@ type Emojis = {
 }[]
 
 export const Emoji = () => {
-  const [config, { setEmoji }] = useConfig()
+  const [settings, { setEmoji }] = useSettings()
   const navigate = useNavigate()
   const [panel, setPanel] = createSignal<HTMLElement>()
 
@@ -56,7 +56,7 @@ export const Emoji = () => {
             text="4.5rem"
             before="font-sans"
           >
-            <div>{config.emoji}</div>
+            <div>{settings.emoji}</div>
           </PopoverButton>
 
           <Portal>

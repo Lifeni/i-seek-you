@@ -32,9 +32,9 @@ export const Join = () => {
   const handleClose = () => navigate('/')
 
   onMount(() => {
-    const el = input()
-    if (el) {
-      const unbind = tinykeys(el, {
+    const action = input()
+    if (action) {
+      const unbind = tinykeys(action, {
         Enter: () =>
           untrack(() => {
             navigate(`/channels/${id()}`)

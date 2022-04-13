@@ -33,14 +33,14 @@ export const Modal = (props: ModalProps) => {
   }
 
   createEffect(() => {
-    const el = close()
-    if (el && props.isOpen) setTimeout(() => el.focus(), 200)
+    const button = close()
+    if (button && props.isOpen) setTimeout(() => button.focus(), 200)
   })
 
   onMount(() => {
-    const el = modal()
-    if (el) {
-      const unbind = tinykeys(el, { Escape: handleClose })
+    const dialog = modal()
+    if (dialog) {
+      const unbind = tinykeys(dialog, { Escape: handleClose })
       onCleanup(() => unbind())
     }
   })

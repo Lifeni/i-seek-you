@@ -7,7 +7,7 @@ import {
 } from 'solid-icons/ri'
 import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 import { Title } from 'solid-meta'
-import { useConfig } from '../../../context/Config'
+import { useSettings } from '../../../context/Settings'
 import { useConnection } from '../../../context/Connection'
 import Logo from '../../../assets/logo.svg'
 import { Modal } from '../../base/Modal'
@@ -15,7 +15,7 @@ import { Action } from './Figure'
 
 export const Share = () => {
   const [connection] = useConnection()
-  const [config] = useConfig()
+  const [settings] = useSettings()
   const [copied, setCopied] = createSignal(false)
   const [shareable, setShareable] = createSignal(false)
   const [matrix, setMatrix] = createSignal<boolean[][]>([])
@@ -47,7 +47,7 @@ export const Share = () => {
   const handleShare = () =>
     navigator.share({
       title: 'I Seek You',
-      text: `Share from ${config.name} #${connection.id}`,
+      text: `Share from ${settings.name} #${connection.id}`,
       url: url(),
     })
 
@@ -122,22 +122,29 @@ export const Share = () => {
             </For>
           </div>
 
-          <section flex="~" justify="end" p="b-1">
+          <section flex="~" p="x-2 b-2" gap="3">
             <button
               role="tooltip"
-              aria-label={shareable() ? 'Share' : '🚫 Browser Not Support'}
+              aria-label={
+                shareable() ? 'Share Your Link' : '🚫 Browser Not Support'
+              }
               data-position="top"
               disabled={!shareable()}
-              flex="~"
+              flex="~ 1"
               items="center"
+              justify="center"
               gap="2"
               rounded="~"
               p="x-3 y-2"
-              bg="transparent hover:light-600 dark:hover:dark-400"
+              bg="light-600 dark:dark-400 active:(light-800 dark:dark-200)"
               cursor={shareable() ? 'pointer' : 'not-allowed'}
               onClick={handleShare}
             >
-              <RiSystemShareFill w="5" h="5" text="gray-800 dark:gray-300" />
+              <RiSystemShareFill
+                w="4.5"
+                h="4.5"
+                text="gray-800 dark:gray-300"
+              />
               <span text="sm" font="bold">
                 Share
               </span>
@@ -146,17 +153,18 @@ export const Share = () => {
               role="tooltip"
               aria-label={copied() ? '✅ Copied' : `Copy Your Link`}
               data-position="top"
-              flex="~"
+              flex="~ 1"
               items="center"
+              justify="center"
               gap="2"
               rounded="~"
               p="x-3 y-2"
-              bg="transparent hover:light-600 dark:hover:dark-400"
+              bg="light-600 dark:dark-400 active:(light-800 dark:dark-200)"
               onClick={handleCopy}
             >
               <RiDocumentFileCopy2Fill
-                w="5"
-                h="5"
+                w="4.5"
+                h="4.5"
                 text="gray-800 dark:gray-300"
               />
               <span text="sm" font="bold">

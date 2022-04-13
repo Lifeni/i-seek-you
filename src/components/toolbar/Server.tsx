@@ -20,12 +20,12 @@ import {
 } from 'solid-js'
 import { Title } from 'solid-meta'
 import tinykeys from 'tinykeys'
-import { useConfig } from '../../context/Config'
+import { useSettings } from '../../context/Settings'
 import { useConnection } from '../../context/Connection'
 import { Modal } from '../base/Modal'
 
 export const Server = () => {
-  const [config, { setServer }] = useConfig()
+  const [settings, { setServer }] = useSettings()
   const [connection] = useConnection()
 
   const statusText = () =>
@@ -216,7 +216,7 @@ export const Server = () => {
               transition="border"
               cursor="disabled:not-allowed"
               outline="none"
-              value={config.server}
+              value={settings.server}
               onInput={e => {
                 setServer((e.target as HTMLInputElement).value)
                 setChanged(true)

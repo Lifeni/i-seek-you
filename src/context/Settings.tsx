@@ -1,9 +1,9 @@
 import { debounce } from 'lodash'
 import { createContext, untrack, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { message } from '../utils/websocket'
+import { useConnection } from './Connection'
 
-type Config = [
+type Settings = [
   {
     emoji: string
     password: string
@@ -31,7 +31,7 @@ const emojiList = [
   '😂', '😚', '🙃', '🥳', '🧐'
 ]
 
-const defaultConfig: Config = [
+const defaultSettings: Settings = [
   {
     emoji: emojiList[Math.floor(Math.random() * emojiList.length)],
     name: 'You',
@@ -46,31 +46,40 @@ const defaultConfig: Config = [
   },
 ]
 
-export const ConfigContext = createContext<Config>(defaultConfig)
+export const SettingsContext = createContext<Settings>(defaultSettings)
 
-export const useConfig = () => useContext(ConfigContext)
+export const useSettings = () => useContext(SettingsContext)
 
-export const ConfigProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
+export const SettingsProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
+  const [, { sendWebSocket }] = useConnection()
+
   const readStore = () =>
-    (Object.keys(defaultConfig[0]) as [keyof Config[0]]).reduce((pre, cur) => {
-      pre[cur] = localStorage.getItem(cur) || defaultConfig[0][cur]
-      return pre
-    }, {} as Config[0])
+    (Object.keys(defaultSettings[0]) as [keyof Settings[0]]).reduce(
+      (pre, cur) => {
+        pre[cur] = localStorage.getItem(cur) || defaultSettings[0][cur]
+        return pre
+      },
+      {} as Settings[0]
+    )
 
-  const [config, setConfig] = createStore<Config[0]>({
-    ...defaultConfig[0],
+  const [settings, setSettings] = createStore<Settings[0]>({
+    ...defaultSettings[0],
     ...readStore(),
   })
 
-  const writeStore = (name: keyof Config[0], value: string, once?: boolean) => {
-    setConfig(name, () => value)
+  const writeStore = (
+    name: keyof Settings[0],
+    value: string,
+    once?: boolean
+  ) => {
+    setSettings(name, () => value)
     if (value && !once) localStorage.setItem(name, value)
     else if (!value) localStorage.removeItem(name)
     if (!once && name !== 'server') sendMessage()
   }
 
-  const store: Config = [
-    config,
+  const store: Settings = [
+    settings,
     {
       setEmoji: (emoji: string, once?: boolean) =>
         writeStore('emoji', emoji, once),
@@ -82,16 +91,16 @@ export const ConfigProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
 
   const sendMessage = debounce(() => {
     const data = untrack(() => ({
-      name: config.name,
-      password: !!config.password,
-      emoji: config.emoji,
+      name: settings.name,
+      password: !!settings.password,
+      emoji: settings.emoji,
     }))
-    message('hi', data)
+    sendWebSocket('sign', data)
   }, 1000)
 
   return (
-    <ConfigContext.Provider value={store}>
+    <SettingsContext.Provider value={store}>
       {props.children}
-    </ConfigContext.Provider>
+    </SettingsContext.Provider>
   )
 }
