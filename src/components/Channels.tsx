@@ -9,8 +9,8 @@ import { Message } from './channels/Message'
 import { Voice } from './channels/Voice'
 
 export const Channels = () => {
-  const [connection, { sendWebSocket }] = useConnection()
-  const [channel, { setId, setSignal, setMode, resetChannel }] = useChannel()
+  const [connection] = useConnection()
+  const [channel, { setId, setSignal, setInfo, resetChannel }] = useChannel()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -30,8 +30,11 @@ export const Channels = () => {
       if (id && status === 'connected') {
         batch(() => {
           setId(id)
-          if (signal() === 'idle') sendWebSocket('find', { id })
           setSignal('loading')
+          if (signal() === 'idle') {
+            connection.signaling?.send('find', { id })
+            setInfo('Finding...')
+          }
         })
       }
     })
@@ -40,19 +43,26 @@ export const Channels = () => {
   createEffect(
     on([path, signal], ([id, signal]) => {
       if (id) {
-        if (signal === 'call') sendWebSocket('call', { id: path() })
-        else if (signal === 'answer') {
-          sendWebSocket('answer', { id: path() })
-          batch(() => {
-            setSignal('connecting')
-            setMode('message')
-          })
+        switch (signal) {
+          case 'call': {
+            connection.signaling?.send('call', { id })
+            setSignal('loading')
+            setInfo('Calling...')
+            break
+          }
+          case 'answer': {
+            connection.signaling?.send('answer', { id })
+            setSignal('loading')
+            break
+          }
         }
       }
     })
   )
 
   const handleClose = () => {
+    const id = path()
+    connection.signaling?.send('disconnect', { id })
     navigate('/')
     resetChannel()
   }

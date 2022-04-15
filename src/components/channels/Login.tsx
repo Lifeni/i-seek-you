@@ -11,21 +11,24 @@ import { Dialog } from '../base/Dialog'
 export const Login = () => {
   const navigate = useNavigate()
   const [channel, { setSignal, resetChannel }] = useChannel()
-  const [, { sendWebSocket }] = useConnection()
+  const [connection] = useConnection()
   const [password, setPassword] = createSignal('')
 
-  const isOpen = () =>
-    ['auth', 'call', 'answer', 'error', 'loading'].includes(channel.signal)
+  const isOpen = () => !['idle', 'connected'].includes(channel.signal)
   const isAuth = () => channel.signal === 'auth'
   const isError = () => channel.signal === 'error'
 
   const handleAuth = () => {
-    const id = channel.peer.id
-    sendWebSocket('call', { id, password: password() })
+    const id = channel.id
+    connection.signaling?.send('call', { id, password: password() })
     setSignal('loading')
   }
 
   const handleCancel = () => {
+    if (!isError() && !isAuth()) {
+      const id = channel.id
+      connection.signaling?.send('disconnect', { id })
+    }
     navigate('/')
     resetChannel()
   }
@@ -65,7 +68,10 @@ export const Login = () => {
                 border="3 light-800 dark:dark-200 !t-rose-500 rounded-full"
                 animate="spin"
               />
-              <span text="sm">Connecting</span>
+
+              <span text="sm" font="bold">
+                {channel.info || 'Connecting...'}
+              </span>
             </span>
           }
         >
@@ -77,7 +83,9 @@ export const Login = () => {
                   h="4.5"
                   text="blue-500 dark:blue-400"
                 />
-                <span text="sm">Password Required</span>
+                <span text="sm" font="bold">
+                  Password Required
+                </span>
               </span>
               <input
                 id="auth-password"
@@ -89,6 +97,7 @@ export const Login = () => {
                 m="t-4 -b-4"
                 p="x-3 y-2"
                 border="1 transparent rounded-sm hover:rose-500 !disabled:transparent"
+                font="mono"
                 text="inherit center"
                 bg="light-600 dark:dark-400"
                 ring="focus:4 rose-500"
@@ -101,13 +110,18 @@ export const Login = () => {
           </Match>
 
           <Match when={isError()}>
-            <span p="y-2" flex="~" items="center" justify="center" gap="2">
-              <RiSystemErrorWarningFill
-                w="4.5"
-                h="4.5"
-                text="red-500 dark:red-400"
-              />
-              <span text="sm">{channel.error}</span>
+            <span
+              p="y-2"
+              flex="~"
+              items="center"
+              justify="center"
+              gap="2"
+              text="red-500 dark:red-400"
+            >
+              <RiSystemErrorWarningFill w="4.5" h="4.5" />
+              <span text="sm" font="bold">
+                {channel.error}
+              </span>
             </span>
           </Match>
         </Switch>

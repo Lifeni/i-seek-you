@@ -80,7 +80,7 @@ export const Modal = (props: ModalProps) => {
           h="auto"
           max-w={
             props.size === 'xs'
-              ? '75'
+              ? '72'
               : props.size === 'sm'
               ? '90'
               : props.size === 'md'

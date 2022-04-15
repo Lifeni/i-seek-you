@@ -4,9 +4,9 @@ import { render } from 'solid-js/web'
 import { MetaProvider } from 'solid-meta'
 import 'windi.css'
 import { ChannelProvider } from './context/Channel'
-import { SettingsProvider } from './context/Settings'
 import { ConnectionProvider } from './context/Connection'
-import './libs/tooltip.css'
+import { SettingsProvider } from './context/Settings'
+import './libs/Tooltip.css'
 
 const Home = lazy(() => import('./pages/Home'))
 const NotFound = lazy(() => import('./pages/NotFound'))

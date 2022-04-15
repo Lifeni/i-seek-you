@@ -101,7 +101,7 @@ export const Server = () => {
         </Switch>
       </Link>
 
-      <Modal title="Server" size="sm" isOpen={open()} onClose={handleClose}>
+      <Modal title="Server" size="xs" isOpen={open()} onClose={handleClose}>
         <fieldset w="full" p="3">
           <legend
             flex="~"

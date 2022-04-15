@@ -1,4 +1,5 @@
 import { useNavigate } from 'solid-app-router'
+import { RiOthersPlugFill } from 'solid-icons/ri'
 import { useChannel } from '../../context/Channel'
 import { useConnection } from '../../context/Connection'
 import { Dialog } from '../base/Dialog'
@@ -6,7 +7,7 @@ import { Dialog } from '../base/Dialog'
 export const Request = () => {
   const navigate = useNavigate()
   const [channel, { setConfirm, setSignal, resetChannel }] = useChannel()
-  const [, { sendWebSocket }] = useConnection()
+  const [connection] = useConnection()
 
   const handleConfirm = () => {
     if (channel.confirm && channel.peer) {
@@ -18,7 +19,7 @@ export const Request = () => {
 
   const handleCancel = () => {
     if (channel.confirm && channel.peer) {
-      sendWebSocket('error', {
+      connection.signaling?.send('error', {
         id: channel.peer?.id,
         message: 'Connection Refused',
       })
@@ -48,8 +49,11 @@ export const Request = () => {
         >
           {channel.peer?.name} #{channel.peer?.id}
         </span>
-        <span p="y-2" text="sm center">
-          Want to Connect
+        <span flex="~" items="center" justify="center" gap="2">
+          <RiOthersPlugFill w="4.5" h="4.5" text="green-500 dark:green-400" />
+          <span p="y-2" text="sm center" font="bold">
+            Want To Connect
+          </span>
         </span>
       </div>
     </Dialog>

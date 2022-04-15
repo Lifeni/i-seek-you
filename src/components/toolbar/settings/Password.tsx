@@ -94,6 +94,7 @@ export const Password = () => {
             p="x-3 y-2"
             border="1 transparent rounded-sm hover:rose-500 !disabled:transparent"
             text="inherit"
+            font="mono"
             bg="light-600 dark:dark-400"
             ring="focus:4 rose-500"
             transition="border"
@@ -105,13 +106,12 @@ export const Password = () => {
         </Show>
 
         <p text="sm gray-500 dark:gray-400">
-          When the password is enabled, others will need to enter it for
-          authentication when they connect to your device.
+          You can set a password to prevent unknown connections.
           <a
             href="https://github.com/Lifeni/i-seek-you/#password"
             target="_blank"
             rel="noopener noreferrer"
-            m="x-2"
+            m="l-2"
             text="rose-500 hover:underline"
             font="bold"
           >

@@ -35,7 +35,7 @@ export const Settings = () => {
         <RiSystemSettingsFill w="6" h="6" text="gray-800 dark:gray-300" />
       </Link>
 
-      <Modal title="Settings" size="sm" isOpen={open()} onClose={handleClose}>
+      <Modal title="Settings" size="xs" isOpen={open()} onClose={handleClose}>
         <Profile />
         <Password />
       </Modal>

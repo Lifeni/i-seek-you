@@ -3,7 +3,7 @@ import { createContext, untrack, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { useConnection } from './Connection'
 
-type Settings = [
+export type Settings = [
   {
     emoji: string
     password: string
@@ -51,7 +51,7 @@ export const SettingsContext = createContext<Settings>(defaultSettings)
 export const useSettings = () => useContext(SettingsContext)
 
 export const SettingsProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
-  const [, { sendWebSocket }] = useConnection()
+  const [connection] = useConnection()
 
   const readStore = () =>
     (Object.keys(defaultSettings[0]) as [keyof Settings[0]]).reduce(
@@ -95,7 +95,7 @@ export const SettingsProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
       password: !!settings.password,
       emoji: settings.emoji,
     }))
-    sendWebSocket('sign', data)
+    connection.signaling?.send('sign', data)
   }, 1000)
 
   return (

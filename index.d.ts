@@ -45,4 +45,6 @@ export type WsType = {
   Lobby: { type: 'lobby'; peers: Peer[] }
   Peer: { type: 'peer'; peer: Peer }
   Call: { type: 'call'; peer: Peer; password: string }
+  Sdp: { type: 'sdp'; sdp: RTCSessionDescriptionInit }
+  Ice: { type: 'ice'; candidate: RTCIceCandidateInit }
 }

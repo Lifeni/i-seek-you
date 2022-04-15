@@ -1,37 +1,36 @@
 import { createContext, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Peer } from '../../index.d'
+import { type Signaling } from '../networks/Signaling'
 
 type Status = 'connected' | 'connecting' | 'closed' | 'error'
 
-type Connection = [
+export type Connection = [
   {
     id: string
     status: Status
     ping: number
     peers: readonly Peer[]
-    websocket: WebSocket | null
+    signaling: InstanceType<typeof Signaling> | null
   },
   {
     setId: (id: string) => void
     setStatus: (status: Status) => void
     setPing: (ping: number) => void
     setPeers: (peers: Peer[]) => void
-    setWebSocket: (websocket: WebSocket) => void
-    sendWebSocket: <T>(type: string, message?: T) => void
+    setSignaling: (signaling: InstanceType<typeof Signaling>) => void
     resetConnection: (status: Status) => void
   }
 ]
 
 const defaultConnection: Connection = [
-  { id: '', status: 'connecting', ping: 0, peers: [], websocket: null },
+  { id: '', status: 'connecting', ping: 0, peers: [], signaling: null },
   {
     setId: () => {},
     setStatus: () => {},
     setPing: () => {},
     setPeers: () => {},
-    setWebSocket: () => {},
-    sendWebSocket: () => {},
+    setSignaling: () => {},
     resetConnection: () => {},
   },
 ]
@@ -52,17 +51,15 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
       setStatus: (status: Status) => setConnection('status', () => status),
       setPing: (ping: number) => setConnection('ping', () => ping),
       setPeers: (peers: Peer[]) => setConnection('peers', () => peers),
-      setWebSocket: (websocket: WebSocket) =>
-        setConnection('websocket', () => websocket),
-      sendWebSocket: <T,>(type: string, message?: T) =>
-        connection.websocket?.send(JSON.stringify({ type, ...message })),
+      setSignaling: (signaling: InstanceType<typeof Signaling>) =>
+        setConnection('signaling', () => signaling),
       resetConnection: status => {
         setConnection({
           id: '',
           status: status,
           ping: 0,
           peers: [],
-          websocket: null,
+          signaling: null,
         })
       },
     },
