@@ -1,5 +1,6 @@
 import { useNavigate } from 'solid-app-router'
 import { RiOthersPlugFill } from 'solid-icons/ri'
+import { useBuffer } from '../../context/Buffer'
 import { useChannel } from '../../context/Channel'
 import { useConnection } from '../../context/Connection'
 import { Dialog } from '../base/Dialog'
@@ -8,6 +9,7 @@ export const Request = () => {
   const navigate = useNavigate()
   const [channel, { setConfirm, setSignal, resetChannel }] = useChannel()
   const [connection] = useConnection()
+  const [, { resetBuffer }] = useBuffer()
 
   const handleConfirm = () => {
     if (channel.confirm && channel.peer) {
@@ -25,6 +27,7 @@ export const Request = () => {
       })
       setConfirm(false)
       resetChannel()
+      resetBuffer()
     }
   }
 

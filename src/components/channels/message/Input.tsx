@@ -4,28 +4,66 @@ import {
   RiMediaImage2Fill,
   RiMediaVidiconFill,
 } from 'solid-icons/ri'
-import { createSignal } from 'solid-js'
+import { createEffect, createSignal, on, onCleanup, untrack } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
+import tinykeys from 'tinykeys'
+import { useBuffer } from '../../../context/Buffer'
 import { useChannel } from '../../../context/Channel'
+import { useConnection } from '../../../context/Connection'
 
 export const Input = () => {
-  const [, { setMode }] = useChannel()
+  const [connection] = useConnection()
+  const [channel, { setMode }] = useChannel()
+  const [, { addMessage }] = useBuffer()
   const [text, setText] = createSignal('')
+  const [send, setSend] = createSignal<HTMLInputElement>()
+
+  const mode = () => channel.mode
 
   const handleInput = (e: InputEvent) => {
     const target = e.target as HTMLInputElement
-    setText(target.value)
-    target.style.height = `44px`
-    target.style.height = `${target.scrollHeight}px`
+    if (target.value) {
+      setText(target.value)
+      target.style.height = `44px`
+      target.style.height = `${
+        target.scrollHeight > 200 ? 200 : target.scrollHeight
+      }px`
+    }
   }
 
   const handleSend = () => {
     const message = text()
     if (message) {
-      console.log(message)
+      const data = {
+        date: new Date().toISOString(),
+        from: connection.id,
+        content: message,
+      }
+      channel.connection?.send('text', data)
+      addMessage({
+        type: 'text',
+        ...data,
+      })
       setText('')
+      const input = send()
+      if (input) input.style.height = `44px`
     }
   }
+
+  createEffect(
+    on([text, mode], ([text, mode]) => {
+      const input = send()
+      if (input && mode === 'message') {
+        const unbind = tinykeys(input, {
+          Enter: e => {
+            e.preventDefault()
+            untrack(() => handleSend())
+          },
+        })
+        onCleanup(() => unbind())
+      } else if (text && mode === 'other') setText('')
+    })
+  )
 
   return (
     <div w="full" flex="~" items="end" gap="3">
@@ -38,9 +76,11 @@ export const Input = () => {
         <Action title="File" icon={RiMediaImage2Fill} onClick={() => {}} />
       </div>
       <textarea
+        ref={setSend}
         placeholder="Type Here..."
         w="full"
         h="11"
+        max-h="200px"
         flex="~ 1"
         p="x-4 y-2.25"
         text="inherit"
@@ -48,8 +88,8 @@ export const Input = () => {
         bg="light-600 dark:dark-400"
         rounded="md"
         outline="none"
-        overflow="hidden"
         resize="none"
+        value={text()}
         onInput={handleInput}
       />
       <div flex="~" items="center">

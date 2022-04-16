@@ -3,6 +3,7 @@ import { lazy } from 'solid-js'
 import { render } from 'solid-js/web'
 import { MetaProvider } from 'solid-meta'
 import 'windi.css'
+import { BufferProvider } from './context/Buffer'
 import { ChannelProvider } from './context/Channel'
 import { ConnectionProvider } from './context/Connection'
 import { SettingsProvider } from './context/Settings'
@@ -26,19 +27,21 @@ const App = () => (
       <ConnectionProvider>
         <SettingsProvider>
           <ChannelProvider>
-            <Router>
-              <Routes>
-                <Route path="/" element={<Home />}>
-                  <Route path="/+" />
-                  <Route path="/channels/:id" />
-                  <Route path="/server" />
-                  <Route path="/settings" />
-                  <Route path="/share" />
-                  <Route path="/" />
-                </Route>
-                <Route path="/*all" element={<NotFound />} />
-              </Routes>
-            </Router>
+            <BufferProvider>
+              <Router>
+                <Routes>
+                  <Route path="/" element={<Home />}>
+                    <Route path="/+" />
+                    <Route path="/channels/:id" />
+                    <Route path="/server" />
+                    <Route path="/settings" />
+                    <Route path="/share" />
+                    <Route path="/" />
+                  </Route>
+                  <Route path="/*all" element={<NotFound />} />
+                </Routes>
+              </Router>
+            </BufferProvider>
           </ChannelProvider>
         </SettingsProvider>
       </ConnectionProvider>

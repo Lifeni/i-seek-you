@@ -3,8 +3,8 @@ import { Controls } from './voice/Controls'
 
 export const Voice = () => {
   return (
-    <div w="full" min-h="50vh" flex="~ col" items="center" justify="center">
-      <div flex="~ 1 col" items="center" justify="center">
+    <div w="full" flex="~ col" items="center" justify="center">
+      <div flex="~ col" h="60vh" items="center" justify="center">
         <RiCommunicationVideoChatFill
           w="18"
           h="18"

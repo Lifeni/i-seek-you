@@ -68,7 +68,7 @@ export const Share = () => {
       </Action>
 
       <Modal title="Share" size="xs" isOpen={open()} onClose={handleClose}>
-        <div flex="~ col" gap="3">
+        <div flex="~ col" gap="3" m="t-3">
           <div
             role="tooltip"
             aria-label={url()}

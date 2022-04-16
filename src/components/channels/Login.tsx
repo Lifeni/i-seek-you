@@ -4,6 +4,7 @@ import {
   RiSystemInformationFill,
 } from 'solid-icons/ri'
 import { createSignal, Match, Show, Switch } from 'solid-js'
+import { useBuffer } from '../../context/Buffer'
 import { useChannel } from '../../context/Channel'
 import { useConnection } from '../../context/Connection'
 import { Dialog } from '../base/Dialog'
@@ -12,6 +13,7 @@ export const Login = () => {
   const navigate = useNavigate()
   const [channel, { setSignal, resetChannel }] = useChannel()
   const [connection] = useConnection()
+  const [, { resetBuffer }] = useBuffer()
   const [password, setPassword] = createSignal('')
 
   const isOpen = () => !['idle', 'connected'].includes(channel.signal)
@@ -27,10 +29,11 @@ export const Login = () => {
   const handleCancel = () => {
     if (!isError() && !isAuth()) {
       const id = channel.id
-      connection.signaling?.send('disconnect', { id })
+      if (id) connection.signaling?.send('disconnect', { id })
     }
     navigate('/')
     resetChannel()
+    resetBuffer()
   }
 
   return (
@@ -60,7 +63,7 @@ export const Login = () => {
 
         <Switch
           fallback={
-            <span p="y-2" flex="~" items="center" justify="center" gap="2">
+            <div p="y-2" flex="~" items="center" justify="center" gap="2">
               <span
                 aria-label="Loading"
                 w="4"
@@ -72,12 +75,12 @@ export const Login = () => {
               <span text="sm" font="bold">
                 {channel.info || 'Connecting...'}
               </span>
-            </span>
+            </div>
           }
         >
           <Match when={isAuth()}>
-            <span p="y-2" flex="~ col" items="center" justify="center" gap="2">
-              <span flex="~" items="center" justify="center" gap="2">
+            <div p="y-2" flex="~ col" items="center" justify="center" gap="2">
+              <div flex="~" items="center" justify="center" gap="2">
                 <RiSystemInformationFill
                   w="4.5"
                   h="4.5"
@@ -86,7 +89,7 @@ export const Login = () => {
                 <span text="sm" font="bold">
                   Password Required
                 </span>
-              </span>
+              </div>
               <input
                 id="auth-password"
                 type="text"
@@ -94,6 +97,7 @@ export const Login = () => {
                 maxLength="18"
                 placeholder="Enter Password"
                 flex="~ 1"
+                w="full"
                 m="t-4 -b-4"
                 p="x-3 y-2"
                 border="1 transparent rounded-sm hover:rose-500 !disabled:transparent"
@@ -106,11 +110,11 @@ export const Login = () => {
                 outline="none"
                 onInput={e => setPassword((e.target as HTMLInputElement).value)}
               />
-            </span>
+            </div>
           </Match>
 
           <Match when={isError()}>
-            <span
+            <div
               p="y-2"
               flex="~"
               items="center"
@@ -122,7 +126,7 @@ export const Login = () => {
               <span text="sm" font="bold">
                 {channel.error}
               </span>
-            </span>
+            </div>
           </Match>
         </Switch>
       </div>

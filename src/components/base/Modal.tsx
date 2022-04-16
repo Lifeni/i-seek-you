@@ -102,7 +102,7 @@ export const Modal = (props: ModalProps) => {
           tabIndex={props.isOpen ? '1' : '-1'}
         >
           <Show when={props.title}>
-            <div w="full" m="b-3" flex="~" items="center">
+            <div w="full" flex="~" items="center">
               <h1 text="lg" font="bold" m="0" p="x-3" flex="1">
                 {props.title}
               </h1>
@@ -134,9 +134,7 @@ export const Modal = (props: ModalProps) => {
               </button>
             </div>
           </Show>
-          <div flex="~ col" gap="3">
-            {props.children}
-          </div>
+          {props.children}
         </div>
       </div>
     </Portal>

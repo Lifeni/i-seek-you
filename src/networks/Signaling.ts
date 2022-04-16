@@ -1,6 +1,7 @@
 import { useNavigate, type Navigator } from 'solid-app-router'
 import { batch } from 'solid-js'
 import { type WsType } from '../../index.d'
+import { useBuffer, type Buffer } from '../context/Buffer'
 import { useChannel, type Channel } from '../context/Channel'
 import { useConnection, type Connection } from '../context/Connection'
 import { useSettings, type Settings } from '../context/Settings'
@@ -8,25 +9,28 @@ import { PeerConnection } from './PeerConnection'
 
 export class Signaling {
   public websocket: WebSocket
-
+  public webrtc: InstanceType<typeof PeerConnection> | undefined | null
   public navigate: Navigator
-  public settings: Readonly<Settings>
-  public connection: Readonly<Connection>
-  public channel: Readonly<Channel>
-
-  public webrtc: InstanceType<typeof PeerConnection> | null
+  public context: {
+    settings: Readonly<Settings>
+    connection: Readonly<Connection>
+    buffer: Readonly<Buffer>
+    channel: Readonly<Channel>
+  }
 
   public start: number
 
   constructor() {
     this.navigate = useNavigate()
-    this.settings = useSettings()
-    this.connection = useConnection()
-    this.channel = useChannel()
-    this.webrtc = this.channel[0].connection
+    this.context = {
+      settings: useSettings(),
+      connection: useConnection(),
+      buffer: useBuffer(),
+      channel: useChannel(),
+    }
 
-    this.websocket = new WebSocket(this.settings[0].server)
-    console.debug('[websocket]', 'connecting to', this.settings[0].server)
+    this.websocket = new WebSocket(this.context.settings[0].server)
+    console.debug('[websocket]', 'connect to', this.context.settings[0].server)
     this.start = new Date().getTime()
 
     this.websocket.addEventListener('open', () => this.onOpen())
@@ -36,16 +40,16 @@ export class Signaling {
   }
 
   public send<T>(type: string, message?: T) {
-    if (type !== 'ping') console.debug('[websocket]', 'sending', type, message)
+    if (type !== 'ping') console.debug('[websocket]', 'send -', type)
     this.websocket.send(JSON.stringify({ type, ...message }))
   }
 
   public onOpen() {
     console.debug('[websocket]', 'connected')
     this.send('sign', {
-      name: this.settings[0].name,
-      password: !!this.settings[0].password,
-      emoji: this.settings[0].emoji,
+      name: this.context.settings[0].name,
+      password: !!this.context.settings[0].password,
+      emoji: this.context.settings[0].emoji,
     })
     this.send('ping')
     setInterval(() => {
@@ -56,42 +60,46 @@ export class Signaling {
 
   public onMessage(event: MessageEvent) {
     const data = JSON.parse(event.data)
-    if (data.type !== 'pong') console.debug('[websocket]', 'received', data)
+    if (data.type !== 'pong')
+      console.debug('[websocket]', 'received -', data.type)
 
     switch (data.type) {
       case 'pong': {
         const end = new Date().getTime()
-        this.connection[1].setPing(end - this.start)
+        this.context.connection[1].setPing(end - this.start)
         break
       }
       case 'id': {
         const { id } = data as WsType['Id']
-        this.connection[1].setId(id)
-        this.connection[1].setStatus('connected')
+        this.context.connection[1].setId(id)
+        this.context.connection[1].setStatus('connected')
         break
       }
       case 'peer': {
         const { peer } = data as WsType['Peer']
-        if (peer.password) this.channel[1].setSignal('auth')
-        else this.channel[1].setSignal('call')
-        this.channel[1].setPeer(peer)
+        if (peer.password) this.context.channel[1].setSignal('auth')
+        else this.context.channel[1].setSignal('call')
+        this.context.channel[1].setPeer(peer)
+        this.context.channel[1].setInfo('Calling...')
         break
       }
       case 'lobby': {
         const { peers } = data as WsType['Lobby']
-        const lobby = peers.filter(peer => peer.id !== this.connection[0].id)
-        this.connection[1].setPeers(lobby)
+        const lobby = peers.filter(
+          peer => peer.id !== this.context.connection[0].id
+        )
+        this.context.connection[1].setPeers(lobby)
         break
       }
       case 'call': {
         const { peer, password } = data as WsType['Call']
         if (
-          !this.settings[0].password ||
-          password === this.settings[0].password
+          !this.context.settings[0].password ||
+          password === this.context.settings[0].password
         ) {
-          if (this.channel[0].signal === 'idle') {
-            this.channel[1].setConfirm(true)
-            this.channel[1].setPeer(peer)
+          if (this.context.channel[0].signal === 'idle') {
+            this.context.channel[1].setConfirm(true)
+            this.context.channel[1].setPeer(peer)
           } else
             this.send('error', {
               id: peer.id,
@@ -105,41 +113,49 @@ export class Signaling {
         break
       }
       case 'disconnect': {
-        this.channel[1].resetChannel()
+        this.context.channel[1].resetChannel()
+        this.context.buffer[1].resetBuffer()
         this.navigate('/')
         break
       }
       case 'answer': {
-        batch(() => {
-          const webrtc = new PeerConnection()
-          this.channel[1].setConnection(webrtc)
-          this.channel[1].setSignal('sdp')
-          this.channel[1].setInfo('Connecting...')
-          webrtc?.sendOffer(this.channel[0].id)
+        const webrtc = new PeerConnection({
+          channel: this.context.channel,
+          buffer: this.context.buffer,
+          connection: this.context.connection,
+          caller: true,
+          id: this.context.channel[0].id,
         })
+        this.webrtc = webrtc
+        this.context.channel[1].setConnection(webrtc)
+        this.context.channel[1].setSignal('sdp')
+        this.context.channel[1].setInfo('Connecting...')
         break
       }
       case 'sdp-offer': {
         const { sdp } = data as WsType['Sdp']
+        this.checkWebRTC()
         this.webrtc?.receiveOffer(sdp)
         break
       }
       case 'sdp-answer': {
         const { sdp } = data as WsType['Sdp']
+        this.checkWebRTC()
         this.webrtc?.receiveAnswer(sdp)
         break
       }
       case 'ice-candidate': {
         const { candidate } = data as WsType['Ice']
+        this.checkWebRTC()
         this.webrtc?.addIceCandidate(candidate)
         break
       }
       case 'error': {
         const { message } = data as WsType['Error']
         batch(() => {
-          this.channel[1].setError(message)
-          this.channel[1].setMode('other')
-          this.channel[1].setSignal('error')
+          this.context.channel[1].setError(message)
+          this.context.channel[1].setMode('other')
+          this.context.channel[1].setSignal('error')
         })
         break
       }
@@ -148,15 +164,24 @@ export class Signaling {
 
   public onClose() {
     console.debug('[websocket]', 'closed')
-    this.connection[1].resetConnection('closed')
-    this.channel[1].resetChannel()
-    this.navigate('/')
+    this.context.connection[1].resetConnection('closed')
+    this.close()
   }
 
   public onError() {
     console.debug('[websocket]', 'error')
-    this.connection[1].resetConnection('error')
-    this.channel[1].resetChannel()
+    this.context.connection[1].resetConnection('error')
+    this.close()
+  }
+
+  public close() {
+    this.context.channel[1].resetChannel()
+    this.context.buffer[1].resetBuffer()
+    this.webrtc = null
     this.navigate('/')
+  }
+
+  public checkWebRTC() {
+    this.webrtc = this.context.channel[0].connection
   }
 }

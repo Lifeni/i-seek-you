@@ -102,132 +102,134 @@ export const Server = () => {
       </Link>
 
       <Modal title="Server" size="xs" isOpen={open()} onClose={handleClose}>
-        <fieldset w="full" p="3">
-          <legend
-            flex="~"
-            justify="center"
-            items="center"
-            text="sm gray-500 dark:gray-400"
-            font="bold"
-            gap="2"
-          >
-            <RiDeviceServerFill w="4.5" h="4.5" />
-            Server Status
-          </legend>
-          <div w="full" flex="~ col">
-            <Switch
-              fallback={
-                <div
-                  flex="~"
-                  items="center"
-                  gap="3"
-                  text="sm gray-500 dark:gray-400"
-                >
-                  <span font="bold">Connecting to Server...</span>
-                  <RiSystemLoader2Fill w="4.5" h="4.5" animate="spin" />
-                </div>
-              }
+        <div flex="~ col" m="t-3" gap="3">
+          <fieldset w="full" p="3">
+            <legend
+              flex="~"
+              justify="center"
+              items="center"
+              text="sm gray-500 dark:gray-400"
+              font="bold"
+              gap="2"
             >
-              <Match when={connection.status === 'closed'}>
-                <div
-                  flex="~"
-                  items="center"
-                  gap="3"
-                  text="orange-500 dark:orange-400"
-                >
-                  <span font="bold">Server Connection Closed</span>
-                  <RiSystemErrorWarningFill w="4.5" h="4.5" />
-                </div>
-                <span text="sm gray-500 dark:gray-400">
-                  Refresh the page to try to reconnect.
-                </span>
-              </Match>
-              <Match when={connection.status === 'connected'}>
-                <div
-                  flex="~"
-                  items="center"
-                  gap="3"
-                  text="green-500 dark:green-400"
-                >
-                  <span font="bold">Connected to Server</span>
-                  <RiSystemCheckboxCircleFill w="4.5" h="4.5" />
-                </div>
-                <span text="sm gray-500 dark:gray-400">
-                  Last ping: <strong>{connection.ping}ms</strong>
-                </span>
-              </Match>
-              <Match when={connection.status === 'error'}>
-                <div
-                  flex="~"
-                  items="center"
-                  gap="3"
-                  text="red-500 dark:red-400"
-                >
-                  <span font="bold">Error Connecting to Server</span>
-                  <RiSystemCloseCircleFill w="4.5" h="4.5" />
-                </div>
-                <span text="sm gray-500 dark:gray-400">
-                  Please check the server or report this issue.
-                </span>
-              </Match>
-            </Switch>
-          </div>
-        </fieldset>
-
-        <fieldset w="full" p="3">
-          <legend
-            flex="~"
-            justify="center"
-            items="center"
-            text="sm gray-500 dark:gray-400"
-            font="bold"
-            gap="2"
-          >
-            <RiDeviceSignalWifiFill w="4.5" h="4.5" /> WebRTC Server
-          </legend>
-          <div w="full" flex="~ col" gap="2">
-            <p text="sm gray-500 dark:gray-400">
-              You can deploy a WebRTC server of your own via Docker.
-              <a
-                href="https://github.com/Lifeni/i-seek-you-server#readme"
-                target="_blank"
-                rel="noopener noreferrer"
-                m="x-2"
-                text="rose-500 hover:underline"
-                font="bold"
+              <RiDeviceServerFill w="4.5" h="4.5" />
+              Server Status
+            </legend>
+            <div w="full" flex="~ col">
+              <Switch
+                fallback={
+                  <div
+                    flex="~"
+                    items="center"
+                    gap="3"
+                    text="sm gray-500 dark:gray-400"
+                  >
+                    <span font="bold">Connecting to Server...</span>
+                    <RiSystemLoader2Fill w="4.5" h="4.5" animate="spin" />
+                  </div>
+                }
               >
-                Read Docs
-              </a>
-            </p>
+                <Match when={connection.status === 'closed'}>
+                  <div
+                    flex="~"
+                    items="center"
+                    gap="3"
+                    text="orange-500 dark:orange-400"
+                  >
+                    <span font="bold">Server Connection Closed</span>
+                    <RiSystemErrorWarningFill w="4.5" h="4.5" />
+                  </div>
+                  <span text="sm gray-500 dark:gray-400">
+                    Refresh the page to try to reconnect.
+                  </span>
+                </Match>
+                <Match when={connection.status === 'connected'}>
+                  <div
+                    flex="~"
+                    items="center"
+                    gap="3"
+                    text="green-500 dark:green-400"
+                  >
+                    <span font="bold">Connected to Server</span>
+                    <RiSystemCheckboxCircleFill w="4.5" h="4.5" />
+                  </div>
+                  <span text="sm gray-500 dark:gray-400">
+                    Last ping: <strong>{connection.ping}ms</strong>
+                  </span>
+                </Match>
+                <Match when={connection.status === 'error'}>
+                  <div
+                    flex="~"
+                    items="center"
+                    gap="3"
+                    text="red-500 dark:red-400"
+                  >
+                    <span font="bold">Error Connecting to Server</span>
+                    <RiSystemCloseCircleFill w="4.5" h="4.5" />
+                  </div>
+                  <span text="sm gray-500 dark:gray-400">
+                    Please check the server or report this issue.
+                  </span>
+                </Match>
+              </Switch>
+            </div>
+          </fieldset>
 
-            <input
-              ref={setInput}
-              id="webrtc-server"
-              type="text"
-              name="webrtc-server"
-              placeholder="https://server.i-seek-you.dist.run"
-              flex="~ 1"
-              m="t-1"
-              p="x-3 y-2"
-              border="1 transparent rounded-sm hover:rose-500 !disabled:transparent"
-              text="inherit"
-              bg="light-600 dark:dark-400"
-              ring="focus:4 rose-500"
-              transition="border"
-              cursor="disabled:not-allowed"
-              outline="none"
-              value={settings.server}
-              onInput={e => {
-                setServer((e.target as HTMLInputElement).value)
-                setChanged(true)
-              }}
-            />
+          <fieldset w="full" p="3">
+            <legend
+              flex="~"
+              justify="center"
+              items="center"
+              text="sm gray-500 dark:gray-400"
+              font="bold"
+              gap="2"
+            >
+              <RiDeviceSignalWifiFill w="4.5" h="4.5" /> WebRTC Server
+            </legend>
+            <div w="full" flex="~ col" gap="2">
+              <p text="sm gray-500 dark:gray-400">
+                You can deploy a WebRTC server of your own via Docker.
+                <a
+                  href="https://github.com/Lifeni/i-seek-you-server#readme"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  m="x-2"
+                  text="rose-500 hover:underline"
+                  font="bold"
+                >
+                  Read Docs
+                </a>
+              </p>
 
-            <Show when={changed()}>
-              <p text="sm red-500 dark:red-400">* Need to reload the page</p>
-            </Show>
-          </div>
-        </fieldset>
+              <input
+                ref={setInput}
+                id="webrtc-server"
+                type="text"
+                name="webrtc-server"
+                placeholder="https://server.i-seek-you.dist.run"
+                flex="~ 1"
+                m="t-1"
+                p="x-3 y-2"
+                border="1 transparent rounded-sm hover:rose-500 !disabled:transparent"
+                text="inherit"
+                bg="light-600 dark:dark-400"
+                ring="focus:4 rose-500"
+                transition="border"
+                cursor="disabled:not-allowed"
+                outline="none"
+                value={settings.server}
+                onInput={e => {
+                  setServer((e.target as HTMLInputElement).value)
+                  setChanged(true)
+                }}
+              />
+
+              <Show when={changed()}>
+                <p text="sm red-500 dark:red-400">* Need to reload the page</p>
+              </Show>
+            </div>
+          </fieldset>
+        </div>
       </Modal>
     </>
   )

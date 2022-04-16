@@ -98,7 +98,10 @@ export const ChannelProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
         }),
       setPeer: (peer: Peer) => setChannel('peer', () => peer),
       setConfirm: (confirm: boolean) => setChannel('confirm', () => confirm),
-      resetChannel: () => setChannel(defaultChannel[0]),
+      resetChannel: () => {
+        untrack(() => channel.connection?.close())
+        setChannel({ ...defaultChannel[0] })
+      },
     },
   ]
 

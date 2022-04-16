@@ -13,6 +13,7 @@ const transitions = {
 
 const plugins = [
   require('windicss/plugin/aspect-ratio'),
+  require('@windicss/plugin-scrollbar'),
   require('@windicss/plugin-animations'),
 ]
 
@@ -22,9 +23,13 @@ export default defineConfig({
   theme: {
     fontFamily: { sans: fonts.sans, mono: fonts.mono },
     extend: {
+      width: { fit: 'fit-content' },
       fontFamily: { emoji: fonts.emoji },
       transitionProperty: transitions,
     },
   },
   plugins: plugins,
+  variants: {
+    scrollbar: ['rounded'],
+  },
 })

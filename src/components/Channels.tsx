@@ -1,18 +1,25 @@
 import { useLocation, useNavigate } from 'solid-app-router'
 import { batch, createEffect, createMemo, on, Show } from 'solid-js'
 import { Title } from 'solid-meta'
+import { useBuffer } from '../context/Buffer'
 import { useChannel } from '../context/Channel'
 import { useConnection } from '../context/Connection'
+import { PeerConnection } from '../networks/PeerConnection'
 import { Modal } from './base/Modal'
 import { Login } from './channels/Login'
 import { Message } from './channels/Message'
 import { Voice } from './channels/Voice'
 
 export const Channels = () => {
-  const [connection] = useConnection()
-  const [channel, { setId, setSignal, setInfo, resetChannel }] = useChannel()
+  const connections = useConnection()
+  const buffers = useBuffer()
+  const channels = useChannel()
+  const [connection] = connections
+  const [channel, { setId, setSignal, setInfo, setConnection, resetChannel }] =
+    channels
   const navigate = useNavigate()
   const location = useLocation()
+  const [, { resetBuffer }] = buffers
 
   const path = createMemo(() => {
     const match = location.pathname.match(/^\/channels\/(.+)/)
@@ -52,6 +59,13 @@ export const Channels = () => {
           }
           case 'answer': {
             connection.signaling?.send('answer', { id })
+            const webrtc = new PeerConnection({
+              channel: channels,
+              buffer: buffers,
+              connection: connections,
+              id,
+            })
+            setConnection(webrtc)
             setSignal('loading')
             break
           }
@@ -62,9 +76,10 @@ export const Channels = () => {
 
   const handleClose = () => {
     const id = path()
-    connection.signaling?.send('disconnect', { id })
+    if (id) connection.signaling?.send('disconnect', { id })
     navigate('/')
     resetChannel()
+    resetBuffer()
   }
 
   return (

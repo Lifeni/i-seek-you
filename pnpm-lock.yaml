@@ -11,6 +11,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.18.0
   '@typescript-eslint/parser': ^5.18.0
   '@windicss/plugin-animations': ^1.0.9
+  '@windicss/plugin-scrollbar': ^1.2.3
   commitizen: ^4.2.4
   cz-conventional-changelog: ^3.3.0
   eslint: ^8.13.0
@@ -55,6 +56,7 @@ devDependencies:
   '@typescript-eslint/eslint-plugin': 5.18.0_0dd9be2ba5ed9805045f3fec8be848f5
   '@typescript-eslint/parser': 5.18.0_eslint@8.13.0+typescript@4.6.3
   '@windicss/plugin-animations': 1.0.9
+  '@windicss/plugin-scrollbar': 1.2.3
   commitizen: 4.2.4
   cz-conventional-changelog: 3.3.0
   eslint: 8.13.0
@@ -812,6 +814,10 @@ packages:
 
   /@windicss/plugin-animations/1.0.9:
     resolution: {integrity: sha512-9WsQsPzLurkwV5zaMCwmylxfSHlQ1pPmzud4ysvMkMBRB7obub9ESmqlHefcCjEhatz/ZROi1U1XOuOPPUO1nA==}
+    dev: true
+
+  /@windicss/plugin-scrollbar/1.2.3:
+    resolution: {integrity: sha512-+cqv1pEmaNPITeBJ/lO6tc8IjBzRhQ+V9G8r249MMXivYoxUO4DtModBrRGHVvBgsYZgPXDsIv2jqtxc4NqYEg==}
     dev: true
 
   /@windicss/plugin-utils/1.8.3:

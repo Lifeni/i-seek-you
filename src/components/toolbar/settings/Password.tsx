@@ -90,6 +90,7 @@ export const Password = () => {
             placeholder={enabled() ? 'Your Password' : 'Not Enabled'}
             disabled={!enabled()}
             flex="~ 1"
+            w="full"
             m="y-1"
             p="x-3 y-2"
             border="1 transparent rounded-sm hover:rose-500 !disabled:transparent"

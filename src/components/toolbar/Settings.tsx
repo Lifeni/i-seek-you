@@ -36,8 +36,10 @@ export const Settings = () => {
       </Link>
 
       <Modal title="Settings" size="xs" isOpen={open()} onClose={handleClose}>
-        <Profile />
-        <Password />
+        <div flex="~ col" m="t-3" gap="3">
+          <Profile />
+          <Password />
+        </div>
       </Modal>
     </>
   )
