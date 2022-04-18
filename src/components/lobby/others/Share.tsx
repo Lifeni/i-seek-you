@@ -8,17 +8,21 @@ import {
 import { createEffect, createSignal, For, onMount, Show } from 'solid-js'
 import { Title } from 'solid-meta'
 import { useSettings } from '../../../context/Settings'
-import { useConnection } from '../../../context/Connection'
+import { useServer } from '../../../context/Server'
 import Logo from '../../../assets/logo.svg'
 import { Modal } from '../../base/Modal'
-import { Action } from './Figure'
+import { ActionLink } from './Figure'
+import { Button } from '../../base/Button'
+import { Tooltip } from '../../base/Popover'
 
 export const Share = () => {
-  const [connection] = useConnection()
   const [settings] = useSettings()
+  const [server] = useServer()
+
   const [copied, setCopied] = createSignal(false)
   const [shareable, setShareable] = createSignal(false)
   const [matrix, setMatrix] = createSignal<boolean[][]>([])
+
   const len = () => matrix().length
 
   const navigate = useNavigate()
@@ -26,15 +30,12 @@ export const Share = () => {
   const [open, setOpen] = createSignal(false)
   const [url, setUrl] = createSignal('')
 
+  onMount(() => setShareable('share' in navigator))
   createEffect(() => setOpen(location.pathname === '/share'))
   const handleClose = () => navigate('/')
 
-  onMount(() => {
-    if ('share' in navigator) setShareable(true)
-  })
-
   createEffect(() => {
-    const url = `https://${window.location.host}/channels/${connection.id}`
+    const url = `https://${window.location.host}/channels/${server.id}`
     setUrl(url)
     const qrcode = new Encoder()
     qrcode.setEncodingHint(true)
@@ -47,7 +48,7 @@ export const Share = () => {
   const handleShare = () =>
     navigator.share({
       title: 'I Seek You',
-      text: `Share from ${settings.name} #${connection.id}`,
+      text: `Share from ${settings.name} #${server.id}`,
       url: url(),
     })
 
@@ -63,114 +64,84 @@ export const Share = () => {
         <Title>Share - I Seek You</Title>
       </Show>
 
-      <Action name="Share" href="/share" tooltip="Share Your Link">
-        <RiDeviceQrCodeFill w="7 sm:8" h="7 sm:8" text="inherit" />
-      </Action>
+      <ActionLink
+        href="/share"
+        icon={RiDeviceQrCodeFill}
+        name="Share Your Link"
+      >
+        Share
+      </ActionLink>
 
-      <Modal title="Share" size="xs" isOpen={open()} onClose={handleClose}>
-        <div flex="~ col" gap="3" m="t-3">
-          <div
-            role="tooltip"
-            aria-label={url()}
-            data-position="top"
-            pos="relative"
-            m="x-3"
-            grid="~ row"
-            style={{
-              'grid-template-columns': `repeat(${len()}, 1fr)`,
-            }}
-            rounded="sm"
-            opacity={connection.id ? '100' : '0'}
-            transition="opacity"
-          >
+      <Modal
+        name="Share"
+        size="xs"
+        hasTitleBar
+        isOpen={open()}
+        onCancel={handleClose}
+      >
+        <div flex="~ col" gap="3" p="x-3 y-2">
+          <Tooltip name={url()}>
             <div
-              pos="absolute"
-              top="0"
-              left="0"
-              z="1"
-              w="full"
-              h="full"
-              flex="~"
-              items="center"
-              justify="center"
-              pointer="none"
+              pos="relative"
+              m="x-3"
+              grid="~ row"
+              style={{
+                'grid-template-columns': `repeat(${len()}, 1fr)`,
+              }}
+              rounded="sm"
+              opacity={server.id ? '100' : '0'}
+              transition="opacity"
             >
-              <img
-                src={Logo}
-                alt="I Seek You Logo"
-                w="16"
-                h="16"
-                shadow="xl"
-                rounded="full"
-              />
+              <div
+                pos="absolute"
+                top="0"
+                left="0"
+                z="1"
+                w="full"
+                h="full"
+                flex="~"
+                items="center"
+                justify="center"
+                pointer="none"
+              >
+                <img
+                  src={Logo}
+                  alt="I Seek You Logo"
+                  w="16"
+                  h="16"
+                  shadow="xl"
+                  rounded="full"
+                />
+              </div>
+              <For each={matrix()}>
+                {row => (
+                  <For each={row}>
+                    {cube => (
+                      <div
+                        aspect="square"
+                        bg={
+                          cube
+                            ? 'gray-800 dark:gray-300'
+                            : 'light-100 dark:dark-800'
+                        }
+                      />
+                    )}
+                  </For>
+                )}
+              </For>
             </div>
-            <For each={matrix()}>
-              {row => (
-                <For each={row}>
-                  {cube => (
-                    <div
-                      aspect="square"
-                      bg={
-                        cube
-                          ? 'gray-800 dark:gray-300'
-                          : 'light-100 dark:dark-800'
-                      }
-                    />
-                  )}
-                </For>
-              )}
-            </For>
-          </div>
+          </Tooltip>
 
           <section flex="~" p="x-2 b-2" gap="3">
-            <button
-              role="tooltip"
-              aria-label={
-                shareable() ? 'Share Your Link' : '🚫 Browser Not Support'
-              }
-              data-position="top"
-              disabled={!shareable()}
-              flex="~ 1"
-              items="center"
-              justify="center"
-              gap="2"
-              rounded="~"
-              p="x-3 y-2"
-              bg="light-600 dark:dark-400 active:(light-800 dark:dark-200)"
-              cursor={shareable() ? 'pointer' : 'not-allowed'}
-              onClick={handleShare}
-            >
-              <RiSystemShareFill
-                w="4.5"
-                h="4.5"
-                text="gray-800 dark:gray-300"
-              />
-              <span text="sm" font="bold">
+            <Show when={shareable()}>
+              <Button icon={RiSystemShareFill} onClick={handleShare}>
                 Share
-              </span>
-            </button>
-            <button
-              role="tooltip"
-              aria-label={copied() ? '✅ Copied' : `Copy Your Link`}
-              data-position="top"
-              flex="~ 1"
-              items="center"
-              justify="center"
-              gap="2"
-              rounded="~"
-              p="x-3 y-2"
-              bg="light-600 dark:dark-400 active:(light-800 dark:dark-200)"
-              onClick={handleCopy}
-            >
-              <RiDocumentFileCopy2Fill
-                w="4.5"
-                h="4.5"
-                text="gray-800 dark:gray-300"
-              />
-              <span text="sm" font="bold">
-                Copy
-              </span>
-            </button>
+              </Button>
+            </Show>
+
+            <Button icon={RiDocumentFileCopy2Fill} onClick={handleCopy}>
+              {copied() ? 'Copied' : `Copy`}
+            </Button>
           </section>
         </div>
       </Modal>

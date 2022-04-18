@@ -1,13 +1,7 @@
 import { useNavigate } from 'solid-app-router'
-import {
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-  Transition,
-} from 'solid-headless'
-import { createResource, createSignal, For, Show } from 'solid-js'
-import { Portal } from 'solid-js/web'
+import { createResource, createSignal, For, Show, type JSX } from 'solid-js'
 import { useSettings } from '../../../context/Settings'
+import { Popover, Tooltip } from '../../base/Popover'
 
 type Emojis = {
   name: string
@@ -21,16 +15,19 @@ type Emojis = {
 export const Emoji = () => {
   const [settings, { setEmoji }] = useSettings()
   const navigate = useNavigate()
-  const [panel, setPanel] = createSignal<HTMLElement>()
+  const [container, setContainer] = createSignal<HTMLElement>()
+  const [isOpen, setOpen] = createSignal(false)
 
   const handleScroll = (e: MouseEvent) => {
     const icon = (e.target as HTMLDivElement).dataset.id
-    const el = panel()
-    if (icon && el) el.querySelector(`#${icon}`)?.scrollIntoView()
+    const target = container()
+    if (!icon || !target) return
+    target.querySelector(`#${icon}`)?.scrollIntoView()
   }
 
   const handleClick = (e: MouseEvent) => {
     setEmoji((e.target as HTMLButtonElement).textContent || '')
+    setOpen(false)
     navigate('/settings')
   }
 
@@ -38,157 +35,113 @@ export const Emoji = () => {
   const [emojis] = createResource<Emojis>(fetcher)
 
   return (
-    <Popover pos="relative" onClose={() => navigate('/settings')}>
-      {({ isOpen }) => (
-        <>
-          <PopoverButton
-            role="tooltip"
-            aria-label="Select Your Emoji"
-            data-position="top"
-            pos="relative"
-            font="emoji"
-            w="4.5rem"
-            flex="~"
-            items="center"
-            justify="center"
-            rounded="full"
-            leading="none"
-            text="4.5rem"
-            before="font-sans"
-          >
-            <div>{settings.emoji}</div>
-          </PopoverButton>
+    <>
+      <Tooltip name="Select Your Emoji">
+        <button
+          pos="relative"
+          font="emoji"
+          w="4.5rem"
+          flex="~"
+          items="center"
+          justify="center"
+          leading="none"
+          text="4.5rem"
+          onClick={() => setOpen(true)}
+        >
+          {settings.emoji}
+        </button>
+      </Tooltip>
 
-          <Portal>
-            <Transition
-              show={isOpen()}
-              enter="transition duration-200"
-              enterFrom="opacity-0 scale-96"
-              enterTo="opacity-100 scale-100"
-              leave="transition duration-150"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-96"
-              pos="relative"
-              rounded="md"
-              overflow="hidden"
-              z="2000"
+      <Popover pos="fixed" isOpen={isOpen()} onClose={() => setOpen(false)}>
+        <div
+          w="screen"
+          max-w="unset sm:100"
+          h="40vh"
+          overflow="y-auto x-hidden"
+          flex="~ col"
+          style={{
+            'scroll-behavior': 'smooth',
+            'scroll-padding': '3rem 0 0 0',
+            'scroll-width': 'thin',
+          }}
+        >
+          <Show when={!emojis.loading}>
+            <nav
+              w="full"
+              grid="~ cols-9"
+              pos="sticky"
+              top="0"
+              p="2"
+              bg="light-100/80 dark:dark-800/80"
+              backdrop="~ blur-sm"
             >
-              <PopoverPanel
-                unmount={false}
-                pos="fixed"
-                bottom="0 sm:5vh"
-                left="0 sm:1/2"
-                z="2000"
-                rounded="t-md sm:md"
-                bg="light-100 dark:dark-800"
-                shadow="2xl"
-                transform="sm:~ sm:-translate-x-1/2"
-                overflow="hidden"
-              >
-                <div
-                  w="screen"
-                  max-w="unset sm:100"
-                  h="40vh"
-                  overflow="y-auto x-hidden"
-                  flex="~ col"
-                  style={{
-                    'scroll-behavior': 'smooth',
-                    'scroll-padding': '3rem 0 0 0',
-                    'scroll-width': 'thin',
-                  }}
-                >
-                  <Show
-                    when={!emojis.loading}
-                    fallback={
-                      <div
-                        flex="~ 1"
-                        justify="center"
-                        items="center"
-                        text="sm gray-500 dark:gray-400"
-                      >
-                        Loading...
-                      </div>
-                    }
+              <For each={emojis()}>
+                {list => (
+                  <Cell
+                    name={list.name}
+                    data-id={list.name.toLowerCase().replace(/\s+&?\s?/g, '-')}
+                    onClick={handleScroll}
                   >
-                    <nav
+                    {list.icon}
+                  </Cell>
+                )}
+              </For>
+            </nav>
+            <div ref={setContainer} p="x-2 b-2">
+              <For each={emojis()}>
+                {list => (
+                  <section>
+                    <h2
+                      id={list.name.toLowerCase().replace(/\s+&?\s?/g, '-')}
                       w="full"
-                      grid="~ cols-9"
-                      pos="sticky"
-                      top="0"
                       p="2"
-                      bg="light-100/80 dark:dark-800/80"
-                      backdrop="~ blur-sm"
+                      text="sm gray-500 dark:gray-400"
+                      font="bold"
                     >
-                      <For each={emojis()}>
-                        {list => (
-                          <button
-                            aria-label={list.name}
-                            title={list.name}
-                            data-id={list.name
-                              .toLowerCase()
-                              .replace(/\s+&?\s?/g, '-')}
-                            w="10"
-                            h="10"
-                            p="b-0.5"
-                            bg="hover:(light-600 dark:dark-400)"
-                            rounded="sm"
-                            font="emoji"
-                            text="2xl gray-800 dark:gray-300"
-                            leading="none"
-                            onClick={handleScroll}
+                      {list.name}
+                    </h2>
+                    <div role="list" grid="~ cols-9">
+                      <For each={list.list}>
+                        {item => (
+                          <Cell
+                            role="listitem"
+                            name={item.description}
+                            onClick={handleClick}
                           >
-                            {list.icon}
-                          </button>
+                            {item.emoji}
+                          </Cell>
                         )}
                       </For>
-                    </nav>
-                    <article ref={setPanel} p="x-2 b-2">
-                      <For each={emojis()}>
-                        {list => (
-                          <section>
-                            <h2
-                              id={list.name
-                                .toLowerCase()
-                                .replace(/\s+&?\s?/g, '-')}
-                              w="full"
-                              p="2"
-                              text="sm gray-500 dark:gray-400"
-                              font="bold"
-                            >
-                              {list.name}
-                            </h2>
-                            <div role="list" grid="~ cols-9">
-                              <For each={list.list}>
-                                {item => (
-                                  <button
-                                    role="listitem"
-                                    aria-label={item.description}
-                                    title={item.description}
-                                    w="10"
-                                    h="10"
-                                    p="b-0.5"
-                                    bg="hover:(light-600 dark:dark-400)"
-                                    rounded="sm"
-                                    font="emoji"
-                                    text="2xl"
-                                    onClick={handleClick}
-                                  >
-                                    {item.emoji}
-                                  </button>
-                                )}
-                              </For>
-                            </div>
-                          </section>
-                        )}
-                      </For>
-                    </article>
-                  </Show>
-                </div>
-              </PopoverPanel>
-            </Transition>
-          </Portal>
-        </>
-      )}
-    </Popover>
+                    </div>
+                  </section>
+                )}
+              </For>
+            </div>
+          </Show>
+        </div>
+      </Popover>
+    </>
   )
 }
+
+interface CellProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
+  name: string
+  onClick: (e: MouseEvent) => void
+}
+
+const Cell = (props: CellProps) => (
+  <button
+    aria-label={props.name}
+    title={props.name}
+    w="10"
+    h="10"
+    p="b-0.5"
+    bg="hover:(light-600 dark:dark-400)"
+    rounded="sm"
+    font="emoji"
+    text="2xl"
+    {...props}
+  >
+    {props.children}
+  </button>
+)

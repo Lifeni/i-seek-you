@@ -1,92 +1,69 @@
 import { useLocation, useNavigate } from 'solid-app-router'
 import { RiCommunicationChatNewFill } from 'solid-icons/ri'
-import {
-  createEffect,
-  createSignal,
-  onCleanup,
-  onMount,
-  Show,
-  untrack,
-} from 'solid-js'
+import { createEffect, createSignal, Show } from 'solid-js'
 import { Title } from 'solid-meta'
-import { Action } from './Figure'
+import { Input } from '../../base/Form'
 import { Modal } from '../../base/Modal'
-import tinykeys from 'tinykeys'
+import { ActionLink } from './Figure'
 
 export const Join = () => {
   const [id, setId] = createSignal('')
-  const [input, setInput] = createSignal<HTMLInputElement>()
 
   const navigate = useNavigate()
   const location = useLocation()
-  const [open, setOpen] = createSignal(false)
+  const [isOpen, setOpen] = createSignal(false)
 
-  createEffect(() => {
-    if (location.pathname === '/+') {
-      setOpen(true)
-      const el = input()
-      if (el) setTimeout(() => el.focus(), 200)
-    } else setOpen(false)
-  })
+  createEffect(() => setOpen(location.pathname === '/+'))
 
   const handleClose = () => navigate('/')
-
-  onMount(() => {
-    const action = input()
-    if (action) {
-      const unbind = tinykeys(action, {
-        Enter: () =>
-          untrack(() => {
-            navigate(`/channels/${id()}`)
-            setId('')
-          }),
-      })
-      onCleanup(() => unbind())
-    }
-  })
+  const handleEnter = () => {
+    navigate(`/channels/${id()}`)
+    setId('')
+  }
 
   const handleInput = (e: InputEvent) => {
     const value = (e.target as HTMLInputElement).value
     setId(value)
-    if (value.length === 4) {
-      navigate(`/channels/${id()}`)
-      setId('')
-    }
+    if (value.length !== 4) return
+    handleEnter()
   }
 
   return (
     <>
-      <Show when={open()}>
+      <Show when={isOpen()}>
         <Title>Join - I Seek You</Title>
       </Show>
 
-      <Action href="/+" name="Join" tooltip="Join a Channel">
-        <RiCommunicationChatNewFill w="7 sm:8" h="7 sm:8" text="inherit" />
-      </Action>
+      <ActionLink
+        href="/+"
+        icon={RiCommunicationChatNewFill}
+        name="Join a Channel"
+      >
+        Join
+      </ActionLink>
 
-      <Modal size="sm" isOpen={open()} onClose={handleClose}>
-        <input
-          ref={setInput}
-          aria-label="Enter a 4-digit ID to Connect"
+      <Modal
+        name="Join"
+        size="sm"
+        isOpen={isOpen()}
+        isBlur
+        onCancel={handleClose}
+      >
+        <Input
           type="text"
           name="connect-id"
-          id="connect-id"
           placeholder="Enter a 4-digit ID to Connect"
           pattern="[0-9]{4}"
           inputMode="numeric"
           maxLength="4"
-          w="full"
           p="x-4 y-2.5"
-          border="1 transparent hover:rose-500"
-          bg="light-600 dark:dark-400"
-          text="center gray-800 dark:gray-300"
           font="bold"
-          ring="focus:4 rose-500"
-          transition="border"
-          outline="none"
           rounded="md"
+          text="center"
+          isFocus={isOpen()}
           value={id()}
           onInput={handleInput}
+          onEnter={handleEnter}
         />
       </Modal>
     </>

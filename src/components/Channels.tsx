@@ -1,9 +1,9 @@
 import { useLocation, useNavigate } from 'solid-app-router'
 import { batch, createEffect, createMemo, on, Show } from 'solid-js'
 import { Title } from 'solid-meta'
-import { useBuffer } from '../context/Buffer'
-import { useChannel } from '../context/Channel'
 import { useConnection } from '../context/Connection'
+import { useServer } from '../context/Server'
+import { useSettings } from '../context/Settings'
 import { PeerConnection } from '../networks/PeerConnection'
 import { Modal } from './base/Modal'
 import { Login } from './channels/Login'
@@ -11,91 +11,93 @@ import { Message } from './channels/Message'
 import { Voice } from './channels/Voice'
 
 export const Channels = () => {
+  const settings = useSettings()
+  const servers = useServer()
   const connections = useConnection()
-  const buffers = useBuffer()
-  const channels = useChannel()
-  const [connection] = connections
-  const [channel, { setId, setSignal, setInfo, setConnection, resetChannel }] =
-    channels
+
+  const [server] = servers
+  const [
+    connection,
+    { setId, setSignal, setInfo, setWebRTC, resetConnection },
+  ] = connections
+
   const navigate = useNavigate()
   const location = useLocation()
-  const [, { resetBuffer }] = buffers
 
-  const path = createMemo(() => {
+  const isMatch = createMemo(() => {
     const match = location.pathname.match(/^\/channels\/(.+)/)
     return match ? match[1] : ''
   })
-  const open = () => !!path()
-  const status = createMemo(() => connection.status)
-  const signal = createMemo(() => channel.signal)
+  const isOpen = () => !!isMatch()
 
-  const isOther = () => channel.mode === 'other'
-  const isVoice = () => channel.mode === 'voice'
+  const status = createMemo(() => server.status)
+  const signal = createMemo(() => connection.signal)
+
+  const isOther = () => connection.mode === 'other'
+  const isVoice = () => connection.mode === 'voice'
 
   createEffect(
-    on([path, status], ([id, status]) => {
-      if (id && status === 'connected') {
-        batch(() => {
-          setId(id)
-          setSignal('loading')
-          if (signal() === 'idle') {
-            connection.signaling?.send('find', { id })
-            setInfo('Finding...')
-          }
-        })
-      }
+    on([isMatch, status], ([id, status]) => {
+      if (!id || status !== 'connected') return
+      batch(() => {
+        setId(id)
+        setSignal('loading')
+        if (signal() !== 'idle') return
+        server.websocket?.send('find', { id })
+        setInfo('Finding...')
+      })
     })
   )
 
   createEffect(
-    on([path, signal], ([id, signal]) => {
-      if (id) {
-        switch (signal) {
-          case 'call': {
-            connection.signaling?.send('call', { id })
-            setSignal('loading')
-            setInfo('Calling...')
-            break
-          }
-          case 'answer': {
-            connection.signaling?.send('answer', { id })
-            const webrtc = new PeerConnection({
-              channel: channels,
-              buffer: buffers,
-              connection: connections,
-              id,
-            })
-            setConnection(webrtc)
-            setSignal('loading')
-            break
-          }
+    on([isMatch, signal], ([id, signal]) => {
+      if (!id) return
+      switch (signal) {
+        case 'call': {
+          server.websocket?.send('call', { id })
+          setSignal('loading')
+          setInfo('Calling...')
+          break
+        }
+        case 'answer': {
+          server.websocket?.send('answer', { id })
+          const webrtc = new PeerConnection({
+            settings,
+            server: servers,
+            connection: connections,
+            id,
+          })
+          setWebRTC(webrtc)
+          setSignal('loading')
+          break
         }
       }
     })
   )
 
   const handleClose = () => {
-    const id = path()
-    if (id) connection.signaling?.send('disconnect', { id })
+    const id = isMatch()
+    if (!id) return
+    server.websocket?.send('disconnect', { id })
     navigate('/')
-    resetChannel()
-    resetBuffer()
+    resetConnection()
   }
 
   return (
     <>
-      <Show when={open()}>
-        <Title>Channels #{channel.id} - I Seek You</Title>
+      <Show when={isOpen()}>
+        <Title>Channels #{connection.id} - I Seek You</Title>
       </Show>
 
       <Login />
 
       <Modal
-        title={`Channels #${channel.id}`}
+        name={`Channels #${connection.id}`}
         size="lg"
-        isUncloseable={true}
-        isOpen={!isOther() && open()}
-        onClose={handleClose}
+        hasTitleBar
+        isDanger
+        isOpen={!isOther() && isOpen()}
+        onCancel={handleClose}
       >
         <Show when={isVoice()} fallback={<Message />}>
           <Voice />

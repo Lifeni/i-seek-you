@@ -1,9 +1,8 @@
 import { useNavigate, type Navigator } from 'solid-app-router'
 import { batch } from 'solid-js'
 import { type WsType } from '../../index.d'
-import { useBuffer, type Buffer } from '../context/Buffer'
-import { useChannel, type Channel } from '../context/Channel'
 import { useConnection, type Connection } from '../context/Connection'
+import { useServer, type Server } from '../context/Server'
 import { useSettings, type Settings } from '../context/Settings'
 import { PeerConnection } from './PeerConnection'
 
@@ -11,11 +10,11 @@ export class Signaling {
   public websocket: WebSocket
   public webrtc: InstanceType<typeof PeerConnection> | undefined | null
   public navigate: Navigator
+
   public context: {
     settings: Readonly<Settings>
+    server: Readonly<Server>
     connection: Readonly<Connection>
-    buffer: Readonly<Buffer>
-    channel: Readonly<Channel>
   }
 
   public start: number
@@ -24,13 +23,20 @@ export class Signaling {
     this.navigate = useNavigate()
     this.context = {
       settings: useSettings(),
+      server: useServer(),
       connection: useConnection(),
-      buffer: useBuffer(),
-      channel: useChannel(),
     }
 
-    this.websocket = new WebSocket(this.context.settings[0].server)
-    console.debug('[websocket]', 'connect to', this.context.settings[0].server)
+    const protocol = window.location.protocol === 'https' ? 'wss' : 'ws'
+
+    this.websocket = new WebSocket(
+      `${protocol}://${this.context.settings[0].signaling}`
+    )
+    console.debug(
+      '[websocket]',
+      'connect to',
+      this.context.settings[0].signaling
+    )
     this.start = new Date().getTime()
 
     this.websocket.addEventListener('open', () => this.onOpen())
@@ -66,29 +72,29 @@ export class Signaling {
     switch (data.type) {
       case 'pong': {
         const end = new Date().getTime()
-        this.context.connection[1].setPing(end - this.start)
+        this.context.server[1].setPing(end - this.start)
         break
       }
       case 'id': {
         const { id } = data as WsType['Id']
-        this.context.connection[1].setId(id)
-        this.context.connection[1].setStatus('connected')
+        this.context.server[1].setId(id)
+        this.context.server[1].setStatus('connected')
         break
       }
       case 'peer': {
         const { peer } = data as WsType['Peer']
-        if (peer.password) this.context.channel[1].setSignal('auth')
-        else this.context.channel[1].setSignal('call')
-        this.context.channel[1].setPeer(peer)
-        this.context.channel[1].setInfo('Calling...')
+        if (peer.password) this.context.connection[1].setSignal('auth')
+        else this.context.connection[1].setSignal('call')
+        this.context.connection[1].setPeer(peer)
+        this.context.connection[1].setInfo('Calling...')
         break
       }
       case 'lobby': {
         const { peers } = data as WsType['Lobby']
         const lobby = peers.filter(
-          peer => peer.id !== this.context.connection[0].id
+          peer => peer.id !== this.context.server[0].id
         )
-        this.context.connection[1].setPeers(lobby)
+        this.context.server[1].setPeers(lobby)
         break
       }
       case 'call': {
@@ -97,9 +103,9 @@ export class Signaling {
           !this.context.settings[0].password ||
           password === this.context.settings[0].password
         ) {
-          if (this.context.channel[0].signal === 'idle') {
-            this.context.channel[1].setConfirm(true)
-            this.context.channel[1].setPeer(peer)
+          if (this.context.connection[0].signal === 'idle') {
+            this.context.connection[1].setConfirm(true)
+            this.context.connection[1].setPeer(peer)
           } else
             this.send('error', {
               id: peer.id,
@@ -113,23 +119,22 @@ export class Signaling {
         break
       }
       case 'disconnect': {
-        this.context.channel[1].resetChannel()
-        this.context.buffer[1].resetBuffer()
+        this.context.connection[1].resetConnection()
         this.navigate('/')
         break
       }
       case 'answer': {
         const webrtc = new PeerConnection({
-          channel: this.context.channel,
-          buffer: this.context.buffer,
+          settings: this.context.settings,
+          server: this.context.server,
           connection: this.context.connection,
           caller: true,
-          id: this.context.channel[0].id,
+          id: this.context.connection[0].id,
         })
         this.webrtc = webrtc
-        this.context.channel[1].setConnection(webrtc)
-        this.context.channel[1].setSignal('sdp')
-        this.context.channel[1].setInfo('Connecting...')
+        this.context.connection[1].setWebRTC(webrtc)
+        this.context.connection[1].setSignal('sdp')
+        this.context.connection[1].setInfo('Connecting...')
         break
       }
       case 'sdp-offer': {
@@ -153,9 +158,9 @@ export class Signaling {
       case 'error': {
         const { message } = data as WsType['Error']
         batch(() => {
-          this.context.channel[1].setError(message)
-          this.context.channel[1].setMode('other')
-          this.context.channel[1].setSignal('error')
+          this.context.connection[1].setError(message)
+          this.context.connection[1].setMode('other')
+          this.context.connection[1].setSignal('error')
         })
         break
       }
@@ -164,24 +169,23 @@ export class Signaling {
 
   public onClose() {
     console.debug('[websocket]', 'closed')
-    this.context.connection[1].resetConnection('closed')
+    this.context.server[1].resetServer('closed')
     this.close()
   }
 
   public onError() {
     console.debug('[websocket]', 'error')
-    this.context.connection[1].resetConnection('error')
+    this.context.server[1].resetServer('error')
     this.close()
   }
 
   public close() {
-    this.context.channel[1].resetChannel()
-    this.context.buffer[1].resetBuffer()
+    this.context.connection[1].resetConnection()
     this.webrtc = null
     this.navigate('/')
   }
 
   public checkWebRTC() {
-    this.webrtc = this.context.channel[0].connection
+    this.webrtc = this.context.connection[0].webrtc
   }
 }

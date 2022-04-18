@@ -1,8 +1,10 @@
-import { Link, useLocation, useNavigate } from 'solid-app-router'
+import { useLocation, useNavigate } from 'solid-app-router'
 import { RiSystemSettingsFill } from 'solid-icons/ri'
 import { createEffect, createSignal, Show } from 'solid-js'
 import { Title } from 'solid-meta'
 import { Modal } from '../base/Modal'
+import { Tooltip } from '../base/Popover'
+import { NavLink } from '../base/Text'
 import { Password } from './settings/Password'
 import { Profile } from './settings/Profile'
 
@@ -21,22 +23,18 @@ export const Settings = () => {
         <Title>Settings - I Seek You</Title>
       </Show>
 
-      <Link
-        role="tooltip"
-        aria-label="Settings"
-        data-position="bottom-left"
-        href="/settings"
-        flex="~"
-        rounded="full"
-        p="3"
-        border="none"
-        bg="transparent hover:light-600 dark:hover:dark-400"
-      >
-        <RiSystemSettingsFill w="6" h="6" text="gray-800 dark:gray-300" />
-      </Link>
+      <Tooltip name="Settings" position="bottom-left">
+        <NavLink href="/settings" icon={RiSystemSettingsFill}></NavLink>
+      </Tooltip>
 
-      <Modal title="Settings" size="xs" isOpen={open()} onClose={handleClose}>
-        <div flex="~ col" m="t-3" gap="3">
+      <Modal
+        name="Settings"
+        size="xs"
+        hasTitleBar
+        isOpen={open()}
+        onCancel={handleClose}
+      >
+        <div flex="~ col" p="x-3 y-2" gap="3">
           <Profile />
           <Password />
         </div>

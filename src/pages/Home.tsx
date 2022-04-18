@@ -2,19 +2,19 @@ import { Outlet } from 'solid-app-router'
 import { onMount, type Component } from 'solid-js'
 import { Title } from 'solid-meta'
 import { Others } from '../components/lobby/Others'
-import { Request } from '../components/lobby/Request'
+import { Call } from '../components/lobby/Call'
 import { You } from '../components/lobby/You'
 import { Heading } from '../components/toolbar/Heading'
 import { Server } from '../components/toolbar/Server'
 import { Settings } from '../components/toolbar/Settings'
-import { useConnection } from '../context/Connection'
+import { useServer } from '../context/Server'
 import { Signaling } from '../networks/Signaling'
 
 const Home: Component = () => {
-  const [, { setSignaling }] = useConnection()
+  const [, { setWebSocket }] = useServer()
   onMount(() => {
     const signaling = new Signaling()
-    setSignaling(signaling)
+    setWebSocket(signaling)
   })
 
   return (
@@ -39,7 +39,7 @@ const Home: Component = () => {
       <main flex="~ col 1" p="8">
         <Others />
         <You />
-        <Request />
+        <Call />
       </main>
 
       <Outlet />

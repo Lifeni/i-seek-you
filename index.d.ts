@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { IconTypes } from 'solid-icons'
+import 'solid-js'
 import { AttributifyAttributes } from 'windicss/types/jsx'
 
 type ExtendNames =
@@ -15,7 +17,6 @@ type ExtendNames =
   | 'leading'
   | 'whitespace'
   | 'group'
-  | 'list'
   | 'aspect'
   | 'resize'
   | 'pointer'
@@ -26,7 +27,9 @@ interface StyleAttrs
 
 declare module 'solid-js' {
   namespace JSX {
-    interface HTMLAttributes<T> extends StyleAttrs {}
+    interface HTMLAttributes<T> extends StyleAttrs {
+      icon?: IconTypes
+    }
     interface SvgSVGAttributes<T> extends AttributifyAttributes {}
   }
 }

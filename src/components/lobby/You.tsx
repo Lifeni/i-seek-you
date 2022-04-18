@@ -1,17 +1,18 @@
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import colors from 'windicss/colors'
 import { useSettings } from '../../context/Settings'
-import { useConnection } from '../../context/Connection'
+import { useServer } from '../../context/Server'
+import { Tooltip } from '../base/Popover'
 
 export const You = () => {
   const [copied, setCopied] = createSignal(false)
   const [animate, setAnimate] = createSignal(false)
   const [settings] = useSettings()
-  const [connection] = useConnection()
+  const [server] = useServer()
 
   const handleCopyID = () => {
     navigator.clipboard.writeText(
-      `https://${window.location.host}/channels/${connection.id}`
+      `https://${window.location.host}/channels/${server.id}`
     )
     setCopied(true)
     setTimeout(() => setCopied(false), 3000)
@@ -23,11 +24,11 @@ export const You = () => {
   }
 
   const statusText = () =>
-    connection.status === 'closed'
+    server.status === 'closed'
       ? '🚫 Connection Closed'
-      : connection.status === 'connected'
+      : server.status === 'connected'
       ? 'Connected'
-      : connection.status === 'error'
+      : server.status === 'error'
       ? '❌ Connection Error'
       : 'Connecting...'
 
@@ -54,7 +55,7 @@ export const You = () => {
         </button>
       </div>
       <Show
-        when={connection.status === 'connected'}
+        when={server.status === 'connected'}
         fallback={
           <span
             pos="relative"
@@ -78,13 +79,9 @@ export const You = () => {
           z="1"
           onClick={handleCopyID}
         >
-          <span
-            role="tooltip"
-            aria-label={copied() ? '✅ Copied' : `Copy Your Link`}
-            data-position="top"
-          >
-            {settings.name} #{connection.id}
-          </span>
+          <Tooltip name={copied() ? '✅ Copied' : `Copy Your Link`}>
+            {settings.name} #{server.id}
+          </Tooltip>
         </button>
       </Show>
     </div>
@@ -92,13 +89,13 @@ export const You = () => {
 }
 
 const Ripple = () => {
-  const [ripple, setRipple] = createSignal<HTMLCanvasElement>()
+  const [canvas, setCanvas] = createSignal<HTMLCanvasElement>()
 
   onMount(() => {
-    const el = ripple()
-    if (!el) return
+    const target = canvas()
+    if (!target) return
 
-    const ctx = el.getContext('2d')
+    const ctx = target.getContext('2d')
     let w: number, h: number, x: number, y: number, r: number
     let d = 0
 
@@ -111,8 +108,8 @@ const Ripple = () => {
     const init = () => {
       w = window.innerWidth
       h = window.innerHeight
-      el.width = w
-      el.height = h
+      target.width = w
+      target.height = h
       x = w / 2
       y = h - 128
       r = Math.min(w, h)
@@ -149,7 +146,7 @@ const Ripple = () => {
 
   return (
     <canvas
-      ref={setRipple}
+      ref={setCanvas}
       aria-label="hidden"
       pos="fixed"
       left="0"

@@ -1,125 +1,53 @@
 import { useNavigate } from 'solid-app-router'
-import { Toggle } from 'solid-headless'
 import { RiOthersDoorLockFill } from 'solid-icons/ri'
-import { createSignal, onCleanup, onMount, Show } from 'solid-js'
-import tinykeys from 'tinykeys'
+import { createSignal, Show } from 'solid-js'
 import { useSettings } from '../../../context/Settings'
+import { Field, Input, Switch } from '../../base/Form'
+import { Link, Subtle } from '../../base/Text'
 
 export const Password = () => {
+  const navigate = useNavigate()
   const [settings, { setPassword }] = useSettings()
-  const [enabled, setEnabled] = createSignal(!!settings.password)
+  const [isEnabled, setEnabled] = createSignal(!!settings.password)
 
   const handleToggle = () => {
     setEnabled(stat => !stat)
-    if (!enabled()) setPassword('')
+    if (!isEnabled()) setPassword('')
   }
 
-  const navigate = useNavigate()
-  const [input, setInput] = createSignal<HTMLInputElement>()
-
-  onMount(() => {
-    const password = input()
-    if (password && enabled()) {
-      const unbind = tinykeys(password, { Enter: () => navigate('/') })
-      onCleanup(() => unbind())
-    }
-  })
-
   return (
-    <fieldset w="full" p="3">
-      <legend
-        flex="~"
-        justify="center"
-        items="center"
-        text="sm gray-500 dark:gray-400"
-        font="bold"
-        gap="2"
-      >
-        <RiOthersDoorLockFill w="4.5" h="4.5" />
-        Password
-      </legend>
-      <div w="full" flex="~ col" gap="2">
-        <label for="connection-password" flex="~" items="center">
-          <span flex="1">Connection Password</span>
-          <Toggle pressed={enabled()} onChange={handleToggle}>
-            <div
-              pos="relative"
-              flex="~"
-              items="center"
-              w="9"
-              h="3.5"
-              bg={enabled() ? 'rose-500' : 'light-800 dark:dark-200'}
-              rounded="full"
-            >
-              <span class="sr-only">Enable Password</span>
-              <span
-                class={enabled() ? 'translate-x-4' : 'translate-x-0'}
-                pos="relative"
-                w="5"
-                h="5"
-                flex="~"
-                items="center"
-                justify="center"
-                border={`1 ${
-                  enabled() ? 'rose-500' : 'light-800 dark:dark-200'
-                }`}
-                rounded="full"
-                bg="white"
-                transform="~"
-                transition="transform ease"
-                shadow="md"
-              >
-                <span
-                  w="1.5"
-                  h="1.5"
-                  rounded="full"
-                  bg={enabled() ? 'rose-500' : 'light-800'}
-                />
-              </span>
-            </div>
-          </Toggle>
-        </label>
+    <Field name="Password" icon={RiOthersDoorLockFill}>
+      <label for="connection-password" flex="~" items="center">
+        <span flex="1">Connection Password</span>
+        <Switch
+          name="Enable Password"
+          isEnabled={isEnabled()}
+          onChange={handleToggle}
+        />
+      </label>
 
-        <Show when={enabled()}>
-          <input
-            ref={setInput}
-            id="connection-password"
-            type="text"
-            name="connection-password"
-            maxLength="18"
-            placeholder={enabled() ? 'Your Password' : 'Not Enabled'}
-            disabled={!enabled()}
-            flex="~ 1"
-            w="full"
-            m="y-1"
-            p="x-3 y-2"
-            border="1 transparent rounded-sm hover:rose-500 !disabled:transparent"
-            text="inherit"
-            font="mono"
-            bg="light-600 dark:dark-400"
-            ring="focus:4 rose-500"
-            transition="border"
-            cursor="disabled:not-allowed"
-            outline="none"
-            value={settings.password}
-            onInput={e => setPassword((e.target as HTMLInputElement).value)}
-          />
-        </Show>
+      <Show when={isEnabled()}>
+        <Input
+          type="text"
+          name="connection-password"
+          placeholder={isEnabled() ? 'Your Password' : 'Not Enabled'}
+          disabled={!isEnabled()}
+          value={settings.password}
+          onInput={e => setPassword((e.target as HTMLInputElement).value)}
+          onEnter={() => navigate('/')}
+        />
+      </Show>
 
-        <p text="sm gray-500 dark:gray-400">
-          You can set a password to prevent unknown connections.
-          <a
-            href="https://github.com/Lifeni/i-seek-you/#password"
-            target="_blank"
-            rel="noopener noreferrer"
-            m="l-2"
-            text="rose-500 hover:underline"
-            font="bold"
-          >
-            Learn More
-          </a>
-        </p>
-      </div>
-    </fieldset>
+      <Subtle>
+        You can set a password to prevent unknown connections.
+        <Link
+          isExternal
+          href="https://github.com/Lifeni/i-seek-you/#password"
+          m="l-2"
+        >
+          Learn More
+        </Link>
+      </Subtle>
+    </Field>
   )
 }

@@ -1,21 +1,23 @@
 import { RiCommunicationQuestionAnswerFill } from 'solid-icons/ri'
 import { createEffect, createSignal, For, Match, Show, Switch } from 'solid-js'
-import { useBuffer } from '../../context/Buffer'
-import { Text } from './message/Text'
+import { useConnection } from '../../context/Connection'
 import { Input } from './message/Input'
+import { Text } from './message/Text'
 
 export const Message = () => {
-  const [buffer] = useBuffer()
-  const [box, setBox] = createSignal<HTMLDivElement>()
-  const isEmpty = () => buffer.messages.length === 0
+  const [connection] = useConnection()
+  const [container, setContainer] = createSignal<HTMLDivElement>()
+
+  const isEmpty = () => connection.messages.length === 0
 
   createEffect(() => {
-    const div = box()
-    if (div && buffer.messages.length > 0) div.scrollTo(0, div.scrollHeight)
+    const target = container()
+    if (!target || isEmpty()) return
+    target.scrollTo(0, target.scrollHeight)
   })
 
   return (
-    <div w="full" m="t-2" flex="~ col" justify="end" items="center" gap="3">
+    <div w="full" p="x-3 y-2" flex="~ col" justify="end" items="center" gap="3">
       <Show
         when={!isEmpty()}
         fallback={
@@ -29,7 +31,7 @@ export const Message = () => {
         }
       >
         <div
-          ref={setBox}
+          ref={setContainer}
           class="scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full
            scrollbar-thumb-light-600 scrollbar-track-white hover:scrollbar-thumb-light-800
              dark:(scrollbar-thumb-dark-400 scrollbar-track-dark-200 hover:scrollbar-thumb-dark-600)"
@@ -40,7 +42,7 @@ export const Message = () => {
           overflow="y-auto x-hidden"
         >
           <div w="full" flex="~ 1 col" items="center" justify="end" gap="3">
-            <For each={buffer.messages}>
+            <For each={connection.messages}>
               {message => (
                 <Switch>
                   <Match when={message.type === 'text'}>
@@ -53,7 +55,7 @@ export const Message = () => {
         </div>
       </Show>
 
-      <div w="full" flex="~" items="end" gap="4">
+      <div p="y-1" w="full" flex="~" items="end" gap="4">
         <Input />
       </div>
     </div>

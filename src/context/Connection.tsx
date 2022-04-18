@@ -1,36 +1,84 @@
-import { createContext, useContext, type JSX } from 'solid-js'
+import { createContext, untrack, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { Peer } from '../../index.d'
-import { type Signaling } from '../networks/Signaling'
+import { type Peer } from '../../index.d'
+import { type PeerConnection } from '../networks/PeerConnection'
+import { useServer } from './Server'
 
-type Status = 'connected' | 'connecting' | 'closed' | 'error'
+type Mode = 'message' | 'voice' | 'other'
+
+export type Message = {
+  type: 'text' | 'image' | 'file' | 'screen' | 'video' | 'audio' | 'unknown'
+  date: string
+  from: string
+  content: string
+}
+
+type Signal =
+  | 'idle'
+  | 'auth'
+  | 'loading'
+  | 'call'
+  | 'answer'
+  | 'error'
+  | 'sdp'
+  | 'ice'
+  | 'connected'
 
 export type Connection = [
   {
+    mode: Mode
+    signal: Signal
+    info: string
+    error: string
     id: string
-    status: Status
-    ping: number
-    peers: readonly Peer[]
-    signaling: InstanceType<typeof Signaling> | null
+    peer: Peer
+    confirm: boolean
+    webrtc: InstanceType<typeof PeerConnection> | null
+    messages: Readonly<Message[]>
   },
   {
+    setMode: (mode: Mode) => void
+    setSignal: (signal: Signal) => void
+    setInfo: (info: string) => void
+    setError: (error: string) => void
+    setWebRTC: (webrtc: InstanceType<typeof PeerConnection>) => void
     setId: (id: string) => void
-    setStatus: (status: Status) => void
-    setPing: (ping: number) => void
-    setPeers: (peers: Peer[]) => void
-    setSignaling: (signaling: InstanceType<typeof Signaling>) => void
-    resetConnection: (status: Status) => void
+    setPeer: (peer: Peer) => void
+    setConfirm: (confirm: boolean) => void
+    addMessage: (message: Message) => void
+    resetConnection: () => void
   }
 ]
 
+const defaultPeer: Peer = {
+  id: '',
+  emoji: '',
+  name: '',
+  password: false,
+}
+
 const defaultConnection: Connection = [
-  { id: '', status: 'connecting', ping: 0, peers: [], signaling: null },
   {
+    mode: 'other',
+    signal: 'idle',
+    info: 'Connecting...',
+    id: '',
+    peer: defaultPeer,
+    error: '',
+    confirm: false,
+    webrtc: null,
+    messages: [],
+  },
+  {
+    setMode: () => {},
+    setSignal: () => {},
+    setInfo: () => {},
+    setError: () => {},
     setId: () => {},
-    setStatus: () => {},
-    setPing: () => {},
-    setPeers: () => {},
-    setSignaling: () => {},
+    setPeer: () => {},
+    setConfirm: () => {},
+    setWebRTC: () => {},
+    addMessage: () => {},
     resetConnection: () => {},
   },
 ]
@@ -40,6 +88,7 @@ export const ConnectionContext = createContext<Connection>(defaultConnection)
 export const useConnection = () => useContext(ConnectionContext)
 
 export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
+  const [server] = useServer()
   const [connection, setConnection] = createStore<Connection[0]>({
     ...defaultConnection[0],
   })
@@ -47,20 +96,25 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
   const store: Connection = [
     connection,
     {
-      setId: (id: string) => setConnection('id', () => id),
-      setStatus: (status: Status) => setConnection('status', () => status),
-      setPing: (ping: number) => setConnection('ping', () => ping),
-      setPeers: (peers: Peer[]) => setConnection('peers', () => peers),
-      setSignaling: (signaling: InstanceType<typeof Signaling>) =>
-        setConnection('signaling', () => signaling),
-      resetConnection: status => {
-        setConnection({
-          id: '',
-          status: status,
-          ping: 0,
-          peers: [],
-          signaling: null,
-        })
+      setMode: (mode: Mode) => setConnection('mode', () => mode),
+      setSignal: (signal: Signal) => setConnection('signal', () => signal),
+      setInfo: (info: string) => setConnection('info', () => info),
+      setError: (error: string) => setConnection('error', () => error),
+      setWebRTC: (webrtc: InstanceType<typeof PeerConnection>) =>
+        setConnection('webrtc', () => webrtc),
+      setId: (id: string) =>
+        untrack(() => {
+          if (id && id !== server.id && id !== connection.id)
+            setConnection('id', () => id)
+        }),
+      setPeer: (peer: Peer) => setConnection('peer', () => peer),
+      setConfirm: (confirm: boolean) => setConnection('confirm', () => confirm),
+      addMessage(message: Message) {
+        setConnection('messages', messages => [...messages, message])
+      },
+      resetConnection: () => {
+        untrack(() => connection.webrtc?.close())
+        setConnection({ ...defaultConnection[0] })
       },
     },
   ]

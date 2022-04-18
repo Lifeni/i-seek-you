@@ -3,9 +3,8 @@ import { lazy } from 'solid-js'
 import { render } from 'solid-js/web'
 import { MetaProvider } from 'solid-meta'
 import 'windi.css'
-import { BufferProvider } from './context/Buffer'
-import { ChannelProvider } from './context/Channel'
 import { ConnectionProvider } from './context/Connection'
+import { ServerProvider } from './context/Server'
 import { SettingsProvider } from './context/Settings'
 import './libs/Tooltip.css'
 
@@ -24,27 +23,25 @@ const App = () => (
     overflow="hidden"
   >
     <MetaProvider>
-      <ConnectionProvider>
+      <ServerProvider>
         <SettingsProvider>
-          <ChannelProvider>
-            <BufferProvider>
-              <Router>
-                <Routes>
-                  <Route path="/" element={<Home />}>
-                    <Route path="/+" />
-                    <Route path="/channels/:id" />
-                    <Route path="/server" />
-                    <Route path="/settings" />
-                    <Route path="/share" />
-                    <Route path="/" />
-                  </Route>
-                  <Route path="/*all" element={<NotFound />} />
-                </Routes>
-              </Router>
-            </BufferProvider>
-          </ChannelProvider>
+          <ConnectionProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<Home />}>
+                  <Route path="/+" />
+                  <Route path="/channels/:id" />
+                  <Route path="/server" />
+                  <Route path="/settings" />
+                  <Route path="/share" />
+                  <Route path="/" />
+                </Route>
+                <Route path="/*all" element={<NotFound />} />
+              </Routes>
+            </Router>
+          </ConnectionProvider>
         </SettingsProvider>
-      </ConnectionProvider>
+      </ServerProvider>
     </MetaProvider>
   </div>
 )

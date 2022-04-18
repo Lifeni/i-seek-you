@@ -3,51 +3,51 @@ import {
   RiSystemErrorWarningFill,
   RiSystemInformationFill,
 } from 'solid-icons/ri'
-import { createSignal, Match, Show, Switch } from 'solid-js'
-import { useBuffer } from '../../context/Buffer'
-import { useChannel } from '../../context/Channel'
+import { createSignal, Match, Show, Switch, type JSX } from 'solid-js'
 import { useConnection } from '../../context/Connection'
-import { Dialog } from '../base/Dialog'
+import { useServer } from '../../context/Server'
+import { Input } from '../base/Form'
+import { Modal } from '../base/Modal'
 
 export const Login = () => {
   const navigate = useNavigate()
-  const [channel, { setSignal, resetChannel }] = useChannel()
-  const [connection] = useConnection()
-  const [, { resetBuffer }] = useBuffer()
+  const [server] = useServer()
+  const [connection, { setSignal, resetConnection }] = useConnection()
   const [password, setPassword] = createSignal('')
 
-  const isOpen = () => !['idle', 'connected'].includes(channel.signal)
-  const isAuth = () => channel.signal === 'auth'
-  const isError = () => channel.signal === 'error'
+  const isOpen = () => !['idle', 'connected'].includes(connection.signal)
+  const isError = () => connection.signal === 'error'
+  const isAuth = () => connection.signal === 'auth'
 
   const handleAuth = () => {
-    const id = channel.id
-    connection.signaling?.send('call', { id, password: password() })
+    const id = connection.id
+    server.websocket?.send('call', { id, password: password() })
     setSignal('loading')
   }
 
   const handleCancel = () => {
-    if (!isError() && !isAuth()) {
-      const id = channel.id
-      if (id) connection.signaling?.send('disconnect', { id })
-    }
+    const id = connection.id
+    if (!id) return
+    server.websocket?.send('disconnect', { id })
     navigate('/')
-    resetChannel()
-    resetBuffer()
+    resetConnection()
   }
 
   return (
-    <Dialog
-      confirmText="Connect"
-      cancelText={isError() ? 'Close' : 'Cancel'}
+    <Modal
+      name="Login"
+      size="xs"
       isOpen={isOpen()}
+      hasActionBar
+      actionText={[isError() ? 'Close' : 'Cancel', 'Connect']}
+      isBlur={isAuth()}
       onConfirm={isAuth() ? handleAuth : undefined}
       onCancel={handleCancel}
     >
-      <div p="x-3 y-6" flex="~ col" items="center" justify="center">
-        <Show when={channel.peer?.id}>
+      <div p="6" flex="~ col" items="center" justify="center">
+        <Show when={connection.peer?.id}>
           <span pos="relative" m="y-8" z="1" text="4.5rem" select="none">
-            {channel.peer?.emoji}
+            {connection.peer?.emoji}
           </span>
           <span
             pos="relative"
@@ -57,79 +57,81 @@ export const Login = () => {
             select="none"
             z="1"
           >
-            {channel.peer?.name} #{channel.peer?.id}
+            {connection.peer?.name} #{connection.peer?.id}
           </span>
         </Show>
 
-        <Switch
-          fallback={
-            <div p="y-2" flex="~" items="center" justify="center" gap="2">
-              <span
-                aria-label="Loading"
-                w="4"
-                h="4"
-                border="3 light-800 dark:dark-200 !t-rose-500 rounded-full"
-                animate="spin"
-              />
-
-              <span text="sm" font="bold">
-                {channel.info || 'Connecting...'}
-              </span>
-            </div>
-          }
+        <div
+          w="full"
+          p="t-2"
+          flex="~ col"
+          items="center"
+          justify="center"
+          gap="2"
         >
-          <Match when={isAuth()}>
-            <div p="y-2" flex="~ col" items="center" justify="center" gap="2">
-              <div flex="~" items="center" justify="center" gap="2">
-                <RiSystemInformationFill
-                  w="4.5"
-                  h="4.5"
-                  text="blue-500 dark:blue-400"
-                />
-                <span text="sm" font="bold">
-                  Password Required
-                </span>
-              </div>
-              <input
-                id="auth-password"
+          <Switch fallback={<Label type="loading">{connection.info}</Label>}>
+            <Match when={isAuth()}>
+              <Input
                 type="text"
                 name="auth-password"
-                maxLength="18"
                 placeholder="Enter Password"
-                flex="~ 1"
+                isFocus
+                text="center"
                 w="full"
-                m="t-4 -b-4"
-                p="x-3 y-2"
-                border="1 transparent rounded-sm hover:rose-500 !disabled:transparent"
-                font="mono"
-                text="inherit center"
-                bg="light-600 dark:dark-400"
-                ring="focus:4 rose-500"
-                transition="border"
-                cursor="disabled:not-allowed"
-                outline="none"
+                m="t-2"
                 onInput={e => setPassword((e.target as HTMLInputElement).value)}
               />
-            </div>
-          </Match>
-
-          <Match when={isError()}>
-            <div
-              p="y-2"
-              flex="~"
-              items="center"
-              justify="center"
-              gap="2"
-              text="red-500 dark:red-400"
-            >
-              <RiSystemErrorWarningFill w="4.5" h="4.5" />
-              <span text="sm" font="bold">
-                {channel.error}
-              </span>
-            </div>
-          </Match>
-        </Switch>
+              <Label type="info">Password Required</Label>
+            </Match>
+            <Match when={isError()}>
+              <Label type="error">{connection.error}</Label>
+            </Match>
+          </Switch>
+        </div>
       </div>
-    </Dialog>
+    </Modal>
   )
 }
+
+interface LabelProps extends JSX.HTMLAttributes<HTMLSpanElement> {
+  type: 'info' | 'error' | 'loading'
+}
+
+const Label = (props: LabelProps) => (
+  <div
+    p="y-1"
+    flex="~"
+    items="center"
+    justify="center"
+    gap="2"
+    text={
+      props.type === 'error'
+        ? 'red-500 dark:red-400'
+        : props.type === 'info'
+        ? 'blue-500 dark:blue-400'
+        : 'inherit'
+    }
+  >
+    <Switch
+      fallback={
+        <span
+          aria-label="Loading"
+          w="4"
+          h="4"
+          border="3 light-800 dark:dark-200 !t-rose-500 rounded-full"
+          animate="spin"
+        />
+      }
+    >
+      <Match when={props.type === 'error'}>
+        <RiSystemErrorWarningFill w="4.5" h="4.5" />
+      </Match>
+      <Match when={props.type === 'info'}>
+        <RiSystemInformationFill w="4.5" h="4.5" />
+      </Match>
+    </Switch>
+    <span text="sm" font="bold">
+      {props.children}
+    </span>
+  </div>
+)

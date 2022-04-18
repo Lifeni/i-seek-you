@@ -1,6 +1,6 @@
-import { Link } from 'solid-app-router'
 import { type Component } from 'solid-js'
 import { Title } from 'solid-meta'
+import { Link } from '../components/base/Text'
 
 const NotFound: Component = () => {
   return (
@@ -12,9 +12,7 @@ const NotFound: Component = () => {
         <span m="x-4">|</span>
         <span>Not Found</span>
       </h1>
-      <Link href="/" text="rose-500 hover:underline" font="bold">
-        Back to Home
-      </Link>
+      <Link href="/">Back to Home</Link>
     </>
   )
 }

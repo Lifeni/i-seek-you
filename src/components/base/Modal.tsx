@@ -1,48 +1,41 @@
-import { RiSystemCloseFill } from 'solid-icons/ri'
-import {
-  createEffect,
-  createSignal,
-  onCleanup,
-  onMount,
-  Show,
-  type JSX,
-} from 'solid-js'
+import { RiSystemCloseFill, RiSystemCheckFill } from 'solid-icons/ri'
+import { createSignal, onCleanup, onMount, Show, type JSX } from 'solid-js'
 import { Portal } from 'solid-js/web'
 import tinykeys from 'tinykeys'
+import { Button, CloseButton } from './Button'
 
 interface ModalProps extends JSX.HTMLAttributes<HTMLDivElement> {
-  title?: string
+  name?: string
   size?: 'xs' | 'sm' | 'md' | 'lg'
-  isUncloseable?: boolean
+  isDanger?: boolean
   isOpen: boolean
-  onClose: () => void
+  hasTitleBar?: boolean
+  hasActionBar?: boolean
+  actionText?: string[]
+  isBlur?: boolean
+  onCancel: () => void
+  onConfirm?: () => void
 }
 
 export const Modal = (props: ModalProps) => {
   const [shake, setShake] = createSignal(false)
   const [modal, setModal] = createSignal<HTMLDivElement>()
-  const [close, setClose] = createSignal<HTMLButtonElement>()
 
   const handleClose = () => {
-    if (props.isUncloseable) {
+    if (props.isDanger) {
       setShake(true)
       setTimeout(() => setShake(false), 500)
-    } else {
-      props.onClose()
-    }
+    } else props.onCancel()
   }
 
-  createEffect(() => {
-    const button = close()
-    if (button && props.isOpen) setTimeout(() => button.focus(), 200)
-  })
-
   onMount(() => {
-    const dialog = modal()
-    if (dialog) {
-      const unbind = tinykeys(dialog, { Escape: handleClose })
-      onCleanup(() => unbind())
-    }
+    const target = modal()
+    if (!target) return
+    const unbind = tinykeys(target, {
+      Escape: handleClose,
+      Enter: () => props.onConfirm?.(),
+    })
+    onCleanup(() => unbind())
   })
 
   return (
@@ -93,7 +86,6 @@ export const Modal = (props: ModalProps) => {
           font="sans"
           text="gray-800 dark:gray-300"
           bg="light-100 dark:dark-800"
-          p={props.title ? 'x-3 t-2 b-3' : '0'}
           rounded="md"
           shadow="2xl"
           transform={props.isOpen ? '~ scale-100' : '~ scale-96'}
@@ -101,40 +93,39 @@ export const Modal = (props: ModalProps) => {
           animate={shake() ? 'headShake duration-0.75s' : ''}
           tabIndex={props.isOpen ? '1' : '-1'}
         >
-          <Show when={props.title}>
-            <div w="full" flex="~" items="center">
+          <Show when={props.hasTitleBar}>
+            <div w="full" p="x-3 t-2" flex="~" items="center">
               <h1 text="lg" font="bold" m="0" p="x-3" flex="1">
-                {props.title}
+                {props.name}
               </h1>
-
-              <button
-                ref={setClose}
-                role="tooltip"
-                aria-label={props.isUncloseable ? 'Disconnect' : 'Close'}
-                data-position="top"
-                flex="~"
-                rounded="full"
-                w="11"
-                h="11"
-                p="2.5"
-                border="none"
-                text={
-                  props.isUncloseable
-                    ? 'inherit hover:(light-100 dark:light-600)'
-                    : 'inherit'
-                }
-                bg={
-                  props.isUncloseable
-                    ? 'transparent hover:rose-500'
-                    : 'transparent hover:light-600 dark:hover:dark-400'
-                }
-                onClick={() => props.onClose()}
-              >
-                <RiSystemCloseFill w="6" h="6" />
-              </button>
+              <CloseButton
+                isFocus={props.isOpen && !props.isBlur}
+                isDanger={!!props.isDanger}
+                onClick={() => props.onCancel()}
+              />
             </div>
           </Show>
           {props.children}
+          <Show when={props.hasActionBar}>
+            <div w="full" p="x-4 b-4" flex="~" items="center" gap="3">
+              <Button
+                icon={RiSystemCloseFill}
+                isFocus={props.isOpen && !props.isBlur && !props.onConfirm}
+                onClick={() => props.onCancel()}
+              >
+                {props.actionText?.[0] || 'Cancel'}
+              </Button>
+              <Show when={props.onConfirm}>
+                <Button
+                  icon={RiSystemCheckFill}
+                  isFocus={props.isOpen && !props.isBlur && !!props.onConfirm}
+                  onClick={() => props.onConfirm?.()}
+                >
+                  {props.actionText?.[1] || 'Confirm'}
+                </Button>
+              </Show>
+            </div>
+          </Show>
         </div>
       </div>
     </Portal>

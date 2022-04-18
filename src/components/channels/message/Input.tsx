@@ -1,82 +1,78 @@
-import { type IconTypes } from 'solid-icons'
 import {
   RiBusinessSendPlaneFill,
   RiMediaImage2Fill,
   RiMediaVidiconFill,
 } from 'solid-icons/ri'
 import { createEffect, createSignal, on, onCleanup, untrack } from 'solid-js'
-import { Dynamic } from 'solid-js/web'
 import tinykeys from 'tinykeys'
-import { useBuffer } from '../../../context/Buffer'
-import { useChannel } from '../../../context/Channel'
 import { useConnection } from '../../../context/Connection'
+import { useServer } from '../../../context/Server'
+import { IconButton } from '../../base/Button'
 
 export const Input = () => {
-  const [connection] = useConnection()
-  const [channel, { setMode }] = useChannel()
-  const [, { addMessage }] = useBuffer()
-  const [text, setText] = createSignal('')
-  const [send, setSend] = createSignal<HTMLInputElement>()
+  const [server] = useServer()
+  const [connection, { setMode, addMessage }] = useConnection()
 
-  const mode = () => channel.mode
+  const [text, setText] = createSignal('')
+  const [input, setInput] = createSignal<HTMLInputElement>()
 
   const handleInput = (e: InputEvent) => {
     const target = e.target as HTMLInputElement
-    if (target.value) {
-      setText(target.value)
-      target.style.height = `44px`
-      target.style.height = `${
-        target.scrollHeight > 200 ? 200 : target.scrollHeight
-      }px`
-    }
+    if (!target.value) return
+
+    setText(target.value)
+    target.style.height = `44px`
+    target.style.height = `${
+      target.scrollHeight > 200 ? 200 : target.scrollHeight
+    }px`
   }
 
   const handleSend = () => {
     const message = text()
-    if (message) {
-      const data = {
-        date: new Date().toISOString(),
-        from: connection.id,
-        content: message,
-      }
-      channel.connection?.send('text', data)
-      addMessage({
-        type: 'text',
-        ...data,
-      })
-      setText('')
-      const input = send()
-      if (input) input.style.height = `44px`
+    if (!message) return
+
+    const data = {
+      date: new Date().toISOString(),
+      from: server.id,
+      content: message,
     }
+    connection.webrtc?.send('text', data)
+    addMessage({ type: 'text', ...data })
+    setText('')
+
+    const send = input()
+    if (!send) return
+    send.style.height = `44px`
   }
 
   createEffect(
-    on([text, mode], ([text, mode]) => {
-      const input = send()
-      if (input && mode === 'message') {
-        const unbind = tinykeys(input, {
-          Enter: e => {
-            e.preventDefault()
-            untrack(() => handleSend())
-          },
-        })
-        onCleanup(() => unbind())
-      } else if (text && mode === 'other') setText('')
+    on([text, () => connection.mode], ([text, mode]) => {
+      const target = input()
+      if (text && mode === 'other') setText('')
+      if (!target || mode !== 'message') return
+
+      const unbind = tinykeys(target, {
+        Enter: e => {
+          e.preventDefault()
+          untrack(() => handleSend())
+        },
+      })
+      onCleanup(() => unbind())
     })
   )
 
   return (
     <div w="full" flex="~" items="end" gap="3">
       <div flex="~" items="center">
-        <Action
-          title="Voice"
+        <IconButton
+          name="Voice"
           icon={RiMediaVidiconFill}
           onClick={() => setMode('voice')}
         />
-        <Action title="File" icon={RiMediaImage2Fill} onClick={() => {}} />
+        <IconButton name="File" icon={RiMediaImage2Fill} onClick={() => {}} />
       </div>
       <textarea
-        ref={setSend}
+        ref={setInput}
         placeholder="Type Here..."
         w="full"
         h="11"
@@ -93,8 +89,8 @@ export const Input = () => {
         onInput={handleInput}
       />
       <div flex="~" items="center">
-        <Action
-          title="Send"
+        <IconButton
+          name="Send"
           icon={RiBusinessSendPlaneFill}
           onClick={() => handleSend()}
         />
@@ -102,28 +98,3 @@ export const Input = () => {
     </div>
   )
 }
-
-interface ActionProps {
-  title: string
-  icon: IconTypes
-  onClick: () => void
-}
-
-const Action = (props: ActionProps) => (
-  <button
-    role="tooltip"
-    aria-label={props.title}
-    data-position="top"
-    w="11"
-    h="11"
-    flex="~"
-    justify="center"
-    items="center"
-    rounded="full"
-    text="inherit"
-    bg="hover:(light-600 dark:dark-400)"
-    onClick={() => props.onClick()}
-  >
-    <Dynamic component={props.icon} w="5" h="5" />
-  </button>
-)

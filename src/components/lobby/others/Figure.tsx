@@ -1,95 +1,107 @@
 import { Link } from 'solid-app-router'
+import { IconTypes } from 'solid-icons'
 import { RiSystemLock2Fill } from 'solid-icons/ri'
 import { Show, type JSX } from 'solid-js'
+import { Dynamic } from 'solid-js/web'
+import { Tooltip } from '../../base/Popover'
 
-interface PeerProps extends JSX.HTMLAttributes<HTMLAnchorElement> {
+interface PeerLinkProps extends JSX.HTMLAttributes<HTMLAnchorElement> {
   emoji: string
   id: string
   name: string
   password: boolean
 }
 
-export const Peer = (props: PeerProps) => (
-  <div min-w="20" flex="~ col" items="center" justify="center" gap="3">
-    <Link
-      role="tooltip"
-      aria-label={`${props.password ? '🔒' : ''} ${props.name} #${props.id}`}
-      data-position="top"
-      href={`/channels/${props.id}`}
-      pos="relative"
-      w="16 sm:18"
-      h="16 sm:18"
-      flex="~"
-    >
-      <span
-        flex="~"
-        justify="center"
-        items="center"
-        text="4rem sm:4.5rem center"
+export const PeerLink = (props: PeerLinkProps) => (
+  <Tooltip name={`${props.password ? '🔒' : ''} ${props.name} #${props.id}`}>
+    <div min-w="20" flex="~ col" items="center" justify="center" gap="3">
+      <Link
+        href={`/channels/${props.id}`}
+        pos="relative"
         w="16 sm:18"
         h="16 sm:18"
-        select="none"
+        flex="~"
+        underline="none"
       >
-        {props.emoji}
-      </span>
-
-      <Show when={props.password}>
         <span
-          pos="absolute"
-          right="-2"
-          bottom="0"
           flex="~"
           justify="center"
           items="center"
-          w="8"
-          h="8"
-          p="2"
-          rounded="full"
-          bg="light-600 dark:dark-400"
+          text="4rem sm:4.5rem center"
+          w="16 sm:18"
+          h="16 sm:18"
+          select="none"
         >
-          <RiSystemLock2Fill w="4" h="4" />
+          {props.emoji}
         </span>
-      </Show>
-    </Link>
-    <span font="bold" select="none">
-      #{props.id}
-    </span>
-  </div>
+
+        <Show when={props.password}>
+          <span
+            pos="absolute"
+            right="-2"
+            bottom="0"
+            flex="~"
+            justify="center"
+            items="center"
+            w="8"
+            h="8"
+            p="2"
+            rounded="full"
+            text="light-100 dark:light-600"
+            bg="light-600 dark:dark-400"
+          >
+            <RiSystemLock2Fill w="4" h="4" />
+          </span>
+        </Show>
+      </Link>
+      <span font="bold" select="none">
+        #{props.id}
+      </span>
+    </div>
+  </Tooltip>
 )
 
-interface ActionProps extends JSX.HTMLAttributes<HTMLSpanElement> {
+interface ActionLinkProps extends JSX.HTMLAttributes<HTMLSpanElement> {
   href: string
-  name: string | JSX.Element
-  tooltip: string
+  icon: IconTypes
+  name: string
+  isPrimary?: boolean
 }
 
-export const Action = (props: ActionProps) => (
-  <div min-w="20" flex="~ col" items="center" gap="3">
-    <Link
-      role="tooltip"
-      aria-label={props.tooltip}
-      data-position="top"
-      href={props.href}
-      pos="relative"
-      w="16 sm:18"
-      h="16 sm:18"
-      flex="~"
-    >
-      <span
-        w="16 sm:18"
-        h="16 sm:18"
-        flex="~"
-        justify="center"
-        items="center"
-        bg="light-600 dark:dark-400"
-        rounded="full"
-        {...props}
-      >
+export const ActionLink = (props: ActionLinkProps) => (
+  <Tooltip name={props.name}>
+    <div min-w="20" flex="~ col" items="center" gap="3">
+      <Link href={props.href} pos="relative" w="16 sm:18" h="16 sm:18" flex="~">
+        <span
+          w="16 sm:18"
+          h="16 sm:18"
+          flex="~"
+          justify="center"
+          items="center"
+          rounded="full"
+          text={
+            props.isPrimary
+              ? 'light-100 dark:light-600'
+              : 'gray-800 dark:gray-300'
+          }
+          bg={
+            props.isPrimary
+              ? 'rose-500 active:(rose-600 dark:rose-400)'
+              : 'light-600 dark:dark-400 active:(light-800 dark:dark-200)'
+          }
+          {...props}
+        >
+          <Dynamic
+            component={props.icon}
+            w="7 sm:8"
+            h="7 sm:8"
+            text="inherit"
+          />
+        </span>
+      </Link>
+      <span font="bold" select="none">
         {props.children}
       </span>
-    </Link>
-    <span font="bold" select="none">
-      {props.name}
-    </span>
-  </div>
+    </div>
+  </Tooltip>
 )

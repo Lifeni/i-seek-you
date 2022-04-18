@@ -1,7 +1,8 @@
-import { Message } from '../../../context/Buffer'
-import { useChannel } from '../../../context/Channel'
-import { useConnection } from '../../../context/Connection'
+import { Message, useConnection } from '../../../context/Connection'
+import { useServer } from '../../../context/Server'
 import { useSettings } from '../../../context/Settings'
+import { Tooltip } from '../../base/Popover'
+import { Subtle } from '../../base/Text'
 
 interface TextProps {
   message: Message
@@ -9,14 +10,14 @@ interface TextProps {
 
 export const Text = (props: TextProps) => {
   const [settings] = useSettings()
+  const [server] = useServer()
   const [connection] = useConnection()
-  const [channel] = useChannel()
 
-  const self = () => props.message.from === connection.id
+  const self = () => props.message.from === server.id
   const peer = () =>
     self()
-      ? { id: connection.id, name: settings.name, emoji: settings.emoji }
-      : channel.peer
+      ? { id: server.id, name: settings.name, emoji: settings.emoji }
+      : connection.peer
 
   const format = (date: string) =>
     new Intl.DateTimeFormat('en', {
@@ -39,22 +40,13 @@ export const Text = (props: TextProps) => {
       </span>
       <div w="full" flex="~ col" gap="1">
         <div w="full" flex="~" items="baseline" gap="2">
-          <span
-            role="tooltip"
-            aria-label={`#${peer().id}`}
-            data-position="top"
-            font="bold"
-          >
-            {peer().name}
-          </span>
-          <span
-            role="tooltip"
-            aria-label={new Date(props.message.date).toLocaleString()}
-            data-position="top"
-            text="sm gray-500 dark:gray-400"
-          >
-            {format(props.message.date)}
-          </span>
+          <Tooltip name={`#${peer().id}`}>
+            <span font="bold">{peer().name}</span>
+          </Tooltip>
+
+          <Tooltip name={new Date(props.message.date).toLocaleString()}>
+            <Subtle>{format(props.message.date)}</Subtle>
+          </Tooltip>
         </div>
         <pre w="fit" max-w="full" font="sans" whitespace="pre-wrap">
           {props.message.content}

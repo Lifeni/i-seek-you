@@ -1,20 +1,20 @@
 import { RiDevicePhoneFindFill } from 'solid-icons/ri'
 import { createSignal, For, onMount } from 'solid-js'
-import { useConnection } from '../../context/Connection'
+import { useServer } from '../../context/Server'
 import { Channels } from '../Channels'
-import { Action, Peer } from './others/Figure'
+import { ActionLink, PeerLink } from './others/Figure'
 import { Join } from './others/Join'
 import { Share } from './others/Share'
 
 export const Others = () => {
-  const [connection] = useConnection()
+  const [server] = useServer()
 
   return (
     <div pos="relative" flex="~ 1 col" items="center" justify="center" z="10">
       <div flex="~ wrap" items="center" justify="center" gap="4 sm:8">
         <Share />
-        <For each={connection.peers} fallback={<Seeking />}>
-          {item => <Peer {...item} />}
+        <For each={server.peers} fallback={<Seeking />}>
+          {item => <PeerLink {...item} />}
         </For>
         <Channels />
         <Join />
@@ -33,25 +33,18 @@ const Seeking = () => {
   })
 
   return (
-    <Action
-      name={
-        <span pos="relative" font="bold" select="none">
-          Seeking
-          <span pos="absolute" left="full">
-            {suffix()}
-          </span>
-        </span>
-      }
-      tooltip="Seeking Local Devices"
+    <ActionLink
+      name="Seeking Local Devices"
       href="/"
-      text="light-100 dark:light-600"
-      bg="rose-500"
+      icon={RiDevicePhoneFindFill}
+      isPrimary
     >
-      <RiDevicePhoneFindFill
-        w="7 sm:8"
-        h="7 sm:8"
-        text="light-100 dark:light-600"
-      />
-    </Action>
+      <span pos="relative" font="bold" select="none">
+        Seeking
+        <span pos="absolute" left="full">
+          {suffix()}
+        </span>
+      </span>
+    </ActionLink>
   )
 }
