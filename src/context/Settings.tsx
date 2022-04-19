@@ -45,7 +45,7 @@ const emojiList = [
 export const defaultSettings: Settings = [
   {
     emoji: emojiList[Math.floor(Math.random() * emojiList.length)],
-    name: 'You',
+    name: '',
     password: '',
     signaling: 'signaling.i-seek-you.dist.run',
     stun: 'stun.i-seek-you.dist.run',

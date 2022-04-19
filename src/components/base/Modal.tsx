@@ -73,11 +73,11 @@ export const Modal = (props: ModalProps) => {
           h="auto"
           max-w={
             props.size === 'xs'
-              ? '72'
+              ? '64'
               : props.size === 'sm'
-              ? '90'
+              ? '72'
               : props.size === 'md'
-              ? '120'
+              ? '80'
               : props.size === 'lg'
               ? '180'
               : 'unset'
@@ -119,6 +119,7 @@ export const Modal = (props: ModalProps) => {
                 <Button
                   icon={RiSystemCheckFill}
                   isFocus={props.isOpen && !props.isBlur && !!props.onConfirm}
+                  isPrimary
                   onClick={() => props.onConfirm?.()}
                 >
                   {props.actionText?.[1] || 'Confirm'}

@@ -5,13 +5,14 @@ export const Voice = () => {
   return (
     <div
       w="full"
+      h="75vh"
       p="x-3 y-2"
       flex="~ col"
       items="center"
       justify="center"
       gap="3"
     >
-      <div flex="~ col" h="60vh" items="center" justify="center">
+      <div flex="~ 1 col" items="center" justify="center">
         <RiCommunicationVideoChatFill
           w="18"
           h="18"

@@ -28,7 +28,7 @@ export const Login = () => {
   const handleCancel = () => {
     const id = connection.id
     if (!id) return
-    server.websocket?.send('disconnect', { id })
+    if (!isAuth() && !isError()) server.websocket?.send('disconnect', { id })
     navigate('/')
     resetConnection()
   }
@@ -46,7 +46,7 @@ export const Login = () => {
     >
       <div p="6" flex="~ col" items="center" justify="center">
         <Show when={connection.peer?.id}>
-          <span pos="relative" m="y-8" z="1" text="4.5rem" select="none">
+          <span pos="relative" m="t-6 b-8" z="1" text="4.5rem" select="none">
             {connection.peer?.emoji}
           </span>
           <span

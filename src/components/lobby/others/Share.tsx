@@ -74,7 +74,7 @@ export const Share = () => {
 
       <Modal
         name="Share"
-        size="xs"
+        size="sm"
         hasTitleBar
         isOpen={open()}
         onCancel={handleClose}
@@ -132,7 +132,7 @@ export const Share = () => {
             </div>
           </Tooltip>
 
-          <section flex="~" p="x-2 b-2" gap="3">
+          <section flex="~" p="x-1 t-1 b-2" gap="3">
             <Show when={shareable()}>
               <Button icon={RiSystemShareFill} onClick={handleShare}>
                 Share

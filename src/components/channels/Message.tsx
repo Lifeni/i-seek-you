@@ -17,11 +17,19 @@ export const Message = () => {
   })
 
   return (
-    <div w="full" p="x-3 y-2" flex="~ col" justify="end" items="center" gap="3">
+    <div
+      w="full"
+      h="75vh"
+      p="x-3 y-2"
+      flex="~ col"
+      justify="end"
+      items="center"
+      gap="3"
+    >
       <Show
         when={!isEmpty()}
         fallback={
-          <div w="full" h="60vh" flex="~ col" items="center" justify="center">
+          <div w="full" flex="~ 1 col" items="center" justify="center">
             <RiCommunicationQuestionAnswerFill
               w="18"
               h="18"
@@ -33,10 +41,9 @@ export const Message = () => {
         <div
           ref={setContainer}
           class="scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-rounded-full
-           scrollbar-thumb-light-600 scrollbar-track-white hover:scrollbar-thumb-light-800
+           scrollbar-thumb-light-600 scrollbar-track-light-100 hover:scrollbar-thumb-light-800
              dark:(scrollbar-thumb-dark-400 scrollbar-track-dark-200 hover:scrollbar-thumb-dark-600)"
           w="full"
-          h="60vh"
           p="1"
           flex="~ col"
           overflow="y-auto x-hidden"

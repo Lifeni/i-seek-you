@@ -69,7 +69,12 @@ export const Input = () => {
           icon={RiMediaVidiconFill}
           onClick={() => setMode('voice')}
         />
-        <IconButton name="File" icon={RiMediaImage2Fill} onClick={() => {}} />
+        <IconButton
+          display="hidden sm:flex"
+          name="File"
+          icon={RiMediaImage2Fill}
+          onClick={() => {}}
+        />
       </div>
       <textarea
         ref={setInput}
@@ -90,6 +95,13 @@ export const Input = () => {
       />
       <div flex="~" items="center">
         <IconButton
+          display="flex sm:hidden"
+          name="File"
+          icon={RiMediaImage2Fill}
+          onClick={() => {}}
+        />
+        <IconButton
+          display="hidden sm:flex"
           name="Send"
           icon={RiBusinessSendPlaneFill}
           onClick={() => handleSend()}

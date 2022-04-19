@@ -80,7 +80,7 @@ export const You = () => {
           onClick={handleCopyID}
         >
           <Tooltip name={copied() ? '✅ Copied' : `Copy Your Link`}>
-            {settings.name} #{server.id}
+            {settings.name || 'You'} #{server.id}
           </Tooltip>
         </button>
       </Show>

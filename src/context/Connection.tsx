@@ -61,7 +61,7 @@ const defaultConnection: Connection = [
   {
     mode: 'other',
     signal: 'idle',
-    info: 'Connecting...',
+    info: 'Waiting...',
     id: '',
     peer: defaultPeer,
     error: '',

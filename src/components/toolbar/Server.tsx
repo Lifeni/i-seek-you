@@ -72,7 +72,7 @@ export const Server = () => {
 
       <Modal
         name="Server"
-        size="xs"
+        size="sm"
         hasTitleBar
         isOpen={isOpen()}
         onCancel={handleClose}

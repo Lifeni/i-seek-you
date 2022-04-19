@@ -41,7 +41,7 @@ export const Text = (props: TextProps) => {
       <div w="full" flex="~ col" gap="1">
         <div w="full" flex="~" items="baseline" gap="2">
           <Tooltip name={`#${peer().id}`}>
-            <span font="bold">{peer().name}</span>
+            <span font="bold">{peer().name || `#${peer().id}`}</span>
           </Tooltip>
 
           <Tooltip name={new Date(props.message.date).toLocaleString()}>

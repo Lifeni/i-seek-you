@@ -3,7 +3,7 @@ import {
   type LinkProps as SolidLinkProps,
 } from 'solid-app-router'
 import { IconTypes } from 'solid-icons'
-import { type JSX } from 'solid-js'
+import { splitProps, type JSX } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 
 interface LinkProps extends JSX.AnchorHTMLAttributes<HTMLAnchorElement> {
@@ -29,19 +29,23 @@ interface NavLinkProps extends SolidLinkProps {
   icon: IconTypes
 }
 
-export const NavLink = (props: NavLinkProps) => (
-  <SolidLink
-    flex="~"
-    rounded="full"
-    p="3"
-    border="none"
-    text="gray-800 dark:gray-300"
-    bg="transparent hover:light-600 dark:hover:dark-400"
-    {...props}
-  >
-    <Dynamic component={props.icon} w="6" h="6" text="inherit" />
-  </SolidLink>
-)
+export const NavLink = (props: NavLinkProps) => {
+  const [local, others] = splitProps(props, ['icon'])
+
+  return (
+    <SolidLink
+      flex="~"
+      rounded="full"
+      p="3"
+      border="none"
+      text="gray-800 dark:gray-300"
+      bg="transparent hover:light-600 dark:hover:dark-400"
+      {...others}
+    >
+      <Dynamic component={local.icon} w="6" h="6" text="inherit" />
+    </SolidLink>
+  )
+}
 
 export const Subtle = (
   props: JSX.ParamHTMLAttributes<HTMLParagraphElement>

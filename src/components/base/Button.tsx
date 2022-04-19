@@ -37,6 +37,7 @@ export const Button = (props: ButtonProps) => {
           : 'light-600 dark:dark-400 hover:(light-800 dark:dark-200)'
       }
       cursor={props.disabled ? 'not-allowed' : 'pointer'}
+      transition="colors"
       {...props}
     >
       <Show when={props.icon}>
@@ -86,6 +87,7 @@ export const IconButton = (props: IconButtonProps) => {
             : 'transparent hover:(light-600 dark:dark-400) active:(light-800 dark:dark-200)'
         }
         cursor={props.disabled ? 'not-allowed' : 'pointer'}
+        transition="colors"
         {...props}
       >
         <Show when={props.icon}>
@@ -136,6 +138,7 @@ export const CloseButton = (props: CloseButtonProps) => {
             : 'transparent hover:light-600 dark:hover:dark-400'
         }
         {...props}
+        transition="colors"
       >
         <RiSystemCloseFill w="6" h="6" />
       </button>

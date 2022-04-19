@@ -1,15 +1,12 @@
 import {
-  RiBusinessSlideshow3Fill,
   RiCommunicationMessage2Fill,
+  RiDeviceComputerFill,
   RiMediaCameraFill,
   RiMediaCameraOffFill,
-  RiMediaFullscreenExitFill,
-  RiMediaFullscreenFill,
   RiMediaMicFill,
   RiMediaMicOffFill,
   RiMediaPictureInPicture2Fill,
   RiMediaPictureInPictureExitFill,
-  RiSystemEyeOffFill,
 } from 'solid-icons/ri'
 import { createSignal } from 'solid-js'
 import { useConnection } from '../../../context/Connection'
@@ -17,11 +14,10 @@ import { IconButton } from '../../base/Button'
 
 export const Controls = () => {
   const [, { setMode }] = useConnection()
-  const [camera, setCamera] = createSignal(false)
-  const [voice, setVoice] = createSignal(false)
-  const [screen, setScreen] = createSignal(false)
-  const [full, setFull] = createSignal(false)
-  const [picture, setPicture] = createSignal(false)
+  const [isCamera, setCamera] = createSignal(false)
+  const [isVoice, setVoice] = createSignal(false)
+  const [isScreen, setScreen] = createSignal(false)
+  const [isPicture, setPicture] = createSignal(false)
 
   return (
     <div w="full" flex="~" items="end" gap="3">
@@ -35,19 +31,22 @@ export const Controls = () => {
       <div flex="~ 1" items="center" justify="center">
         <IconButton
           name="Camera"
-          icon={camera() ? RiMediaCameraFill : RiMediaCameraOffFill}
+          icon={isCamera() ? RiMediaCameraFill : RiMediaCameraOffFill}
+          isPrimary={isCamera()}
           onClick={() => setCamera(v => !v)}
         />
 
         <IconButton
           name="Voice"
-          icon={voice() ? RiMediaMicFill : RiMediaMicOffFill}
+          icon={isVoice() ? RiMediaMicFill : RiMediaMicOffFill}
+          isPrimary={isVoice()}
           onClick={() => setVoice(v => !v)}
         />
 
         <IconButton
           name="Share Screen"
-          icon={screen() ? RiBusinessSlideshow3Fill : RiSystemEyeOffFill}
+          icon={RiDeviceComputerFill}
+          isPrimary={isScreen()}
           onClick={() => setScreen(v => !v)}
         />
       </div>
@@ -55,16 +54,11 @@ export const Controls = () => {
         <IconButton
           name="Picture in Picture"
           icon={
-            picture()
+            isPicture()
               ? RiMediaPictureInPictureExitFill
               : RiMediaPictureInPicture2Fill
           }
           onClick={() => setPicture(v => !v)}
-        />
-        <IconButton
-          name="Full Screen"
-          icon={full() ? RiMediaFullscreenExitFill : RiMediaFullscreenFill}
-          onClick={() => setFull(v => !v)}
         />
       </div>
     </div>

@@ -29,7 +29,7 @@ export const Settings = () => {
 
       <Modal
         name="Settings"
-        size="xs"
+        size="sm"
         hasTitleBar
         isOpen={open()}
         onCancel={handleClose}

@@ -5,6 +5,7 @@ import {
   createSignal,
   onCleanup,
   onMount,
+  splitProps,
   type JSX,
 } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
@@ -15,24 +16,28 @@ interface FieldProps extends JSX.HTMLAttributes<HTMLDivElement> {
   icon: IconTypes
 }
 
-export const Field = (props: FieldProps) => (
-  <fieldset w="full" p="3">
-    <legend
-      flex="~"
-      justify="center"
-      items="center"
-      text="sm gray-500 dark:gray-400"
-      font="bold"
-      gap="2"
-    >
-      <Dynamic component={props.icon} w="4.5" h="4.5" />
-      <span>{props.name}</span>
-    </legend>
-    <div w="full" flex="~ col" gap="2" {...props}>
-      {props.children}
-    </div>
-  </fieldset>
-)
+export const Field = (props: FieldProps) => {
+  const [local, others] = splitProps(props, ['icon'])
+
+  return (
+    <fieldset w="full" p="3">
+      <legend
+        flex="~"
+        justify="center"
+        items="center"
+        text="sm gray-500 dark:gray-400"
+        font="bold"
+        gap="2"
+      >
+        <Dynamic component={local.icon} w="4.5" h="4.5" />
+        <span>{props.name}</span>
+      </legend>
+      <div w="full" flex="~ col" gap="2" {...others}>
+        {props.children}
+      </div>
+    </fieldset>
+  )
+}
 
 interface InputProps extends JSX.InputHTMLAttributes<HTMLInputElement> {
   tooltip?: string
