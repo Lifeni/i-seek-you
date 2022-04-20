@@ -27,7 +27,9 @@ export class Signaling {
       connection: useConnection(),
     }
 
-    const protocol = window.location.protocol.includes('https') ? 'wss' : 'ws'
+    const protocol = this.context.settings[0].signaling.includes('localhost')
+      ? 'ws'
+      : 'wss'
 
     this.websocket = new WebSocket(
       `${protocol}://${this.context.settings[0].signaling}`

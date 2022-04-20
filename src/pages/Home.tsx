@@ -36,7 +36,7 @@ const Home: Component = () => {
         <Settings />
       </header>
 
-      <main flex="~ col 1" p="8">
+      <main flex="~ col 1" p="6 b-8 sm:8">
         <Others />
         <You />
         <Call />

@@ -145,3 +145,18 @@ export const CloseButton = (props: CloseButtonProps) => {
     </Tooltip>
   )
 }
+
+interface TextButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {}
+
+export const TextButton = (props: TextButtonProps) => (
+  <button
+    text="sm red-500 dark:red-400 hover:underline"
+    p="0"
+    border="none"
+    bg="transparent"
+    font="bold"
+    {...props}
+  >
+    {props.children}
+  </button>
+)

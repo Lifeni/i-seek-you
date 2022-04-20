@@ -56,7 +56,7 @@ export const Call = () => {
         <div flex="~" items="center" justify="center" gap="2">
           <RiOthersPlugFill w="4.5" h="4.5" text="green-500 dark:green-400" />
           <span p="y-2" text="sm center" font="bold">
-            Want To Connect
+            Want to Connect
           </span>
         </div>
       </div>

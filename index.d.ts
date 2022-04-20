@@ -51,3 +51,21 @@ export type WsType = {
   Sdp: { type: 'sdp'; sdp: RTCSessionDescriptionInit }
   Ice: { type: 'ice'; candidate: RTCIceCandidateInit }
 }
+
+export type TextMessage = {
+  type: 'text'
+  date: string
+  from: string
+  content: string
+}
+
+export type FileMessage = {
+  type: 'file'
+  date: string
+  from: string
+  files: {
+    name: string
+    size: number
+    type: string
+  }[]
+}

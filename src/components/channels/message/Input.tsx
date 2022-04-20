@@ -5,6 +5,7 @@ import {
 } from 'solid-icons/ri'
 import { createEffect, createSignal, on, onCleanup, untrack } from 'solid-js'
 import tinykeys from 'tinykeys'
+import { FileMessage, TextMessage } from '../../../../index.d'
 import { useConnection } from '../../../context/Connection'
 import { useServer } from '../../../context/Server'
 import { IconButton } from '../../base/Button'
@@ -14,6 +15,7 @@ export const Input = () => {
   const [connection, { setMode, addMessage }] = useConnection()
 
   const [text, setText] = createSignal('')
+  const [textarea, setTextarea] = createSignal<HTMLTextAreaElement>()
   const [input, setInput] = createSignal<HTMLInputElement>()
 
   const handleInput = (e: InputEvent) => {
@@ -37,17 +39,17 @@ export const Input = () => {
       content: message,
     }
     connection.webrtc?.send('text', data)
-    addMessage({ type: 'text', ...data })
+    addMessage<TextMessage>({ type: 'text', ...data })
     setText('')
 
-    const send = input()
+    const send = textarea()
     if (!send) return
     send.style.height = `44px`
   }
 
   createEffect(
     on([text, () => connection.mode], ([text, mode]) => {
-      const target = input()
+      const target = textarea()
       if (text && mode === 'other') setText('')
       if (!target || mode !== 'message') return
 
@@ -61,6 +63,25 @@ export const Input = () => {
     })
   )
 
+  const handleFile = (e: Event) => {
+    const files = (e.target as HTMLInputElement).files || []
+    if (files.length === 0) return
+    const data = {
+      type: 'file',
+      date: new Date().toISOString(),
+      from: server.id,
+      files: [...files].map(file => ({
+        name: file.name,
+        type: file.type,
+        size: file.size,
+      })),
+    }
+    console.log(data)
+
+    connection.webrtc?.send('file', data)
+    addMessage<FileMessage>(data as FileMessage)
+  }
+
   return (
     <div w="full" flex="~" items="end" gap="3">
       <div flex="~" items="center">
@@ -73,11 +94,20 @@ export const Input = () => {
           display="hidden sm:flex"
           name="File"
           icon={RiMediaImage2Fill}
-          onClick={() => {}}
+          onClick={() => input()?.click()}
+        />
+        <input
+          ref={setInput}
+          type="file"
+          name="file"
+          multiple
+          hidden
+          onChange={e => handleFile(e)}
         />
       </div>
       <textarea
-        ref={setInput}
+        ref={setTextarea}
+        name="text"
         placeholder="Type Here..."
         w="full"
         h="11"

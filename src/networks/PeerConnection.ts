@@ -198,6 +198,10 @@ export class PeerConnection {
         this.context.connection[1].addMessage(message)
         break
       }
+      case 'file': {
+        this.context.connection[1].addMessage(message)
+        break
+      }
     }
   }
 

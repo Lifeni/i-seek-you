@@ -2,7 +2,7 @@ import { defineConfig } from 'windicss/helpers'
 
 const fonts = {
   emoji: ['Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji'],
-  sans: ['Manrope', 'Inter', 'Roboto', 'sans-serif'],
+  sans: ['Manrope', 'Inter', 'HarmonyOS Sans SC', 'Roboto', 'sans-serif'],
   mono: ['JetBrains Mono', 'Consolas', 'monospace'],
 }
 

@@ -49,11 +49,11 @@ export const Modal = (props: ModalProps) => {
         z="1000"
         w="screen"
         h="screen"
-        p="4"
+        p="4 b-12 sm:b-4"
         flex="~"
         display={props.isOpen ? 'visible' : 'invisible'}
         opacity={props.isOpen ? '100' : '0'}
-        items="center"
+        items={props.size === 'lg' ? 'start sm:center' : 'center'}
         justify="center"
         transition="visible"
       >

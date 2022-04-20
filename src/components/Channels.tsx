@@ -86,22 +86,25 @@ export const Channels = () => {
   return (
     <>
       <Show when={isOpen()}>
-        <Title>Channels #{connection.id} - I Seek You</Title>
+        <Title>Channel #{connection.id} - I Seek You</Title>
       </Show>
 
       <Login />
 
       <Modal
-        name={`Channels #${connection.id}`}
+        name={`Channel #${connection.id}`}
         size="lg"
         hasTitleBar
         isDanger
         isOpen={!isOther() && isOpen()}
         onCancel={handleClose}
       >
-        <Show when={isVoice()} fallback={<Message />}>
+        <div w="full" display={isVoice() ? 'hidden' : 'flex'}>
+          <Message />
+        </div>
+        <div w="full" display={isVoice() ? 'flex' : 'hidden'}>
           <Voice />
-        </Show>
+        </div>
       </Modal>
     </>
   )

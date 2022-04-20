@@ -1,6 +1,7 @@
 import { useNavigate } from 'solid-app-router'
 import { createSignal, Show } from 'solid-js'
 import { defaultSettings, useSettings } from '../../../context/Settings'
+import { TextButton } from '../../base/Button'
 import { Fold, Input } from '../../base/Form'
 import { Tooltip } from '../../base/Popover'
 
@@ -126,15 +127,6 @@ export const TURN = () => {
 const NeedReload = () => (
   <p flex="~" items="center" text="sm red-500 dark:red-400">
     <span flex="~ 1">* Need To Reload Page</span>
-    <button
-      text="inherit hover:underline"
-      p="0"
-      border="none"
-      bg="transparent"
-      font="bold"
-      onClick={() => window.location.reload()}
-    >
-      Reload
-    </button>
+    <TextButton onClick={() => window.location.reload()}>Reload</TextButton>
   </p>
 )

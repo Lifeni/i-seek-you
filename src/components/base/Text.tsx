@@ -47,10 +47,8 @@ export const NavLink = (props: NavLinkProps) => {
   )
 }
 
-export const Subtle = (
-  props: JSX.ParamHTMLAttributes<HTMLParagraphElement>
-) => (
-  <p text="sm gray-500 dark:gray-400" {...props}>
+export const Subtle = (props: JSX.HTMLAttributes<HTMLSpanElement>) => (
+  <span text="sm gray-500 dark:gray-400" {...props}>
     {props.children}
-  </p>
+  </span>
 )

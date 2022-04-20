@@ -1,17 +1,12 @@
 import { createContext, untrack, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { type Peer } from '../../index.d'
+import { FileMessage, TextMessage, type Peer } from '../../index.d'
 import { type PeerConnection } from '../networks/PeerConnection'
 import { useServer } from './Server'
 
 type Mode = 'message' | 'voice' | 'other'
 
-export type Message = {
-  type: 'text' | 'image' | 'file' | 'screen' | 'video' | 'audio' | 'unknown'
-  date: string
-  from: string
-  content: string
-}
+type Message = TextMessage | FileMessage
 
 type Signal =
   | 'idle'
@@ -34,7 +29,7 @@ export type Connection = [
     peer: Peer
     confirm: boolean
     webrtc: InstanceType<typeof PeerConnection> | null
-    messages: Readonly<Message[]>
+    messages: Array<Message>
   },
   {
     setMode: (mode: Mode) => void
@@ -45,7 +40,7 @@ export type Connection = [
     setId: (id: string) => void
     setPeer: (peer: Peer) => void
     setConfirm: (confirm: boolean) => void
-    addMessage: (message: Message) => void
+    addMessage: <T extends Message>(message: T) => void
     resetConnection: () => void
   }
 ]
@@ -94,7 +89,7 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
   })
 
   const store: Connection = [
-    connection,
+    connection as Connection[0],
     {
       setMode: (mode: Mode) => setConnection('mode', () => mode),
       setSignal: (signal: Signal) => setConnection('signal', () => signal),
