@@ -14,7 +14,8 @@
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
     "cloc": "cloc src --exclude-ext=svg",
     "posttest": "npm run format",
-    "check": "npx eslint ."
+    "check": "npx eslint .",
+    "test": "playwright test"
   },
   "author": {
     "name": "Lifeni",
@@ -31,6 +32,7 @@
     "email": "liangfengning@foxmail.com"
   },
   "devDependencies": {
+    "@playwright/test": "^1.21.1",
     "@types/lodash": "^4.14.181",
     "@typescript-eslint/eslint-plugin": "^5.19.0",
     "@typescript-eslint/parser": "^5.19.0",
