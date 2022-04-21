@@ -76,7 +76,6 @@ export const Input = () => {
         size: file.size,
       })),
     }
-    console.log(data)
 
     connection.webrtc?.send('file', data)
     addMessage<FileMessage>(data as FileMessage)
@@ -84,7 +83,7 @@ export const Input = () => {
 
   return (
     <div w="full" flex="~" items="end" gap="3">
-      <div flex="~" items="center">
+      <div flex="~" items="center" gap="1">
         <IconButton
           name="Voice"
           icon={RiMediaVidiconFill}

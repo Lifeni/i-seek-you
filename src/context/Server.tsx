@@ -45,7 +45,7 @@ export const ServerProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
   })
 
   const store: Server = [
-    server,
+    server as Server[0],
     {
       setId: (id: string) => setServer('id', () => id),
       setStatus: (status: Status) => setServer('status', () => status),

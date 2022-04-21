@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from 'solid-app-router'
 import { batch, createEffect, createMemo, on, Show } from 'solid-js'
 import { Title } from 'solid-meta'
 import { useConnection } from '../context/Connection'
+import { VoiceProvider } from '../context/media/Voice'
 import { useServer } from '../context/Server'
 import { useSettings } from '../context/Settings'
 import { PeerConnection } from '../networks/PeerConnection'
@@ -103,7 +104,9 @@ export const Channels = () => {
           <Message />
         </div>
         <div w="full" display={isVoice() ? 'flex' : 'hidden'}>
-          <Voice />
+          <VoiceProvider>
+            <Voice />
+          </VoiceProvider>
         </div>
       </Modal>
     </>

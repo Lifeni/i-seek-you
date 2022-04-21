@@ -8,16 +8,18 @@ import {
   RiMediaPictureInPicture2Fill,
   RiMediaPictureInPictureExitFill,
 } from 'solid-icons/ri'
-import { createSignal } from 'solid-js'
 import { useConnection } from '../../../context/Connection'
+import { useVoice } from '../../../context/media/Voice'
 import { IconButton } from '../../base/Button'
 
 export const Controls = () => {
   const [, { setMode }] = useConnection()
-  const [isCamera, setCamera] = createSignal(false)
-  const [isVoice, setVoice] = createSignal(false)
-  const [isScreen, setScreen] = createSignal(false)
-  const [isPicture, setPicture] = createSignal(false)
+  const [voice, { switchControls }] = useVoice()
+
+  const isCamera = () => voice.controls.camera
+  const isMicrophone = () => voice.controls.microphone
+  const isScreen = () => voice.controls.screen
+  const isPicture = () => voice.controls.picture
 
   return (
     <div w="full" flex="~" items="end" gap="3">
@@ -28,26 +30,26 @@ export const Controls = () => {
           onClick={() => setMode('message')}
         />
       </div>
-      <div flex="~ 1" items="center" justify="center">
+      <div flex="~ 1" items="center" justify="center" gap="1">
         <IconButton
           name="Camera"
           icon={isCamera() ? RiMediaCameraFill : RiMediaCameraOffFill}
           isPrimary={isCamera()}
-          onClick={() => setCamera(v => !v)}
+          onClick={() => switchControls('camera')}
         />
 
         <IconButton
           name="Voice"
-          icon={isVoice() ? RiMediaMicFill : RiMediaMicOffFill}
-          isPrimary={isVoice()}
-          onClick={() => setVoice(v => !v)}
+          icon={isMicrophone() ? RiMediaMicFill : RiMediaMicOffFill}
+          isPrimary={isMicrophone()}
+          onClick={() => switchControls('microphone')}
         />
 
         <IconButton
           name="Share Screen"
           icon={RiDeviceComputerFill}
           isPrimary={isScreen()}
-          onClick={() => setScreen(v => !v)}
+          onClick={() => switchControls('screen')}
         />
       </div>
       <div flex="~ 1" items="center" justify="end">
@@ -58,7 +60,7 @@ export const Controls = () => {
               ? RiMediaPictureInPictureExitFill
               : RiMediaPictureInPicture2Fill
           }
-          onClick={() => setPicture(v => !v)}
+          onClick={() => switchControls('picture')}
         />
       </div>
     </div>

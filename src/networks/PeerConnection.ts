@@ -73,6 +73,12 @@ export class PeerConnection {
     this.webrtc.addEventListener('iceconnectionstatechange', () =>
       this.onIceConnectionStateChange()
     )
+
+    console.debug('[webrtc]', 'listen track')
+    this.webrtc?.addEventListener('track', e => this.onTrack(e))
+    this.webrtc?.addEventListener('negotiationneeded', () =>
+      this.onNegotiationNeeded()
+    )
   }
 
   public openDataChannel() {
@@ -108,13 +114,15 @@ export class PeerConnection {
   public receiveAnswer(sdp: RTCSessionDescriptionInit) {
     console.debug('[webrtc]', 'receive answer')
     this.webrtc?.setRemoteDescription(new RTCSessionDescription(sdp))
+    if (this.context.connection[0].signal === 'connected') return
     this.context.connection[1].setSignal('ice')
   }
 
   public onIceCandidate(event: RTCPeerConnectionIceEvent) {
     console.debug('[webrtc]', 'receive ice candidate')
+    if (!event.candidate || this.context.connection[0].signal === 'connected')
+      return
     this.context.connection[1].setSignal('ice')
-    if (!event.candidate) return
     this.websocket?.send('ice-candidate', {
       id: this.id,
       candidate: event.candidate,
@@ -124,8 +132,6 @@ export class PeerConnection {
   public addIceCandidate(candidate: RTCIceCandidateInit) {
     console.debug('[webrtc]', 'add ice candidate')
     this.webrtc?.addIceCandidate(new RTCIceCandidate(candidate))
-    this.context.connection[1].setSignal('connected')
-    this.context.connection[1].setMode('message')
   }
 
   public onConnectionStateChange() {
@@ -164,12 +170,17 @@ export class PeerConnection {
     console.debug('[webrtc]', 'ice connection state change', state)
 
     switch (state) {
+      case 'connected': {
+        this.context.connection[1].setSignal('connected')
+        this.context.connection[1].setMode('message')
+        break
+      }
       case 'failed': {
         this.context.connection[1].setSignal('error')
         this.context.connection[1].setError('ICE Gathering Failed')
         break
       }
-      default: {
+      case 'checking': {
         this.context.connection[1].setSignal('ice')
         this.context.connection[1].setInfo('ICE Gathering')
         break
@@ -180,6 +191,33 @@ export class PeerConnection {
   public send<T>(type: string, message?: T) {
     console.debug('[webrtc]', 'send -', type)
     this.channel?.send(JSON.stringify({ type, ...message }))
+  }
+
+  public add(track: MediaStreamTrack, stream: MediaStream) {
+    console.debug('[webrtc]', 'add track')
+    this.webrtc?.addTrack(track, stream)
+  }
+
+  public remove() {
+    console.debug('[webrtc]', 'remove track')
+    this.webrtc?.getSenders().forEach(sender => {
+      this.webrtc?.removeTrack(sender)
+    })
+  }
+
+  public onTrack(event: RTCTrackEvent) {
+    console.debug('[webrtc]', 'receive track')
+    this.context.connection[1].setStreams(event.streams)
+  }
+
+  public onNegotiationNeeded() {
+    console.debug('[webrtc]', 'on negotiation needed')
+
+    console.debug('[webrtc]', 'send offer -', this.id)
+    this.webrtc?.createOffer().then(offer => {
+      this.webrtc?.setLocalDescription(offer)
+      this.websocket?.send('sdp-offer', { id: this.id, sdp: offer })
+    })
   }
 
   public onChannelOpen(event: RTCDataChannelEvent) {

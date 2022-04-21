@@ -30,6 +30,7 @@ export type Connection = [
     confirm: boolean
     webrtc: InstanceType<typeof PeerConnection> | null
     messages: Array<Message>
+    streams: readonly MediaStream[] | null
   },
   {
     setMode: (mode: Mode) => void
@@ -41,6 +42,7 @@ export type Connection = [
     setPeer: (peer: Peer) => void
     setConfirm: (confirm: boolean) => void
     addMessage: <T extends Message>(message: T) => void
+    setStreams: (streams: readonly MediaStream[]) => void
     resetConnection: () => void
   }
 ]
@@ -63,6 +65,7 @@ const defaultConnection: Connection = [
     confirm: false,
     webrtc: null,
     messages: [],
+    streams: null,
   },
   {
     setMode: () => {},
@@ -74,6 +77,7 @@ const defaultConnection: Connection = [
     setConfirm: () => {},
     setWebRTC: () => {},
     addMessage: () => {},
+    setStreams: () => {},
     resetConnection: () => {},
   },
 ]
@@ -104,9 +108,10 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
         }),
       setPeer: (peer: Peer) => setConnection('peer', () => peer),
       setConfirm: (confirm: boolean) => setConnection('confirm', () => confirm),
-      addMessage(message: Message) {
-        setConnection('messages', messages => [...messages, message])
-      },
+      addMessage: (message: Message) =>
+        setConnection('messages', messages => [...messages, message]),
+      setStreams: (streams: readonly MediaStream[]) =>
+        setConnection('streams', () => streams),
       resetConnection: () => {
         untrack(() => connection.webrtc?.close())
         setConnection({ ...defaultConnection[0] })
