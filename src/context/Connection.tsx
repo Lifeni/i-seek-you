@@ -1,7 +1,8 @@
 import { createContext, untrack, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { FileMessage, TextMessage, type Peer } from '../../index.d'
-import { type PeerConnection } from '../networks/PeerConnection'
+import { DataChannel } from '../networks/peer-connection/DataChannel'
+import { Media } from '../networks/peer-connection/Media'
 import { useServer } from './Server'
 
 type Mode = 'message' | 'voice' | 'other'
@@ -28,16 +29,18 @@ export type Connection = [
     id: string
     peer: Peer
     confirm: boolean
-    webrtc: InstanceType<typeof PeerConnection> | null
+    channel: InstanceType<typeof DataChannel> | null
     messages: Array<Message>
-    streams: readonly MediaStream[] | null
+    media: InstanceType<typeof Media> | null
+    streams: readonly MediaStream[]
   },
   {
     setMode: (mode: Mode) => void
     setSignal: (signal: Signal) => void
     setInfo: (info: string) => void
     setError: (error: string) => void
-    setWebRTC: (webrtc: InstanceType<typeof PeerConnection>) => void
+    setChannel: (channel: InstanceType<typeof DataChannel>) => void
+    setMedia: (media: InstanceType<typeof Media> | null) => void
     setId: (id: string) => void
     setPeer: (peer: Peer) => void
     setConfirm: (confirm: boolean) => void
@@ -63,9 +66,10 @@ const defaultConnection: Connection = [
     peer: defaultPeer,
     error: '',
     confirm: false,
-    webrtc: null,
+    channel: null,
     messages: [],
-    streams: null,
+    media: null,
+    streams: [],
   },
   {
     setMode: () => {},
@@ -75,7 +79,8 @@ const defaultConnection: Connection = [
     setId: () => {},
     setPeer: () => {},
     setConfirm: () => {},
-    setWebRTC: () => {},
+    setChannel: () => {},
+    setMedia: () => {},
     addMessage: () => {},
     setStreams: () => {},
     resetConnection: () => {},
@@ -99,8 +104,8 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
       setSignal: (signal: Signal) => setConnection('signal', () => signal),
       setInfo: (info: string) => setConnection('info', () => info),
       setError: (error: string) => setConnection('error', () => error),
-      setWebRTC: (webrtc: InstanceType<typeof PeerConnection>) =>
-        setConnection('webrtc', () => webrtc),
+      setChannel: (channel: InstanceType<typeof DataChannel>) =>
+        setConnection('channel', () => channel),
       setId: (id: string) =>
         untrack(() => {
           if (id && id !== server.id && id !== connection.id)
@@ -110,10 +115,15 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
       setConfirm: (confirm: boolean) => setConnection('confirm', () => confirm),
       addMessage: (message: Message) =>
         setConnection('messages', messages => [...messages, message]),
+      setMedia: (media: InstanceType<typeof Media> | null) =>
+        setConnection('media', () => media),
       setStreams: (streams: readonly MediaStream[]) =>
         setConnection('streams', () => streams),
       resetConnection: () => {
-        untrack(() => connection.webrtc?.close())
+        untrack(() => {
+          connection.channel?.close()
+          connection.media?.close()
+        })
         setConnection({ ...defaultConnection[0] })
       },
     },

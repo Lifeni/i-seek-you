@@ -5,12 +5,21 @@ import {
 import { batch, createEffect, createSignal, For, on, Show } from 'solid-js'
 import { useConnection } from '../../context/Connection'
 import { useVoice } from '../../context/media/Voice'
+import { useServer } from '../../context/Server'
+import { useSettings } from '../../context/Settings'
+import { Media } from '../../networks/peer-connection/Media'
 import { Subtle } from '../base/Text'
 import { Controls } from './voice/Controls'
 import { Video } from './voice/Video'
 
 export const Voice = () => {
-  const [connection] = useConnection()
+  const settings = useSettings()
+  const servers = useServer()
+  const connections = useConnection()
+
+  const [server] = servers
+  const [connection, { setMedia }] = connections
+
   const [voice, { resetVoice }] = useVoice()
   const [stream, setStream] = createSignal<MediaStream | null>(null)
   const [screen, setScreen] = createSignal<MediaStream | null>(null)
@@ -27,7 +36,8 @@ export const Voice = () => {
       batch(() => {
         setStream(null)
         setScreen(null)
-        connection.webrtc?.remove()
+        connection.media?.remove()
+        setMedia(null)
         resetVoice()
       })
     })
@@ -41,9 +51,21 @@ export const Voice = () => {
           window.navigator.mediaDevices
             .getUserMedia({ video: camera, audio: microphone })
             .then(stream => {
+              if (!connection.media) {
+                const id = connection.id
+                server.websocket?.send('media', { id })
+                const media = new Media({
+                  settings,
+                  server: servers,
+                  connection: connections,
+                  id,
+                  caller: true,
+                })
+                setMedia(media)
+              }
               setStream(stream)
               stream.getTracks().forEach(track => {
-                connection.webrtc?.add(track, stream)
+                connection.media?.add(track, stream)
               })
               setError(false)
             })
@@ -66,7 +88,7 @@ export const Voice = () => {
           .then(stream => {
             setScreen(stream)
             stream.getTracks().forEach(track => {
-              connection.webrtc?.add(track, stream)
+              connection.media?.add(track, stream)
             })
             setError(false)
           })

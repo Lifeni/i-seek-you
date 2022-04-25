@@ -5,7 +5,7 @@ import { useConnection } from '../context/Connection'
 import { VoiceProvider } from '../context/media/Voice'
 import { useServer } from '../context/Server'
 import { useSettings } from '../context/Settings'
-import { PeerConnection } from '../networks/PeerConnection'
+import { DataChannel } from '../networks/peer-connection/DataChannel'
 import { Modal } from './base/Modal'
 import { Login } from './channels/Login'
 import { Message } from './channels/Message'
@@ -19,7 +19,7 @@ export const Channels = () => {
   const [server] = servers
   const [
     connection,
-    { setId, setSignal, setInfo, setWebRTC, resetConnection },
+    { setId, setSignal, setInfo, setChannel, resetConnection },
   ] = connections
 
   const navigate = useNavigate()
@@ -62,13 +62,13 @@ export const Channels = () => {
         }
         case 'answer': {
           server.websocket?.send('answer', { id })
-          const webrtc = new PeerConnection({
+          const webrtc = new DataChannel({
             settings,
             server: servers,
             connection: connections,
             id,
           })
-          setWebRTC(webrtc)
+          setChannel(webrtc)
           setSignal('loading')
           break
         }

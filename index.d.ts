@@ -41,15 +41,18 @@ export type Peer = {
   password: boolean
 }
 
-export type WsType = {
+export type ConnectionName = 'data-channel' | 'media-stream'
+
+export type WebSocketType = {
   Ok: { type: 'ok' }
   Error: { type: 'error'; message: string }
   Id: { type: 'id'; id: string }
   Lobby: { type: 'lobby'; peers: Peer[] }
   Peer: { type: 'peer'; peer: Peer }
   Call: { type: 'call'; peer: Peer; password: string }
-  Sdp: { type: 'sdp'; sdp: RTCSessionDescriptionInit }
-  Ice: { type: 'ice'; candidate: RTCIceCandidateInit }
+  Sdp: { type: 'sdp'; sdp: RTCSessionDescriptionInit; name: ConnectionName }
+  Ice: { type: 'ice'; candidate: RTCIceCandidateInit; name: ConnectionName }
+  Media: { type: 'media' }
 }
 
 export type TextMessage = {

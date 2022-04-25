@@ -38,7 +38,7 @@ export const Input = () => {
       from: server.id,
       content: message,
     }
-    connection.webrtc?.send('text', data)
+    connection.channel?.send('text', data)
     addMessage<TextMessage>({ type: 'text', ...data })
     setText('')
 
@@ -77,7 +77,7 @@ export const Input = () => {
       })),
     }
 
-    connection.webrtc?.send('file', data)
+    connection.channel?.send('file', data)
     addMessage<FileMessage>(data as FileMessage)
   }
 
