@@ -46,6 +46,7 @@ export type Connection = [
     setConfirm: (confirm: boolean) => void
     addMessage: <T extends Message>(message: T) => void
     setStreams: (streams: readonly MediaStream[]) => void
+    resetStreams: () => void
     resetConnection: () => void
   }
 ]
@@ -83,6 +84,7 @@ const defaultConnection: Connection = [
     setMedia: () => {},
     addMessage: () => {},
     setStreams: () => {},
+    resetStreams: () => {},
     resetConnection: () => {},
   },
 ]
@@ -119,6 +121,7 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
         setConnection('media', () => media),
       setStreams: (streams: readonly MediaStream[]) =>
         setConnection('streams', () => streams),
+      resetStreams: () => setConnection('streams', () => []),
       resetConnection: () => {
         untrack(() => {
           connection.channel?.close()

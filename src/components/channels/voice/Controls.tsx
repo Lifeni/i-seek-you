@@ -1,25 +1,30 @@
 import {
   RiCommunicationMessage2Fill,
   RiDeviceComputerFill,
+  RiDeviceShutDownFill,
   RiMediaCameraFill,
   RiMediaCameraOffFill,
   RiMediaMicFill,
   RiMediaMicOffFill,
-  RiMediaPictureInPicture2Fill,
-  RiMediaPictureInPictureExitFill,
 } from 'solid-icons/ri'
 import { useConnection } from '../../../context/Connection'
 import { useVoice } from '../../../context/media/Voice'
 import { IconButton } from '../../base/Button'
 
 export const Controls = () => {
-  const [, { setMode }] = useConnection()
-  const [voice, { switchControls }] = useVoice()
+  const [connection, { setMode, setMedia }] = useConnection()
+  const [voice, { switchControls, resetVoice }] = useVoice()
 
   const isCamera = () => voice.controls.camera
   const isMicrophone = () => voice.controls.microphone
   const isScreen = () => voice.controls.screen
-  const isPicture = () => voice.controls.picture
+
+  const handleHangUp = () => {
+    resetVoice()
+    connection.media?.clear()
+    setMedia(null)
+    setMode('message')
+  }
 
   return (
     <div w="full" flex="~" items="end" gap="3">
@@ -54,13 +59,9 @@ export const Controls = () => {
       </div>
       <div flex="~ 1" items="center" justify="end">
         <IconButton
-          name="Picture in Picture"
-          icon={
-            isPicture()
-              ? RiMediaPictureInPictureExitFill
-              : RiMediaPictureInPicture2Fill
-          }
-          onClick={() => switchControls('picture')}
+          name="Hang Up"
+          icon={RiDeviceShutDownFill}
+          onClick={() => handleHangUp()}
         />
       </div>
     </div>

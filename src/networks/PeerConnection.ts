@@ -105,7 +105,11 @@ export class PeerConnection {
       candidate: event.candidate,
       name: this.name,
     })
-    if (this.name === 'media-stream') return
+    if (
+      this.name === 'media-stream' ||
+      this.context.connection[0].signal === 'connected'
+    )
+      return
     this.context.connection[1].setSignal('ice')
   }
 

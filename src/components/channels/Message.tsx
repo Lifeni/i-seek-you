@@ -50,15 +50,7 @@ export const Message = () => {
   })
 
   return (
-    <div
-      w="full"
-      h="70vh"
-      p="x-3 y-2"
-      flex="~ col"
-      justify="end"
-      items="center"
-      gap="3"
-    >
+    <div w="full" p="x-3 y-2" flex="~ col" justify="end" items="center" gap="3">
       <Show when={!isEmpty()} fallback={<Placeholder />}>
         <div
           ref={setContainer}
@@ -66,6 +58,7 @@ export const Message = () => {
            scrollbar-thumb-light-600 scrollbar-track-light-100 hover:scrollbar-thumb-light-800
              dark:(scrollbar-thumb-dark-400 scrollbar-track-dark-200 hover:scrollbar-thumb-dark-600)"
           w="full"
+          min-h="60vh"
           p="x-2 y-1"
           flex="~ col"
           overflow="y-auto x-hidden"
@@ -160,7 +153,7 @@ const Placeholder = () => {
   const [connection] = useConnection()
 
   return (
-    <div w="full" flex="~ 1 col" items="center" justify="center">
+    <div w="full" min-h="60vh" flex="~ 1 col" items="center" justify="center">
       <RiCommunicationQuestionAnswerFill
         w="18"
         h="18"

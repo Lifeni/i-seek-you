@@ -60,6 +60,10 @@ export class DataChannel extends PeerConnection {
         this.context.connection[1].addMessage(message)
         break
       }
+      case 'media-clear': {
+        this.context.connection[1].resetStreams()
+        break
+      }
     }
   }
 

@@ -9,8 +9,8 @@ import { Media } from './peer-connection/Media'
 
 export class Signaling {
   public websocket: WebSocket
-  public stream: InstanceType<typeof Media> | undefined | null
   public channel: InstanceType<typeof DataChannel> | undefined | null
+  public media: InstanceType<typeof Media> | undefined | null
   public navigate: Navigator
 
   public context: {
@@ -148,7 +148,7 @@ export class Signaling {
           connection: this.context.connection,
           id: this.context.connection[0].id,
         })
-        this.stream = webrtc
+        this.media = webrtc
         this.context.connection[1].setMedia(webrtc)
         break
       }
@@ -156,21 +156,21 @@ export class Signaling {
         const { sdp, name } = data as WebSocketType['Sdp']
         this.checkWebRTC()
         if (name === 'data-channel') this.channel?.receiveOffer(sdp)
-        else this.stream?.receiveOffer(sdp)
+        else this.media?.receiveOffer(sdp)
         break
       }
       case 'sdp-answer': {
         const { sdp, name } = data as WebSocketType['Sdp']
         this.checkWebRTC()
         if (name === 'data-channel') this.channel?.receiveAnswer(sdp)
-        else this.stream?.receiveAnswer(sdp)
+        else this.media?.receiveAnswer(sdp)
         break
       }
       case 'ice-candidate': {
         const { candidate, name } = data as WebSocketType['Ice']
         this.checkWebRTC()
         if (name === 'data-channel') this.channel?.addIceCandidate(candidate)
-        else this.stream?.addIceCandidate(candidate)
+        else this.media?.addIceCandidate(candidate)
         break
       }
       case 'error': {
@@ -200,12 +200,12 @@ export class Signaling {
   public close() {
     this.context.connection[1].resetConnection()
     this.channel = null
-    this.stream = null
+    this.media = null
     this.navigate('/')
   }
 
   public checkWebRTC() {
     this.channel = this.context.connection[0].channel
-    this.stream = this.context.connection[0].media
+    this.media = this.context.connection[0].media
   }
 }
