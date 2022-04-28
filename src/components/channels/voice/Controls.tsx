@@ -8,7 +8,7 @@ import {
   RiMediaMicOffFill,
 } from 'solid-icons/ri'
 import { useConnection } from '../../../context/Connection'
-import { useVoice } from '../../../context/media/Voice'
+import { useVoice } from '../../../context/channels/Voice'
 import { IconButton } from '../../base/Button'
 
 export const Controls = () => {

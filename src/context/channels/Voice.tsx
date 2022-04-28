@@ -10,22 +10,11 @@ type Controls = {
 
 export type Stream = MediaStream | null | undefined
 
-type Senders = {
-  camera: RTCRtpSender | null | undefined
-  microphone: RTCRtpSender | null | undefined
-  screen: RTCRtpSender | null | undefined
-}
-
 export type Voice = [
-  { controls: Controls; stream: Stream; senders: Senders },
+  { controls: Controls; stream: Stream },
   {
     switchControls: (name: keyof Controls) => void
     setStream: (stream: MediaStream | null | undefined) => void
-    setSenders: (
-      name: keyof Senders,
-      sender: RTCRtpSender | null | undefined
-    ) => void
-    resetSenders: () => void
     resetVoice: () => void
   }
 ]
@@ -37,18 +26,12 @@ const defaultVoice: Voice = [
       microphone: false,
       screen: false,
     },
-    senders: {
-      camera: null,
-      microphone: null,
-      screen: null,
-    },
+
     stream: null,
   },
   {
     switchControls: () => {},
-    setSenders: () => {},
     setStream: () => {},
-    resetSenders: () => {},
     resetVoice: () => {},
   },
 ]
@@ -65,14 +48,8 @@ export const VoiceProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
     {
       switchControls: (name: keyof Controls) =>
         setVoice('controls', v => ({ ...v, [name]: !v[name] })),
-      setSenders: (
-        name: keyof Senders,
-        sender: RTCRtpSender | null | undefined
-      ) => setVoice('senders', v => ({ ...v, [name]: sender })),
       setStream: (stream: MediaStream | null | undefined) =>
         setVoice('stream', stream),
-      resetSenders: () =>
-        setVoice('senders', cloneDeep(defaultVoice[0].senders)),
       resetVoice: () => setVoice(cloneDeep(defaultVoice[0])),
     },
   ]

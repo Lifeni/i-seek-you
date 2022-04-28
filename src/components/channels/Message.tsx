@@ -59,6 +59,7 @@ export const Message = () => {
              dark:(scrollbar-thumb-dark-400 scrollbar-track-dark-200 hover:scrollbar-thumb-dark-600)"
           w="full"
           min-h="60vh"
+          max-h="60vh"
           p="x-2 y-1"
           flex="~ col"
           overflow="y-auto x-hidden"

@@ -18,16 +18,6 @@ export class Media extends PeerConnection {
     return this.webrtc?.addTrack(track, stream)
   }
 
-  public replace(sender: RTCRtpSender, track: MediaStreamTrack) {
-    console.debug('[media-stream]', 'replace track')
-    sender.replaceTrack(track)
-  }
-
-  public remove(sender: RTCRtpSender) {
-    console.debug('[media-stream]', 'remove track')
-    this.webrtc?.removeTrack(sender)
-  }
-
   public clear() {
     console.debug('[media-stream]', 'clear track')
     this.webrtc?.getSenders().forEach(sender => {

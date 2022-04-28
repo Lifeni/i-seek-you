@@ -5,11 +5,9 @@ import {
 } from 'solid-icons/ri'
 import { createEffect, createSignal, onCleanup, Show, type JSX } from 'solid-js'
 import { useConnection } from '../../../context/Connection'
-import { useVoice } from '../../../context/media/Voice'
+import { useVoice } from '../../../context/channels/Voice'
 
 interface VideoProps extends JSX.HTMLAttributes<HTMLDivElement> {
-  hasAudio?: boolean
-  hasVideo?: boolean
   isRemote?: boolean
 }
 
@@ -22,10 +20,8 @@ export const Video = (props: VideoProps) => {
 
   const currentStream = () =>
     props.isRemote ? connection.streams?.[0] : voice.stream
-  const hasAudio = () =>
-    props.hasAudio || currentStream()?.getAudioTracks?.()?.[0]?.enabled
-  const hasVideo = () =>
-    props.hasVideo || currentStream()?.getVideoTracks?.()?.[0]?.enabled
+  const hasAudio = () => currentStream()?.getAudioTracks?.()?.[0]
+  const hasVideo = () => currentStream()?.getVideoTracks?.()?.[0]
 
   createEffect(() => {
     const target = hasVideo() ? video() : hasAudio() ? audio() : null
