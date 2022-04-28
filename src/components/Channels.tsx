@@ -1,11 +1,11 @@
 import { useLocation, useNavigate } from 'solid-app-router'
 import { batch, createEffect, createMemo, on, Show } from 'solid-js'
 import { Title } from 'solid-meta'
-import { useConnection } from '../context/Connection'
 import { VoiceProvider } from '../context/channels/Voice'
+import { useConnection } from '../context/Connection'
 import { useServer } from '../context/Server'
 import { useSettings } from '../context/Settings'
-import { DataChannel } from '../networks/peer-connection/DataChannel'
+import { DataChannel } from '../networks/connection/DataChannel'
 import { Modal } from './base/Modal'
 import { Login } from './channels/Login'
 import { Message } from './channels/Message'
@@ -87,13 +87,15 @@ export const Channels = () => {
   return (
     <>
       <Show when={isOpen()}>
-        <Title>Channel #{connection.id} - I Seek You</Title>
+        <Title>
+          {connection.peer.name || 'Channel'} #{connection.id} - I Seek You
+        </Title>
       </Show>
 
       <Login />
 
       <Modal
-        name={`Channel #${connection.id}`}
+        name={`${connection.peer.name || 'Channel'} #${connection.id}`}
         size="lg"
         hasTitleBar
         isDanger

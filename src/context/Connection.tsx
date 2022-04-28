@@ -1,8 +1,13 @@
 import { createContext, untrack, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { FileMessage, TextMessage, type Peer } from '../../index.d'
-import { DataChannel } from '../networks/peer-connection/DataChannel'
-import { Media } from '../networks/peer-connection/Media'
+import {
+  type FileBlob,
+  type FileMessage,
+  type TextMessage,
+  type Peer,
+} from '../../index.d'
+import { DataChannel } from '../networks/connection/DataChannel'
+import { Media } from '../networks/connection/Media'
 import { useServer } from './Server'
 
 type Mode = 'message' | 'voice' | 'other'
@@ -31,6 +36,7 @@ export type Connection = [
     confirm: boolean
     channel: InstanceType<typeof DataChannel> | null
     messages: Array<Message>
+    files: Array<FileBlob>
     media: InstanceType<typeof Media> | null
     streams: readonly MediaStream[]
   },
@@ -44,7 +50,10 @@ export type Connection = [
     setId: (id: string) => void
     setPeer: (peer: Peer) => void
     setConfirm: (confirm: boolean) => void
-    addMessage: <T extends Message>(message: T) => void
+    addMessage: <T extends Message | Message[]>(message: T) => void
+    setProgress: (id: string, progress: number) => void
+    setBlob: (id: string, blob: Blob) => void
+    addFile: (file: FileBlob | FileBlob[]) => void
     setStreams: (streams: readonly MediaStream[]) => void
     resetStreams: () => void
     resetConnection: () => void
@@ -69,6 +78,7 @@ const defaultConnection: Connection = [
     confirm: false,
     channel: null,
     messages: [],
+    files: [],
     media: null,
     streams: [],
   },
@@ -83,6 +93,9 @@ const defaultConnection: Connection = [
     setChannel: () => {},
     setMedia: () => {},
     addMessage: () => {},
+    setProgress: () => {},
+    setBlob: () => {},
+    addFile: () => {},
     setStreams: () => {},
     resetStreams: () => {},
     resetConnection: () => {},
@@ -115,8 +128,23 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
         }),
       setPeer: (peer: Peer) => setConnection('peer', () => peer),
       setConfirm: (confirm: boolean) => setConnection('confirm', () => confirm),
-      addMessage: (message: Message) =>
-        setConnection('messages', messages => [...messages, message]),
+      addMessage: (message: Message | Message[]) => {
+        if (Array.isArray(message))
+          setConnection('messages', m => [...m, ...message])
+        else setConnection('messages', m => [...m, message])
+      },
+      setProgress: (id: string, progress: number) =>
+        setConnection('files', files =>
+          files.map(f => (f.id === id ? { ...f, progress } : f))
+        ),
+      setBlob: (id: string, blob: Blob) =>
+        setConnection('files', files =>
+          files.map(f => (f.id === id ? { ...f, blob } : f))
+        ),
+      addFile: (file: FileBlob | FileBlob[]) => {
+        if (Array.isArray(file)) setConnection('files', f => [...f, ...file])
+        else setConnection('files', f => [...f, file])
+      },
       setMedia: (media: InstanceType<typeof Media> | null) =>
         setConnection('media', () => media),
       setStreams: (streams: readonly MediaStream[]) =>

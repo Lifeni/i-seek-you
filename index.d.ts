@@ -56,6 +56,7 @@ export type WebSocketType = {
 }
 
 export type TextMessage = {
+  id: string
   type: 'text'
   date: string
   from: string
@@ -63,12 +64,23 @@ export type TextMessage = {
 }
 
 export type FileMessage = {
+  id: string
   type: 'file'
   date: string
   from: string
-  files: {
+  file: {
+    id: string
     name: string
     size: number
     type: string
-  }[]
+  }
+}
+
+export type FileBlob = {
+  id: string
+  name: string
+  size: number
+  type: string
+  progress: number
+  blob: Blob | null
 }

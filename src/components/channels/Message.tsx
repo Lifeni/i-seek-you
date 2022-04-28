@@ -43,11 +43,12 @@ export const Message = () => {
       hour12: false,
     }).format(new Date(date))
 
-  createEffect(() => {
+  createEffect(() => scroll())
+  const scroll = () => {
     const target = container()
     if (!target || isEmpty()) return
     target.scrollTo(0, target.scrollHeight)
-  })
+  }
 
   return (
     <div w="full" p="x-3 y-2" flex="~ col" justify="end" items="center" gap="3">
@@ -63,6 +64,7 @@ export const Message = () => {
           p="x-2 y-1"
           flex="~ col"
           overflow="y-auto x-hidden"
+          style={{ 'scroll-behavior': 'smooth' }}
         >
           <div w="full" flex="~ 1 col" items="center" justify="end" gap="1">
             <Subtle m="b-1 sm:b-3" flex="~" items="center" gap="2">
@@ -71,8 +73,10 @@ export const Message = () => {
             </Subtle>
             <For each={connection.messages}>
               {(message, index) => (
-                <div w="full" flex="~" items="start" gap="2">
+                <div pos="relative" w="full" flex="~" items="start" gap="2">
                   <div
+                    pos="sticky"
+                    top="0"
                     w="8 sm:12"
                     min-w="8 sm:12"
                     m="t-2 b-1"
@@ -98,10 +102,15 @@ export const Message = () => {
                           {getAuthor(message.from, index())?.emoji}
                         </Avatar>
 
-                        <span font="bold">
-                          {getAuthor(message.from, index())?.name} #
-                          {getAuthor(message.from, index())?.id}
-                        </span>
+                        <Tooltip
+                          name={`${getAuthor(message.from, index())?.name} #${
+                            getAuthor(message.from, index())?.id
+                          }`}
+                        >
+                          <span font="bold">
+                            # {getAuthor(message.from, index())?.id}
+                          </span>
+                        </Tooltip>
 
                         <Tooltip name={new Date(message.date).toLocaleString()}>
                           <Subtle>{formatTime(message.date)}</Subtle>
@@ -114,7 +123,10 @@ export const Message = () => {
                         <Text message={message as TextMessage} />
                       </Match>
                       <Match when={message.type === 'file'}>
-                        <File message={message as FileMessage} />
+                        <File
+                          message={message as FileMessage}
+                          onScroll={scroll}
+                        />
                       </Match>
                     </Switch>
                   </div>

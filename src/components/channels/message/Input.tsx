@@ -5,14 +5,16 @@ import {
 } from 'solid-icons/ri'
 import { createEffect, createSignal, on, onCleanup, untrack } from 'solid-js'
 import tinykeys from 'tinykeys'
-import { FileMessage, TextMessage } from '../../../../index.d'
+import { type FileMessage, type TextMessage } from '../../../../index.d'
 import { useConnection } from '../../../context/Connection'
 import { useServer } from '../../../context/Server'
 import { IconButton } from '../../base/Button'
+import { v4 as uuid } from 'uuid'
 
 export const Input = () => {
   const [server] = useServer()
-  const [connection, { setMode, addMessage }] = useConnection()
+  const [connection, { setMode, addMessage, addFile, setProgress }] =
+    useConnection()
 
   const [text, setText] = createSignal('')
   const [textarea, setTextarea] = createSignal<HTMLTextAreaElement>()
@@ -38,8 +40,8 @@ export const Input = () => {
       from: server.id,
       content: message,
     }
-    connection.channel?.send('text', data)
-    addMessage<TextMessage>({ type: 'text', ...data })
+    connection.channel?.sendMessage('text', data)
+    addMessage<TextMessage>({ id: uuid(), type: 'text', ...data })
     setText('')
 
     const send = textarea()
@@ -63,22 +65,68 @@ export const Input = () => {
     })
   )
 
-  const handleFile = (e: Event) => {
+  const handleFile = async (e: Event) => {
     const files = (e.target as HTMLInputElement).files || []
     if (files.length === 0) return
-    const data = {
+
+    const messages = [...files].map(file => ({
+      id: uuid(),
       type: 'file',
       date: new Date().toISOString(),
       from: server.id,
-      files: [...files].map(file => ({
+      file: {
+        id: uuid(),
         name: file.name,
         type: file.type,
         size: file.size,
-      })),
+      },
+    })) as FileMessage[]
+
+    const sendFile = async (message: FileMessage, i: number) => {
+      const chunk = 256 * 1024
+      const reader = new FileReader()
+      let offset = 0
+      let flag = 0
+
+      reader.addEventListener('error', error =>
+        console.debug('[file-reader]', 'read file error', error)
+      )
+
+      reader.addEventListener('abort', abort =>
+        console.debug('[file-reader]', 'read file abort', abort)
+      )
+
+      reader.addEventListener('load', () => {
+        if (flag === 0) {
+          addMessage<FileMessage>(message)
+          addFile({ ...message.file, progress: 0, blob: files[i] })
+          connection.channel?.sendMessage('file', message)
+
+          flag = 1
+        }
+
+        const result = reader.result as ArrayBuffer
+        connection.channel?.sendFile(result)
+        offset += result.byteLength
+
+        const progress = (offset / message.file.size) * 100
+        console.debug('[file-reader]', 'file load ->', progress)
+        setProgress(message.file.id, progress)
+
+        if (offset < message.file.size) slice(offset)
+        if (progress !== 100) return
+      })
+
+      const slice = (start: number) => {
+        const blob = files[i].slice(start, start + chunk)
+        reader.readAsArrayBuffer(blob)
+      }
+
+      slice(0)
     }
 
-    connection.channel?.send('file', data)
-    addMessage<FileMessage>(data as FileMessage)
+    for (const [index, message] of messages.entries())
+      await sendFile(message, index)
   }
 
   return (

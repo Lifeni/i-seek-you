@@ -4,8 +4,8 @@ import { type WebSocketType } from '../../index.d'
 import { useConnection, type Connection } from '../context/Connection'
 import { useServer, type Server } from '../context/Server'
 import { useSettings, type Settings } from '../context/Settings'
-import { DataChannel } from './peer-connection/DataChannel'
-import { Media } from './peer-connection/Media'
+import { DataChannel } from './connection/DataChannel'
+import { Media } from './connection/Media'
 
 export class Signaling {
   public websocket: WebSocket

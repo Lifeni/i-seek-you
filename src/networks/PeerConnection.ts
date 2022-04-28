@@ -16,7 +16,10 @@ export interface PeerConnectionProps {
 export class PeerConnection {
   public webrtc?: RTCPeerConnection | null
   public websocket: InstanceType<typeof Signaling> | null
-  public channel?: RTCDataChannel | null
+  public channel: {
+    message: RTCDataChannel | null | undefined
+    file: RTCDataChannel | null | undefined
+  }
 
   public id: Readonly<string>
   public caller: Readonly<boolean>
@@ -38,6 +41,7 @@ export class PeerConnection {
   }: PeerConnectionProps) {
     this.context = { settings, server, connection }
     this.websocket = server[0].websocket
+    this.channel = { message: null, file: null }
     this.id = id
     this.caller = !!caller
     this.name = name
@@ -47,8 +51,12 @@ export class PeerConnection {
 
   public close() {
     console.debug(`[${this.name}]`, 'close')
-    this.channel?.close()
-    this.channel = null
+
+    this.channel.message?.close()
+    this.channel.file?.close()
+    this.channel.message = null
+    this.channel.file = null
+
     this.webrtc?.close()
     this.webrtc = null
   }
