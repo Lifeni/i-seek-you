@@ -108,6 +108,11 @@ export class DataChannel extends PeerConnection {
             this.context.connection[1].resetStreams()
             break
           }
+          case 'hang-up': {
+            this.context.connection[1].resetStreams()
+            this.context.connection[1].setMode('message')
+            break
+          }
         }
         break
       }
@@ -129,7 +134,7 @@ export class DataChannel extends PeerConnection {
       this.context.connection[1].setBlob(file.id, blob)
       this.buffer = []
       this.size = 0
-      this.file.pop()
+      this.file.shift()
     }
   }
 

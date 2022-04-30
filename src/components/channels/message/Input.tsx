@@ -82,51 +82,55 @@ export const Input = () => {
       },
     })) as FileMessage[]
 
-    const sendFile = async (message: FileMessage, i: number) => {
-      const chunk = 256 * 1024
-      const reader = new FileReader()
-      let offset = 0
-      let flag = 0
+    const sendFile = (message: FileMessage, file: File) => {
+      addMessage<FileMessage>(message)
+      addFile({ ...message.file, progress: 0, blob: file })
+      connection.channel?.sendMessage('file', message)
 
-      reader.addEventListener('error', error =>
-        console.debug('[file-reader]', 'read file error', error)
-      )
+      return new Promise<void>((resolve, reject) => {
+        const chunk = 256 * 1024
+        const reader = new FileReader()
+        let offset = 0
 
-      reader.addEventListener('abort', abort =>
-        console.debug('[file-reader]', 'read file abort', abort)
-      )
-
-      reader.addEventListener('load', () => {
-        if (flag === 0) {
-          addMessage<FileMessage>(message)
-          addFile({ ...message.file, progress: 0, blob: files[i] })
-          connection.channel?.sendMessage('file', message)
-
-          flag = 1
+        const handleError = (event: ProgressEvent<FileReader>) => {
+          console.debug('[file-reader]', 'read file error', event)
+          reject('read file error')
         }
 
-        const result = reader.result as ArrayBuffer
-        connection.channel?.sendFile(result)
-        offset += result.byteLength
+        reader.addEventListener('error', handleError)
+        reader.addEventListener('abort', handleError)
 
-        const progress = (offset / message.file.size) * 100
-        console.debug('[file-reader]', 'file load ->', progress)
-        setProgress(message.file.id, progress)
+        const handleLoad = () => {
+          const result = reader.result as ArrayBuffer
+          connection.channel?.sendFile(result)
+          offset += result.byteLength
 
-        if (offset < message.file.size) slice(offset)
-        if (progress !== 100) return
+          const progress = (offset / message.file.size) * 100
+          console.debug('[file-reader]', 'file load ->', progress)
+          setProgress(message.file.id, progress)
+
+          if (offset < message.file.size) slice(offset)
+          if (progress !== 100) return
+          resolve()
+          reader.removeEventListener('load', handleLoad)
+          reader.removeEventListener('error', handleError)
+          reader.removeEventListener('abort', handleError)
+        }
+
+        reader.addEventListener('load', handleLoad)
+
+        const slice = (start: number) => {
+          const blob = file.slice(start, start + chunk)
+          reader.readAsArrayBuffer(blob)
+        }
+
+        slice(0)
       })
-
-      const slice = (start: number) => {
-        const blob = files[i].slice(start, start + chunk)
-        reader.readAsArrayBuffer(blob)
-      }
-
-      slice(0)
     }
 
-    for (const [index, message] of messages.entries())
-      await sendFile(message, index)
+    for (const [i, message] of messages.entries()) {
+      await sendFile(message, files[i])
+    }
   }
 
   return (

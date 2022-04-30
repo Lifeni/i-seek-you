@@ -21,6 +21,7 @@ export const Controls = () => {
 
   const handleHangUp = () => {
     resetVoice()
+    connection.channel?.sendMessage('stream', { action: 'hang-up' })
     connection.media?.clear()
     setMedia(null)
     setMode('message')

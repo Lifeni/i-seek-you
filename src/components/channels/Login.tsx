@@ -1,3 +1,5 @@
+import init, { SM3 } from '@lifeni/libsm-js'
+import wasm from '@lifeni/libsm-js/libsm_js_bg.wasm?url'
 import { useNavigate } from 'solid-app-router'
 import {
   RiSystemErrorWarningFill,
@@ -6,6 +8,7 @@ import {
 import { createSignal, Match, Show, Switch, type JSX } from 'solid-js'
 import { useConnection } from '../../context/Connection'
 import { useServer } from '../../context/Server'
+import { toHex } from '../../libs/Utils'
 import { Input } from '../base/Form'
 import { Modal } from '../base/Modal'
 
@@ -19,9 +22,15 @@ export const Login = () => {
   const isError = () => connection.signal === 'error'
   const isAuth = () => connection.signal === 'auth'
 
-  const handleAuth = () => {
-    const id = connection.id
-    server.websocket?.send('call', { id, password: password() })
+  const handleAuth = async () => {
+    const enc = new TextEncoder()
+    const key = `${server.id}->${connection.id}:${password()}`
+
+    await init(wasm).then(lib => lib.start())
+    const sm3 = new SM3(enc.encode(key))
+    const hash = toHex(sm3.get_hash())
+
+    server.websocket?.send('call', { id: connection.id, password: hash })
     setSignal('loading')
   }
 

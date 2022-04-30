@@ -1,9 +1,12 @@
+import init, { SM3 } from '@lifeni/libsm-js'
+import wasm from '@lifeni/libsm-js/libsm_js_bg.wasm?url'
 import { useNavigate, type Navigator } from 'solid-app-router'
 import { batch } from 'solid-js'
 import { type WebSocketType } from '../../index.d'
 import { useConnection, type Connection } from '../context/Connection'
 import { useServer, type Server } from '../context/Server'
 import { useSettings, type Settings } from '../context/Settings'
+import { toHex } from '../libs/Utils'
 import { DataChannel } from './connection/DataChannel'
 import { Media } from './connection/Media'
 
@@ -68,7 +71,7 @@ export class Signaling {
     }, 5000)
   }
 
-  public onMessage(event: MessageEvent) {
+  public async onMessage(event: MessageEvent) {
     const data = JSON.parse(event.data)
     if (data.type !== 'pong')
       console.debug('[websocket]', 'received ->', data.type)
@@ -103,23 +106,23 @@ export class Signaling {
       }
       case 'call': {
         const { peer, password } = data as WebSocketType['Call']
-        if (
-          !this.context.settings[0].password ||
-          password === this.context.settings[0].password
-        ) {
+
+        const enc = new TextEncoder()
+        const key = `${peer.id}->${this.context.server[0].id}:${
+          this.context.settings[0].password ?? ''
+        }`
+
+        await init(wasm).then(lib => lib.start())
+        const sm3 = new SM3(enc.encode(key))
+        const hash = toHex(sm3.get_hash())
+
+        if (!this.context.settings[0].password || password === hash) {
           if (this.context.connection[0].signal === 'idle') {
             this.context.connection[1].setConfirm(true)
             this.context.connection[1].setPeer(peer)
-          } else
-            this.send('error', {
-              id: peer.id,
-              message: 'Peer is Busy',
-            })
+          } else this.send('error', { id: peer.id, message: 'Peer is Busy' })
         } else
-          this.send('error', {
-            id: peer.id,
-            message: 'Authentication Failed',
-          })
+          this.send('error', { id: peer.id, message: 'Authentication Failed' })
         break
       }
       case 'disconnect': {
