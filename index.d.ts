@@ -49,7 +49,10 @@ export type WebSocketType = {
   Id: { type: 'id'; id: string }
   Lobby: { type: 'lobby'; peers: Peer[] }
   Peer: { type: 'peer'; peer: Peer }
-  Call: { type: 'call'; peer: Peer; password: string }
+  Call: { type: 'call'; peer: Peer; password: string; pk: string }
+  Answer: { type: 'answer'; pk: string; ra: string }
+  ExchangeA: { type: 'exchange-a'; rb: string; sb: string }
+  ExchangeB: { type: 'exchange-b'; sa: string }
   Sdp: { type: 'sdp'; sdp: RTCSessionDescriptionInit; name: ConnectionName }
   Ice: { type: 'ice'; candidate: RTCIceCandidateInit; name: ConnectionName }
   Media: { type: 'media' }
@@ -83,4 +86,17 @@ export type FileBlob = {
   type: string
   progress: number
   blob: Blob | null
+}
+
+export type Keypair = {
+  pk: Uint8Array
+  sk: Uint8Array
+
+  ra: Uint8Array
+  rb: Uint8Array
+  sa: Uint8Array
+  sb: Uint8Array
+
+  ppk: Uint8Array // Peer Public Key
+  key: Uint8Array // Final Key
 }

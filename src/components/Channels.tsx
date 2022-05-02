@@ -1,25 +1,24 @@
+import { SM2, SM2ExchangeA } from '@lifeni/libsm-js'
 import { useLocation, useNavigate } from 'solid-app-router'
 import { batch, createEffect, createMemo, on, Show } from 'solid-js'
 import { Title } from 'solid-meta'
 import { VoiceProvider } from '../context/channels/Voice'
 import { useConnection } from '../context/Connection'
 import { useServer } from '../context/Server'
-import { useSettings } from '../context/Settings'
-import { DataChannel } from '../networks/connection/DataChannel'
+import { toHex } from '../libs/Utils'
 import { Modal } from './base/Modal'
 import { Login } from './channels/Login'
 import { Message } from './channels/Message'
 import { Voice } from './channels/Voice'
 
 export const Channels = () => {
-  const settings = useSettings()
   const servers = useServer()
   const connections = useConnection()
 
   const [server] = servers
   const [
     connection,
-    { setId, setSignal, setInfo, setChannel, resetConnection },
+    { setId, setSignal, setInfo, setKeys, setExchange, resetConnection },
   ] = connections
 
   const navigate = useNavigate()
@@ -55,21 +54,51 @@ export const Channels = () => {
       if (!id) return
       switch (signal) {
         case 'call': {
-          server.websocket?.send('call', { id })
+          const sm2 = new SM2()
+          const pair = sm2.new_keypair()
+          console.debug('[sm2]', 'new keypair')
+
+          batch(() => {
+            setKeys('pk', pair.pk)
+            setKeys('sk', pair.sk)
+          })
+
+          server.websocket?.send('call', { id, pk: toHex(pair.pk) })
           setSignal('loading')
           setInfo('Calling...')
           break
         }
         case 'answer': {
-          server.websocket?.send('answer', { id })
-          const webrtc = new DataChannel({
-            settings,
-            server: servers,
-            connection: connections,
-            id,
+          const sm2 = new SM2()
+          const pair = sm2.new_keypair()
+          console.debug('[sm2]', 'new keypair')
+
+          if (!connection.keys) return
+          const exchange = new SM2ExchangeA(
+            server.id,
+            connection.id,
+            pair.pk,
+            connection.keys.ppk,
+            pair.sk
+          )
+          const ra = exchange.exchange1()
+          console.debug('[sm2]', 'exchange 1')
+
+          batch(() => {
+            setKeys('pk', pair.pk)
+            setKeys('sk', pair.sk)
+            setKeys('ra', pair.ra)
+            setExchange(exchange)
           })
-          setChannel(webrtc)
+
+          server.websocket?.send('answer', {
+            id,
+            pk: toHex(pair.pk),
+            ra: toHex(ra),
+          })
+
           setSignal('loading')
+          setInfo('Key Generating...')
           break
         }
       }

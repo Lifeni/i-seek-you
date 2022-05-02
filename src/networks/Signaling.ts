@@ -1,12 +1,11 @@
-import init, { SM3 } from '@lifeni/libsm-js'
-import wasm from '@lifeni/libsm-js/libsm_js_bg.wasm?url'
+import { SM2ExchangeA, SM2ExchangeB, SM3 } from '@lifeni/libsm-js'
 import { useNavigate, type Navigator } from 'solid-app-router'
 import { batch } from 'solid-js'
 import { type WebSocketType } from '../../index.d'
 import { useConnection, type Connection } from '../context/Connection'
 import { useServer, type Server } from '../context/Server'
 import { useSettings, type Settings } from '../context/Settings'
-import { toHex } from '../libs/Utils'
+import { toHex, toUint8 } from '../libs/Utils'
 import { DataChannel } from './connection/DataChannel'
 import { Media } from './connection/Media'
 
@@ -105,24 +104,33 @@ export class Signaling {
         break
       }
       case 'call': {
-        const { peer, password } = data as WebSocketType['Call']
+        const { peer, password, pk } = data as WebSocketType['Call']
 
-        const enc = new TextEncoder()
-        const key = `${peer.id}->${this.context.server[0].id}:${
-          this.context.settings[0].password ?? ''
-        }`
-
-        await init(wasm).then(lib => lib.start())
-        const sm3 = new SM3(enc.encode(key))
+        const key = toUint8(
+          `${peer.id}->${this.context.server[0].id}:${
+            this.context.settings[0].password ?? ''
+          }`
+        )
+        const sm3 = new SM3(key)
         const hash = toHex(sm3.get_hash())
 
         if (!this.context.settings[0].password || password === hash) {
-          if (this.context.connection[0].signal === 'idle') {
-            this.context.connection[1].setConfirm(true)
-            this.context.connection[1].setPeer(peer)
-          } else this.send('error', { id: peer.id, message: 'Peer is Busy' })
+          if (this.context.connection[0].signal === 'idle')
+            batch(() => {
+              this.context.connection[1].setConfirm(true)
+              this.context.connection[1].setPeer(peer)
+              this.context.connection[1].setKeys('ppk', toUint8(pk))
+            })
+          else
+            this.send('error', {
+              id: peer.id,
+              message: 'Peer is Busy',
+            })
         } else
-          this.send('error', { id: peer.id, message: 'Authentication Failed' })
+          this.send('error', {
+            id: peer.id,
+            message: 'Authentication Failed',
+          })
         break
       }
       case 'disconnect': {
@@ -131,17 +139,95 @@ export class Signaling {
         break
       }
       case 'answer': {
+        const { pk, ra } = data as WebSocketType['Answer']
+        const peer = this.context.connection[0].peer
+        const keys = this.context.connection[0].keys
+        if (!keys) return
+
+        const exchange = new SM2ExchangeB(
+          this.context.connection[0].id,
+          this.context.server[0].id,
+          toUint8(pk),
+          keys.pk,
+          keys.sk
+        )
+        const { r_b: rb, s_b: sb } = exchange.exchange2(toUint8(ra))
+        console.debug('[sm2]', 'exchange 2')
+
+        batch(() => {
+          this.context.connection[1].setKeys('ppk', toUint8(pk))
+          this.context.connection[1].setKeys('ra', toUint8(ra))
+          this.context.connection[1].setKeys('rb', rb)
+          this.context.connection[1].setKeys('sb', sb)
+
+          this.context.connection[1].setExchange(exchange)
+          this.context.connection[1].setSignal('loading')
+          this.context.connection[1].setInfo('Key Generating...')
+        })
+
+        this.send('exchange-a', { id: peer.id, rb: toHex(rb), sb: toHex(sb) })
+        break
+      }
+      case 'exchange-a': {
+        const { rb, sb } = data as WebSocketType['ExchangeA']
+
+        const peer = this.context.connection[0].peer
+        const exchange = this.context.connection[0].exchange as SM2ExchangeA
+        if (!exchange) return
+
+        const sa = exchange.exchange3(toUint8(rb), toUint8(sb))
+        console.debug('[sm2]', 'exchange 3')
+
+        this.context.connection[1].setKeys('sa', sa)
+        this.send('exchange-b', { id: peer.id, sa: toHex(sa) })
+        break
+      }
+
+      case 'exchange-b': {
+        const { sa } = data as WebSocketType['ExchangeB']
+
+        const peer = this.context.connection[0].peer
+        const exchange = this.context.connection[0].exchange as SM2ExchangeB
+        const keys = this.context.connection[0].keys
+        if (!exchange || !keys) return
+
+        const result = exchange.exchange4(keys.ra, toUint8(sa))
+        console.debug('[sm2]', 'exchange 4')
+
+        if (result) {
+          this.send('connect')
+          const webrtc = new DataChannel({
+            settings: this.context.settings,
+            server: this.context.server,
+            connection: this.context.connection,
+            caller: true,
+            id: this.context.connection[0].id,
+          })
+          this.channel = webrtc
+          batch(() => {
+            this.context.connection[1].setKeys('key', exchange.get_key())
+            this.context.connection[1].setInfo('Connecting...')
+          })
+        } else
+          this.send('error', {
+            id: peer.id,
+            message: 'Key Exchange Failed',
+          })
+        break
+      }
+      case 'connect': {
+        const exchange = this.context.connection[0].exchange as SM2ExchangeA
         const webrtc = new DataChannel({
           settings: this.context.settings,
           server: this.context.server,
           connection: this.context.connection,
-          caller: true,
           id: this.context.connection[0].id,
         })
         this.channel = webrtc
-        this.context.connection[1].setChannel(webrtc)
-        this.context.connection[1].setSignal('sdp')
-        this.context.connection[1].setInfo('Connecting...')
+        batch(() => {
+          this.context.connection[1].setKeys('key', exchange.get_key())
+          this.context.connection[1].setInfo('Connecting...')
+        })
         break
       }
       case 'media': {

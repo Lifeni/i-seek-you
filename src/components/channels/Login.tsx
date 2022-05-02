@@ -1,21 +1,20 @@
-import init, { SM3 } from '@lifeni/libsm-js'
-import wasm from '@lifeni/libsm-js/libsm_js_bg.wasm?url'
+import { SM2, SM3 } from '@lifeni/libsm-js'
 import { useNavigate } from 'solid-app-router'
 import {
   RiSystemErrorWarningFill,
   RiSystemInformationFill,
 } from 'solid-icons/ri'
-import { createSignal, Match, Show, Switch, type JSX } from 'solid-js'
+import { batch, createSignal, Match, Show, Switch, type JSX } from 'solid-js'
 import { useConnection } from '../../context/Connection'
 import { useServer } from '../../context/Server'
-import { toHex } from '../../libs/Utils'
+import { toHex, toUint8 } from '../../libs/Utils'
 import { Input } from '../base/Form'
 import { Modal } from '../base/Modal'
 
 export const Login = () => {
   const navigate = useNavigate()
   const [server] = useServer()
-  const [connection, { setSignal, resetConnection }] = useConnection()
+  const [connection, { setSignal, resetConnection, setKeys }] = useConnection()
   const [password, setPassword] = createSignal('')
 
   const isOpen = () => !['idle', 'connected'].includes(connection.signal)
@@ -23,14 +22,24 @@ export const Login = () => {
   const isAuth = () => connection.signal === 'auth'
 
   const handleAuth = async () => {
-    const enc = new TextEncoder()
     const key = `${server.id}->${connection.id}:${password()}`
-
-    await init(wasm).then(lib => lib.start())
-    const sm3 = new SM3(enc.encode(key))
+    const sm3 = new SM3(toUint8(key))
     const hash = toHex(sm3.get_hash())
 
-    server.websocket?.send('call', { id: connection.id, password: hash })
+    const sm2 = new SM2()
+    const pair = sm2.new_keypair()
+    console.debug('[sm2]', 'new keypair')
+
+    batch(() => {
+      setKeys('pk', pair.pk)
+      setKeys('sk', pair.sk)
+    })
+
+    server.websocket?.send('call', {
+      id: connection.id,
+      password: hash,
+      pk: toHex(pair.pk),
+    })
     setSignal('loading')
   }
 

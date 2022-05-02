@@ -1,3 +1,4 @@
+import { SM4 } from '@lifeni/libsm-js'
 import {
   RiBusinessSendPlaneFill,
   RiMediaImage2Fill,
@@ -5,11 +6,11 @@ import {
 } from 'solid-icons/ri'
 import { createEffect, createSignal, on, onCleanup, untrack } from 'solid-js'
 import tinykeys from 'tinykeys'
+import { v4 as uuid } from 'uuid'
 import { type FileMessage, type TextMessage } from '../../../../index.d'
 import { useConnection } from '../../../context/Connection'
 import { useServer } from '../../../context/Server'
 import { IconButton } from '../../base/Button'
-import { v4 as uuid } from 'uuid'
 
 export const Input = () => {
   const [server] = useServer()
@@ -69,18 +70,20 @@ export const Input = () => {
     const files = (e.target as HTMLInputElement).files || []
     if (files.length === 0) return
 
-    const messages = [...files].map(file => ({
-      id: uuid(),
-      type: 'file',
-      date: new Date().toISOString(),
-      from: server.id,
-      file: {
+    const messages = [...files]
+      .filter(file => file.size > 0)
+      .map(file => ({
         id: uuid(),
-        name: file.name,
-        type: file.type,
-        size: file.size,
-      },
-    })) as FileMessage[]
+        type: 'file',
+        date: new Date().toISOString(),
+        from: server.id,
+        file: {
+          id: uuid(),
+          name: file.name,
+          type: file.type,
+          size: file.size,
+        },
+      })) as FileMessage[]
 
     const sendFile = (message: FileMessage, file: File) => {
       addMessage<FileMessage>(message)
@@ -88,7 +91,7 @@ export const Input = () => {
       connection.channel?.sendMessage('file', message)
 
       return new Promise<void>((resolve, reject) => {
-        const chunk = 256 * 1024
+        const chunk = 32 * 1024
         const reader = new FileReader()
         let offset = 0
 
@@ -102,7 +105,14 @@ export const Input = () => {
 
         const handleLoad = () => {
           const result = reader.result as ArrayBuffer
-          connection.channel?.sendFile(result)
+          const keys = connection.keys
+          if (!result || !keys) return
+
+          const buffer = new Uint8Array(result)
+          const sm4 = new SM4(keys.key)
+          const encrypt = sm4.encrypt(buffer)
+
+          connection.channel?.sendFile(encrypt)
           offset += result.byteLength
 
           const progress = (offset / message.file.size) * 100

@@ -18,6 +18,7 @@ export const File = (props: FileProps) => {
   const [server] = useServer()
   const [connection] = useConnection()
   const [file, setFile] = createSignal<FileBlob | null>(null)
+  const [progress, setProgress] = createSignal(0)
 
   const url = () => {
     const blob = file()?.blob
@@ -33,6 +34,8 @@ export const File = (props: FileProps) => {
     on([() => connection.files], () => {
       const id = props.message.file.id
       const blob = connection.files.find(file => file.id === id) || null
+      setProgress(blob?.progress || 0)
+
       if (blob?.progress !== 100) return
       setFile(blob)
       setTimeout(() => props.onScroll(), 200)
@@ -120,9 +123,9 @@ export const File = (props: FileProps) => {
           h="0.75"
           bg="green-500 dark:green-400"
           transition="all"
-          style={{ width: `${file()?.progress ?? 0}%` }}
+          style={{ width: `${progress()}%` }}
         >
-          <span class="sr-only">{file()?.progress ?? 0}%</span>
+          <span class="sr-only">{progress()}%</span>
         </div>
       </div>
     </Dynamic>

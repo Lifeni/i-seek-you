@@ -1,4 +1,6 @@
-import { FileBlob } from '../../..'
+import { SM4 } from '@lifeni/libsm-js'
+import { type FileBlob } from '../../../index.d'
+import { toString, toUint8 } from '../../libs/Utils'
 import { PeerConnection, PeerConnectionProps } from '../PeerConnection'
 
 interface DataChannelProps extends Omit<PeerConnectionProps, 'name'> {}
@@ -34,10 +36,12 @@ export class DataChannel extends PeerConnection {
       )
     }
 
-    if (this.channel.message)
+    if (this.channel.message) {
+      this.channel.message.binaryType = 'arraybuffer'
       this.channel.message.addEventListener('open', e =>
         this.onChannelOpen(e as RTCDataChannelEvent)
       )
+    }
 
     console.debug('[data-channel]', 'send offer ->', this.id)
     this.webrtc?.createOffer().then(offer => {
@@ -50,9 +54,16 @@ export class DataChannel extends PeerConnection {
     })
   }
 
-  public sendMessage<T>(type: string, message?: T) {
+  public async sendMessage<T>(type: string, message?: T) {
     console.debug('[data-channel]', 'send ->', type)
-    this.channel?.message?.send(JSON.stringify({ type, ...message }))
+    const data = JSON.stringify({ type, ...message })
+    const keys = this.context.connection[0].keys
+    if (!keys) return
+
+    const sm4 = new SM4(keys.key)
+    const encrypt = sm4.encrypt(toUint8(data))
+
+    this.channel?.message?.send(encrypt.buffer)
   }
 
   public sendFile(file: ArrayBuffer) {
@@ -84,8 +95,16 @@ export class DataChannel extends PeerConnection {
     }
   }
 
-  public onChannelMessage(event: MessageEvent) {
-    const message = JSON.parse(event.data)
+  public async onChannelMessage(event: MessageEvent) {
+    const keys = this.context.connection[0].keys
+    if (!keys) return
+
+    const sm4 = new SM4(keys.key)
+    const decrypt = sm4.decrypt(new Uint8Array(event.data))
+
+    const data = toString(decrypt)
+    const message = JSON.parse(data)
+
     console.debug('[data-channel]', 'channel message ->', message.type)
     switch (message.type) {
       case 'text': {
@@ -119,9 +138,15 @@ export class DataChannel extends PeerConnection {
     }
   }
 
-  public onFileChannelMessage(event: MessageEvent) {
-    this.buffer.push(event.data as ArrayBuffer)
-    this.size += event.data.byteLength
+  public async onFileChannelMessage(event: MessageEvent) {
+    const keys = this.context.connection[0].keys
+    if (!keys) return
+
+    const sm4 = new SM4(keys.key)
+    const decrypt = sm4.decrypt(new Uint8Array(event.data))
+    this.buffer.push(decrypt)
+    this.size += decrypt.byteLength
+
     const file = this.file[0]
     if (!file) return
     const progress = (this.size / file.size) * 100
