@@ -5,7 +5,7 @@ import { type WebSocketType } from '../../index.d'
 import { useConnection, type Connection } from '../context/Connection'
 import { useServer, type Server } from '../context/Server'
 import { useSettings, type Settings } from '../context/Settings'
-import { toHex, toUint8 } from '../libs/Utils'
+import { fromHex, toHex, toUint8 } from '../libs/Utils'
 import { DataChannel } from './connection/DataChannel'
 import { Media } from './connection/Media'
 
@@ -119,7 +119,7 @@ export class Signaling {
             batch(() => {
               this.context.connection[1].setConfirm(true)
               this.context.connection[1].setPeer(peer)
-              this.context.connection[1].setKeys('ppk', toUint8(pk))
+              this.context.connection[1].setKeys('ppk', fromHex(pk))
             })
           else
             this.send('error', {
@@ -145,18 +145,19 @@ export class Signaling {
         if (!keys) return
 
         const exchange = new SM2ExchangeB(
+          16,
           this.context.connection[0].id,
           this.context.server[0].id,
-          toUint8(pk),
+          fromHex(pk),
           keys.pk,
           keys.sk
         )
-        const { r_b: rb, s_b: sb } = exchange.exchange2(toUint8(ra))
+        const { r_b: rb, s_b: sb } = exchange.exchange2(fromHex(ra))
         console.debug('[sm2]', 'exchange 2')
 
         batch(() => {
-          this.context.connection[1].setKeys('ppk', toUint8(pk))
-          this.context.connection[1].setKeys('ra', toUint8(ra))
+          this.context.connection[1].setKeys('ppk', fromHex(pk))
+          this.context.connection[1].setKeys('ra', fromHex(ra))
           this.context.connection[1].setKeys('rb', rb)
           this.context.connection[1].setKeys('sb', sb)
 
@@ -175,7 +176,7 @@ export class Signaling {
         const exchange = this.context.connection[0].exchange as SM2ExchangeA
         if (!exchange) return
 
-        const sa = exchange.exchange3(toUint8(rb), toUint8(sb))
+        const sa = exchange.exchange3(fromHex(rb), fromHex(sb))
         console.debug('[sm2]', 'exchange 3')
 
         this.context.connection[1].setKeys('sa', sa)
@@ -191,11 +192,11 @@ export class Signaling {
         const keys = this.context.connection[0].keys
         if (!exchange || !keys) return
 
-        const result = exchange.exchange4(keys.ra, toUint8(sa))
+        const result = exchange.exchange4(keys.ra, fromHex(sa))
         console.debug('[sm2]', 'exchange 4')
 
         if (result) {
-          this.send('connect')
+          this.send('connect', { id: peer.id })
           const webrtc = new DataChannel({
             settings: this.context.settings,
             server: this.context.server,
@@ -205,6 +206,7 @@ export class Signaling {
           })
           this.channel = webrtc
           batch(() => {
+            this.context.connection[1].setChannel(webrtc)
             this.context.connection[1].setKeys('key', exchange.get_key())
             this.context.connection[1].setInfo('Connecting...')
           })
@@ -225,6 +227,7 @@ export class Signaling {
         })
         this.channel = webrtc
         batch(() => {
+          this.context.connection[1].setChannel(webrtc)
           this.context.connection[1].setKeys('key', exchange.get_key())
           this.context.connection[1].setInfo('Connecting...')
         })

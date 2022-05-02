@@ -54,6 +54,11 @@ export const Channels = () => {
       if (!id) return
       switch (signal) {
         case 'call': {
+          batch(() => {
+            setSignal('loading')
+            setInfo('Calling...')
+          })
+
           const sm2 = new SM2()
           const pair = sm2.new_keypair()
           console.debug('[sm2]', 'new keypair')
@@ -64,17 +69,21 @@ export const Channels = () => {
           })
 
           server.websocket?.send('call', { id, pk: toHex(pair.pk) })
-          setSignal('loading')
-          setInfo('Calling...')
           break
         }
         case 'answer': {
+          if (!connection.keys) return
+          batch(() => {
+            setSignal('loading')
+            setInfo('Key Generating...')
+          })
+
           const sm2 = new SM2()
           const pair = sm2.new_keypair()
           console.debug('[sm2]', 'new keypair')
 
-          if (!connection.keys) return
           const exchange = new SM2ExchangeA(
+            16,
             server.id,
             connection.id,
             pair.pk,
@@ -96,9 +105,6 @@ export const Channels = () => {
             pk: toHex(pair.pk),
             ra: toHex(ra),
           })
-
-          setSignal('loading')
-          setInfo('Key Generating...')
           break
         }
       }

@@ -100,9 +100,6 @@ export class PeerConnection {
   public receiveAnswer(sdp: RTCSessionDescriptionInit) {
     console.debug(`[${this.name}]`, 'receive answer')
     this.webrtc?.setRemoteDescription(new RTCSessionDescription(sdp))
-
-    if (this.name === 'media-stream') return
-    this.context.connection[1].setSignal('ice')
   }
 
   public onIceCandidate(event: RTCPeerConnectionIceEvent) {
@@ -113,12 +110,6 @@ export class PeerConnection {
       candidate: event.candidate,
       name: this.name,
     })
-    if (
-      this.name === 'media-stream' ||
-      this.context.connection[0].signal === 'connected'
-    )
-      return
-    this.context.connection[1].setSignal('ice')
   }
 
   public addIceCandidate(candidate: RTCIceCandidateInit) {
@@ -175,7 +166,7 @@ export class PeerConnection {
         break
       }
       case 'checking': {
-        this.context.connection[1].setSignal('ice')
+        this.context.connection[1].setSignal('loading')
         this.context.connection[1].setInfo('ICE Gathering')
         break
       }

@@ -23,8 +23,6 @@ type Signal =
   | 'call'
   | 'answer'
   | 'error'
-  | 'sdp'
-  | 'ice'
   | 'connected'
 
 export type Connection = [

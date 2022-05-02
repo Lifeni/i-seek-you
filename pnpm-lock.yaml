@@ -1,7 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@lifeni/libsm-js': 0.1.4
+  '@lifeni/libsm-js': 0.1.5
   '@nuintun/qrcode': ^3.1.1
   '@playwright/test': ^1.21.1
   '@types/lodash': ^4.14.181
@@ -35,7 +35,7 @@ specifiers:
   windicss: ^3.5.1
 
 dependencies:
-  '@lifeni/libsm-js': 0.1.4
+  '@lifeni/libsm-js': 0.1.5
   '@nuintun/qrcode': 3.1.1
   '@ultimate/vault': 0.0.2
   gemoji: 7.1.0
@@ -728,8 +728,8 @@ packages:
       chalk: 4.1.2
     dev: true
 
-  /@lifeni/libsm-js/0.1.4:
-    resolution: {integrity: sha512-P/x7/lMKT+iOb3XSa2qVbvaOz5OZy5vq/fdM2SaS49fOm5+kJqR4whslF4M9h8/SxyQzTgE2NXSah6vZ/bObew==}
+  /@lifeni/libsm-js/0.1.5:
+    resolution: {integrity: sha512-WTOa7U01A5bu4GBMYI2GBEMxHsyzmXMT8On3CrUbS+mfGAkABgcNEOLq5AlS9JZIXSiWymVMz3omp73+ynPAFw==}
     dev: false
 
   /@nodelib/fs.scandir/2.1.5:

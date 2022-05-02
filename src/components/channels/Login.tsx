@@ -14,7 +14,8 @@ import { Modal } from '../base/Modal'
 export const Login = () => {
   const navigate = useNavigate()
   const [server] = useServer()
-  const [connection, { setSignal, resetConnection, setKeys }] = useConnection()
+  const [connection, { setSignal, resetConnection, setKeys, setInfo }] =
+    useConnection()
   const [password, setPassword] = createSignal('')
 
   const isOpen = () => !['idle', 'connected'].includes(connection.signal)
@@ -25,6 +26,11 @@ export const Login = () => {
     const key = `${server.id}->${connection.id}:${password()}`
     const sm3 = new SM3(toUint8(key))
     const hash = toHex(sm3.get_hash())
+
+    batch(() => {
+      setSignal('loading')
+      setInfo('Calling...')
+    })
 
     const sm2 = new SM2()
     const pair = sm2.new_keypair()
@@ -40,7 +46,6 @@ export const Login = () => {
       password: hash,
       pk: toHex(pair.pk),
     })
-    setSignal('loading')
   }
 
   const handleCancel = () => {
