@@ -1,4 +1,3 @@
-import { SM2, SM3 } from '@lifeni/libsm-js'
 import { useNavigate } from 'solid-app-router'
 import {
   RiSystemErrorWarningFill,
@@ -7,15 +6,13 @@ import {
 import { batch, createSignal, Match, Show, Switch, type JSX } from 'solid-js'
 import { useConnection } from '../../context/Connection'
 import { useServer } from '../../context/Server'
-import { toHex, toUint8 } from '../../libs/Utils'
 import { Input } from '../base/Form'
 import { Modal } from '../base/Modal'
 
 export const Login = () => {
   const navigate = useNavigate()
   const [server] = useServer()
-  const [connection, { setSignal, resetConnection, setKeys, setInfo }] =
-    useConnection()
+  const [connection, { setSignal, resetConnection, setInfo }] = useConnection()
   const [password, setPassword] = createSignal('')
 
   const isOpen = () => !['idle', 'connected'].includes(connection.signal)
@@ -23,29 +20,24 @@ export const Login = () => {
   const isAuth = () => connection.signal === 'auth'
 
   const handleAuth = async () => {
-    const key = `${server.id}->${connection.id}:${password()}`
-    const sm3 = new SM3(toUint8(key))
-    const hash = toHex(sm3.get_hash())
-
     batch(() => {
       setSignal('loading')
       setInfo('Calling...')
     })
 
-    const sm2 = new SM2()
-    const pair = sm2.new_keypair()
-    console.debug('[sm2]', 'new keypair')
+    const key = `${server.id}->${connection.id}:${password()}`
 
-    batch(() => {
-      setKeys('pk', pair.pk)
-      setKeys('sk', pair.sk)
-    })
+    const handleMessage = (event: MessageEvent) => {
+      const { type, hash, pk } = event.data
+      if (type !== 'call') return
+      console.debug('[sm2]', 'new keypair')
+      server.websocket?.send('call', { id: connection.id, password: hash, pk })
+      worker?.removeEventListener('message', handleMessage)
+    }
 
-    server.websocket?.send('call', {
-      id: connection.id,
-      password: hash,
-      pk: toHex(pair.pk),
-    })
+    const worker = server.worker
+    worker?.addEventListener('message', handleMessage)
+    worker?.postMessage({ action: 'call', text: key })
   }
 
   const handleCancel = () => {

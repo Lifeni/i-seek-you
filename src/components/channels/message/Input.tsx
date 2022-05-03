@@ -1,4 +1,3 @@
-import { SM4 } from '@lifeni/libsm-js'
 import {
   RiBusinessSendPlaneFill,
   RiMediaImage2Fill,
@@ -100,34 +99,43 @@ export const Input = () => {
           reject('read file error')
         }
 
-        reader.addEventListener('error', handleError)
-        reader.addEventListener('abort', handleError)
-
         const handleLoad = () => {
           const result = reader.result as ArrayBuffer
-          const keys = connection.keys
-          if (!result || !keys) return
+          if (!result) return
 
-          const buffer = new Uint8Array(result)
-          const sm4 = new SM4(keys.key)
-          const encrypt = sm4.encrypt(buffer)
-
-          connection.channel?.sendFile(encrypt)
-          offset += result.byteLength
-
-          const progress = (offset / message.file.size) * 100
-          console.debug('[file-reader]', 'file load ->', progress)
-          setProgress(message.file.id, progress)
-
-          if (offset < message.file.size) slice(offset)
-          if (progress !== 100) return
-          resolve()
-          reader.removeEventListener('load', handleLoad)
-          reader.removeEventListener('error', handleError)
-          reader.removeEventListener('abort', handleError)
+          worker?.postMessage({
+            action: 'encrypt',
+            buffer: new Uint8Array(result),
+            id: 'file',
+            length: result.byteLength,
+          })
         }
 
+        const handleMessage = (event: MessageEvent) => {
+          const { type, encrypt, id, length } = event.data
+          if (type !== 'encrypt' || id !== 'file') return
+          connection.channel?.sendFile(encrypt)
+
+          offset += length
+          const progress = (offset / message.file.size) * 100
+          console.debug('[file-reader]', 'file load ->', progress, offset)
+          setProgress(message.file.id, progress)
+          if (offset < message.file.size) slice(offset)
+
+          if (progress !== 100) return
+          console.debug('[file-reader]', 'file send')
+          reader.removeEventListener('error', handleError)
+          reader.removeEventListener('load', handleLoad)
+          reader.removeEventListener('abort', handleError)
+          worker?.removeEventListener('message', handleMessage)
+          resolve()
+        }
+
+        const worker = server.worker
+        worker?.addEventListener('message', handleMessage)
         reader.addEventListener('load', handleLoad)
+        reader.addEventListener('error', handleError)
+        reader.addEventListener('abort', handleError)
 
         const slice = (start: number) => {
           const blob = file.slice(start, start + chunk)

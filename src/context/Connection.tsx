@@ -1,12 +1,10 @@
-import { SM2ExchangeA, SM2ExchangeB } from '@lifeni/libsm-js'
 import { createContext, untrack, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import {
   type FileBlob,
   type FileMessage,
-  type TextMessage,
   type Peer,
-  Keypair as KeyPair,
+  type TextMessage,
 } from '../../index.d'
 import { DataChannel } from '../networks/connection/DataChannel'
 import { Media } from '../networks/connection/Media'
@@ -39,8 +37,6 @@ export type Connection = [
     files: Array<FileBlob>
     media: InstanceType<typeof Media> | null
     streams: readonly MediaStream[]
-    keys: KeyPair | null
-    exchange: SM2ExchangeA | SM2ExchangeB | null
   },
   {
     setMode: (mode: Mode) => void
@@ -57,8 +53,6 @@ export type Connection = [
     setBlob: (id: string, blob: Blob) => void
     addFile: (file: FileBlob | FileBlob[]) => void
     setStreams: (streams: readonly MediaStream[]) => void
-    setKeys: (name: keyof KeyPair, value: Uint8Array) => void
-    setExchange: (exchange: SM2ExchangeA | SM2ExchangeB | null) => void
     resetStreams: () => void
     resetConnection: () => void
   }
@@ -85,8 +79,6 @@ const defaultConnection: Connection = [
     files: [],
     media: null,
     streams: [],
-    keys: null,
-    exchange: null,
   },
   {
     setMode: () => {},
@@ -103,8 +95,6 @@ const defaultConnection: Connection = [
     setBlob: () => {},
     addFile: () => {},
     setStreams: () => {},
-    setKeys: () => {},
-    setExchange: () => {},
     resetStreams: () => {},
     resetConnection: () => {},
   },
@@ -157,10 +147,6 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
         setConnection('media', () => media),
       setStreams: (streams: readonly MediaStream[]) =>
         setConnection('streams', () => streams),
-      setKeys: (name: keyof KeyPair, value: Uint8Array) =>
-        setConnection('keys', key => ({ ...key, [name]: value })),
-      setExchange: (exchange: SM2ExchangeA | SM2ExchangeB | null) =>
-        setConnection('exchange', () => exchange),
       resetStreams: () => setConnection('streams', () => []),
       resetConnection: () => {
         untrack(() => {

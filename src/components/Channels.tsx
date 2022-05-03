@@ -1,11 +1,9 @@
-import { SM2, SM2ExchangeA } from '@lifeni/libsm-js'
 import { useLocation, useNavigate } from 'solid-app-router'
 import { batch, createEffect, createMemo, on, Show } from 'solid-js'
 import { Title } from 'solid-meta'
 import { VoiceProvider } from '../context/channels/Voice'
 import { useConnection } from '../context/Connection'
 import { useServer } from '../context/Server'
-import { toHex } from '../libs/Utils'
 import { Modal } from './base/Modal'
 import { Login } from './channels/Login'
 import { Message } from './channels/Message'
@@ -16,10 +14,8 @@ export const Channels = () => {
   const connections = useConnection()
 
   const [server] = servers
-  const [
-    connection,
-    { setId, setSignal, setInfo, setKeys, setExchange, resetConnection },
-  ] = connections
+  const [connection, { setId, setSignal, setInfo, resetConnection }] =
+    connections
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -41,8 +37,8 @@ export const Channels = () => {
       if (!id || status !== 'connected') return
       batch(() => {
         setId(id)
-        setSignal('loading')
         if (signal() !== 'idle') return
+        setSignal('loading')
         server.websocket?.send('find', { id })
         setInfo('Finding...')
       })
@@ -59,51 +55,40 @@ export const Channels = () => {
             setInfo('Calling...')
           })
 
-          const sm2 = new SM2()
-          const pair = sm2.new_keypair()
-          console.debug('[sm2]', 'new keypair')
+          const handleMessage = (event: MessageEvent) => {
+            const { type, pk } = event.data
+            if (type !== 'keypair') return
+            console.debug('[sm2]', 'new keypair')
+            server.websocket?.send('call', { id, pk })
+            worker?.removeEventListener('message', handleMessage)
+          }
 
-          batch(() => {
-            setKeys('pk', pair.pk)
-            setKeys('sk', pair.sk)
-          })
-
-          server.websocket?.send('call', { id, pk: toHex(pair.pk) })
+          const worker = server.worker
+          worker?.addEventListener('message', handleMessage)
+          worker?.postMessage({ action: 'keypair' })
           break
         }
         case 'answer': {
-          if (!connection.keys) return
           batch(() => {
             setSignal('loading')
             setInfo('Key Generating...')
           })
 
-          const sm2 = new SM2()
-          const pair = sm2.new_keypair()
-          console.debug('[sm2]', 'new keypair')
+          const handleMessage = (event: MessageEvent) => {
+            const { type, pk, ra } = event.data
+            if (type !== 'exchange-1') return
+            console.debug('[sm2]', 'new keypair')
+            console.debug('[sm2]', 'exchange 1')
+            server.websocket?.send('answer', { id, pk, ra })
+            worker?.removeEventListener('message', handleMessage)
+          }
 
-          const exchange = new SM2ExchangeA(
-            16,
-            server.id,
-            connection.id,
-            pair.pk,
-            connection.keys.ppk,
-            pair.sk
-          )
-          const ra = exchange.exchange1()
-          console.debug('[sm2]', 'exchange 1')
-
-          batch(() => {
-            setKeys('pk', pair.pk)
-            setKeys('sk', pair.sk)
-            setKeys('ra', pair.ra)
-            setExchange(exchange)
-          })
-
-          server.websocket?.send('answer', {
-            id,
-            pk: toHex(pair.pk),
-            ra: toHex(ra),
+          const worker = server.worker
+          worker?.addEventListener('message', handleMessage)
+          worker?.postMessage({
+            action: 'exchange-1',
+            id: server.id,
+            pid: connection.id,
           })
           break
         }

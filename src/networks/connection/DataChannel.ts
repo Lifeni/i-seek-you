@@ -1,6 +1,5 @@
-import { SM4 } from '@lifeni/libsm-js'
 import { type FileBlob } from '../../../index.d'
-import { toString, toUint8 } from '../../libs/Utils'
+import { toJSON, toUint8 } from '../../libs/Utils'
 import { PeerConnection, PeerConnectionProps } from '../PeerConnection'
 
 interface DataChannelProps extends Omit<PeerConnectionProps, 'name'> {}
@@ -9,6 +8,7 @@ export class DataChannel extends PeerConnection {
   public buffer: ArrayBuffer[] = []
   public size = 0
   public file: FileBlob[] = []
+  public worker: Worker | null = null
 
   constructor(props: DataChannelProps) {
     super({ ...props, name: 'data-channel' })
@@ -57,17 +57,25 @@ export class DataChannel extends PeerConnection {
   public async sendMessage<T>(type: string, message?: T) {
     console.debug('[data-channel]', 'send ->', type)
     const data = JSON.stringify({ type, ...message })
-    const keys = this.context.connection[0].keys
-    if (!keys) return
 
-    const sm4 = new SM4(keys.key)
-    const encrypt = sm4.encrypt(toUint8(data))
+    const handleMessage = (event: MessageEvent) => {
+      const { type, encrypt, id } = event.data
+      if (type !== 'encrypt' || id !== 'message') return
+      this.channel?.message?.send(encrypt.buffer)
+      worker?.removeEventListener('message', handleMessage)
+    }
 
-    this.channel?.message?.send(encrypt.buffer)
+    const worker = this.context.server[0].worker
+    worker?.addEventListener('message', handleMessage)
+    worker?.postMessage({
+      action: 'encrypt',
+      buffer: toUint8(data),
+      id: 'message',
+    })
   }
 
   public sendFile(file: ArrayBuffer) {
-    console.debug('[data-channel]', 'send file')
+    console.debug('[data-channel]', 'send file buffer')
     this.channel?.file?.send(file)
   }
 
@@ -96,54 +104,70 @@ export class DataChannel extends PeerConnection {
   }
 
   public async onChannelMessage(event: MessageEvent) {
-    const keys = this.context.connection[0].keys
-    if (!keys) return
+    const handleMessage = (event: MessageEvent) => {
+      const { type, decrypt, id } = event.data
+      if (type !== 'decrypt' || id !== 'message') return
+      const message = toJSON(decrypt)
 
-    const sm4 = new SM4(keys.key)
-    const decrypt = sm4.decrypt(new Uint8Array(event.data))
-
-    const data = toString(decrypt)
-    const message = JSON.parse(data)
-
-    console.debug('[data-channel]', 'channel message ->', message.type)
-    switch (message.type) {
-      case 'text': {
-        this.context.connection[1].addMessage(message)
-        break
-      }
-      case 'file': {
-        this.context.connection[1].addMessage(message)
-        this.context.connection[1].addFile({
-          ...message.file,
-          progress: 0,
-          blob: null,
-        })
-        this.file.push(message.file)
-        break
-      }
-      case 'stream': {
-        switch (message.action) {
-          case 'clear': {
-            this.context.connection[1].resetStreams()
-            break
-          }
-          case 'hang-up': {
-            this.context.connection[1].resetStreams()
-            this.context.connection[1].setMode('message')
-            break
-          }
+      console.debug('[data-channel]', 'channel message ->', message.type)
+      switch (message.type) {
+        case 'text': {
+          this.context.connection[1].addMessage(message)
+          break
         }
-        break
+        case 'file': {
+          this.context.connection[1].addMessage(message)
+          this.context.connection[1].addFile({
+            ...message.file,
+            progress: 0,
+            blob: null,
+          })
+          this.file.push(message.file)
+          break
+        }
+        case 'stream': {
+          switch (message.action) {
+            case 'clear': {
+              this.context.connection[1].resetStreams()
+              break
+            }
+            case 'hang-up': {
+              this.context.connection[1].resetStreams()
+              this.context.connection[1].setMode('message')
+              break
+            }
+          }
+          break
+        }
       }
+      worker?.removeEventListener('message', handleMessage)
     }
+
+    const worker = this.context.server[0].worker
+    worker?.addEventListener('message', handleMessage)
+    worker?.postMessage({
+      action: 'decrypt',
+      buffer: new Uint8Array(event.data),
+      id: 'message',
+    })
   }
 
-  public async onFileChannelMessage(event: MessageEvent) {
-    const keys = this.context.connection[0].keys
-    if (!keys) return
+  public onFileChannelMessage(event: MessageEvent) {
+    if (!this.worker) {
+      this.worker = this.context.server[0].worker
+      this.worker?.addEventListener('message', this.handleFileDecrypt)
+    }
+    this.worker?.postMessage({
+      action: 'decrypt',
+      buffer: new Uint8Array(event.data),
+      id: 'file',
+    })
+  }
 
-    const sm4 = new SM4(keys.key)
-    const decrypt = sm4.decrypt(new Uint8Array(event.data))
+  public handleFileDecrypt = (event: MessageEvent) => {
+    const { type, decrypt, id } = event.data
+    if (type !== 'decrypt' || id !== 'file') return
+
     this.buffer.push(decrypt)
     this.size += decrypt.byteLength
 
@@ -165,10 +189,12 @@ export class DataChannel extends PeerConnection {
 
   public onChannelClose() {
     console.debug('[data-channel]', 'channel close')
+    this.worker?.removeEventListener('message', this.handleFileDecrypt)
   }
 
   public onChannelError(event: Event) {
     console.debug('[data-channel]', 'channel error')
     console.error((event as ErrorEvent).error)
+    this.worker?.removeEventListener('message', this.handleFileDecrypt)
   }
 }

@@ -1,8 +1,6 @@
-import init from '@lifeni/libsm-js'
-import wasm from '@lifeni/libsm-js/libsm_js_bg.wasm?url'
 import { Outlet } from 'solid-app-router'
-import { Title } from 'solid-meta'
 import { onMount, type Component } from 'solid-js'
+import { Title } from 'solid-meta'
 import { Call } from '../components/lobby/Call'
 import { Others } from '../components/lobby/Others'
 import { You } from '../components/lobby/You'
@@ -11,13 +9,15 @@ import { Server } from '../components/toolbar/Server'
 import { Settings } from '../components/toolbar/Settings'
 import { useServer } from '../context/Server'
 import { Signaling } from '../networks/Signaling'
+import Encryption from '../workers/Encryption?worker'
 
 const Home: Component = () => {
-  const [, { setWebSocket }] = useServer()
+  const [, { setWorker, setWebSocket }] = useServer()
   onMount(async () => {
+    const worker = new Encryption()
+    setWorker(worker)
     const signaling = new Signaling()
     setWebSocket(signaling)
-    await init(wasm).then(lib => lib.start())
   })
 
   return (

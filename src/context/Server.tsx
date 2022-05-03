@@ -12,6 +12,7 @@ export type Server = [
     ping: number
     websocket: InstanceType<typeof Signaling> | null
     peers: readonly Peer[]
+    worker: Worker | null
   },
   {
     setId: (id: string) => void
@@ -19,18 +20,27 @@ export type Server = [
     setPing: (ping: number) => void
     setWebSocket: (signaling: InstanceType<typeof Signaling>) => void
     setPeers: (peers: Peer[]) => void
+    setWorker: (worker: Worker) => void
     resetServer: (status: Status) => void
   }
 ]
 
 const defaultServer: Server = [
-  { id: '', status: 'connecting', ping: 0, websocket: null, peers: [] },
+  {
+    id: '',
+    status: 'connecting',
+    ping: 0,
+    websocket: null,
+    peers: [],
+    worker: null,
+  },
   {
     setId: () => {},
     setStatus: () => {},
     setPing: () => {},
     setWebSocket: () => {},
     setPeers: () => {},
+    setWorker: () => {},
     resetServer: () => {},
   },
 ]
@@ -52,6 +62,7 @@ export const ServerProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
       setPing: (ping: number) => setServer('ping', () => ping),
       setWebSocket: (websocket: InstanceType<typeof Signaling>) =>
         setServer('websocket', () => websocket),
+      setWorker: (worker: Worker) => setServer('worker', () => worker),
       setPeers: (peers: Peer[]) => setServer('peers', () => peers),
       resetServer: status => {
         setServer({
