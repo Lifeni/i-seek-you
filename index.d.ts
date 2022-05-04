@@ -100,3 +100,24 @@ export type Keypair = {
   ppk: Uint8Array // Peer Public Key
   key: Uint8Array // Final Key
 }
+
+declare module 'virtual:pwa-register/solid' {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore ignore when solid-js is not installed
+  import type { Accessor, Setter } from 'solid-js'
+
+  export interface RegisterSWOptions {
+    immediate?: boolean
+    onNeedRefresh?: () => void
+    onOfflineReady?: () => void
+    onRegistered?: (registration: ServiceWorkerRegistration | undefined) => void
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onRegisterError?: (error: any) => void
+  }
+
+  export function useRegisterSW(options?: RegisterSWOptions): {
+    needRefresh: [Accessor<boolean>, Setter<boolean>]
+    offlineReady: [Accessor<boolean>, Setter<boolean>]
+    updateServiceWorker: (reloadPage?: boolean) => Promise<void>
+  }
+}

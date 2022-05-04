@@ -3,6 +3,7 @@ import { lazy } from 'solid-js'
 import { render } from 'solid-js/web'
 import { MetaProvider } from 'solid-meta'
 import 'windi.css'
+import { Reload } from './components/Reload'
 import { ConnectionProvider } from './context/Connection'
 import { ServerProvider } from './context/Server'
 import { SettingsProvider } from './context/Settings'
@@ -22,6 +23,7 @@ const App = () => (
     text="gray-800 dark:gray-300"
     overflow="hidden"
   >
+    <Reload />
     <MetaProvider>
       <ServerProvider>
         <SettingsProvider>
