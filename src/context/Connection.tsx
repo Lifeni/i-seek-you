@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash'
 import { createContext, untrack, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import {
@@ -71,7 +72,7 @@ const defaultConnection: Connection = [
     signal: 'idle',
     info: 'Waiting...',
     id: '',
-    peer: defaultPeer,
+    peer: cloneDeep(defaultPeer),
     error: '',
     confirm: false,
     channel: null,
@@ -106,9 +107,9 @@ export const useConnection = () => useContext(ConnectionContext)
 
 export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
   const [server] = useServer()
-  const [connection, setConnection] = createStore<Connection[0]>({
-    ...defaultConnection[0],
-  })
+  const [connection, setConnection] = createStore<Connection[0]>(
+    cloneDeep(defaultConnection[0])
+  )
 
   const store: Connection = [
     connection as Connection[0],
@@ -153,7 +154,7 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
           connection.channel?.close()
           connection.media?.close()
         })
-        setConnection({ ...defaultConnection[0] })
+        setConnection(cloneDeep(defaultConnection[0]))
       },
     },
   ]

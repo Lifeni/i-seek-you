@@ -124,6 +124,7 @@ const Message = (props: MessageProps) => {
             justify="center"
             rounded="full"
             text="2xl sm:3xl"
+            font="emoji"
             select="none"
           >
             {getAuthor()?.emoji}

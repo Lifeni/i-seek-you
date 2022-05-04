@@ -28,6 +28,7 @@ export const PeerLink = (props: PeerLinkProps) => (
           justify="center"
           items="center"
           text="4rem sm:4.5rem center"
+          font="emoji"
           w="16 sm:18"
           h="16 sm:18"
           select="none"
@@ -105,6 +106,7 @@ export const ActionLink = (props: ActionLinkProps) => {
               w="7 sm:8"
               h="7 sm:8"
               text="inherit"
+              font="emoji"
             />
           </span>
         </Link>

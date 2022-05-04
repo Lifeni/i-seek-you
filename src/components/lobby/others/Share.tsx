@@ -35,7 +35,8 @@ export const Share = () => {
   const handleClose = () => navigate('/')
 
   createEffect(() => {
-    const url = `https://${window.location.host}/channels/${server.id}`
+    const protocol = window.location.protocol
+    const url = `${protocol}//${window.location.host}/channels/${server.id}`
     setUrl(url)
     const qrcode = new Encoder()
     qrcode.setEncodingHint(true)

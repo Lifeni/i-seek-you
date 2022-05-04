@@ -40,7 +40,14 @@ export const Call = () => {
       onCancel={handleCancel}
     >
       <div p="6" flex="~ col" items="center" justify="center">
-        <span pos="relative" m="t-6 b-8" z="1" text="4.5rem" select="none">
+        <span
+          pos="relative"
+          m="t-6 b-8"
+          z="1"
+          text="4.5rem"
+          font="emoji"
+          select="none"
+        >
           {connection.peer?.emoji}
         </span>
         <span

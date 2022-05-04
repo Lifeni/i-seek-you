@@ -47,6 +47,7 @@ export const You = () => {
           pos="relative"
           z="1"
           text="4.5rem"
+          font="emoji"
           select="none"
           animate={animate() ? 'rubberBand duration-0.75s' : ''}
           onClick={handleAnimate}
