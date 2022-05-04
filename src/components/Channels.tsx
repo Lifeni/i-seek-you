@@ -6,7 +6,7 @@ import { useConnection } from '../context/Connection'
 import { useServer } from '../context/Server'
 import { Modal } from './base/Modal'
 import { Login } from './channels/Login'
-import { Message } from './channels/Message'
+import { Messages } from './channels/Messages'
 import { Voice } from './channels/Voice'
 
 export const Channels = () => {
@@ -123,7 +123,7 @@ export const Channels = () => {
         onCancel={handleClose}
       >
         <div w="full" display={isVoice() ? 'hidden' : 'flex'}>
-          <Message />
+          <Messages />
         </div>
         <div w="full" display={isVoice() ? 'flex' : 'hidden'}>
           <VoiceProvider>
