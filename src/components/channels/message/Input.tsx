@@ -197,7 +197,7 @@ export const Input = () => {
           display="flex sm:hidden"
           name="File"
           icon={RiMediaImage2Fill}
-          onClick={() => {}}
+          onClick={() => input()?.click()}
         />
         <IconButton
           display="hidden sm:flex"
