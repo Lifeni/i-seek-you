@@ -88,7 +88,7 @@ export const File = (props: FileProps) => {
           group-hover="opacity-100"
           transition="opacity"
         >
-          <span>{props.message.file.name}</span>
+          <span text="truncate">{props.message.file.name}</span>
           <span whitespace="nowrap">
             {formatBytes(props.message.file.size)}
           </span>

@@ -1,4 +1,4 @@
-import { ConnectionName } from '../..'
+import { type ConnectionName } from '../../index.d'
 import { type Connection } from '../context/Connection'
 import { type Server } from '../context/Server'
 import { type Settings } from '../context/Settings'
@@ -66,7 +66,7 @@ export class PeerConnection {
       iceServers: [
         { urls: `stun:${this.context.settings[0].stun}` },
         {
-          urls: `turn:${this.context.settings[0].turn.urls}`,
+          urls: [`turn:${this.context.settings[0].turn.urls}`],
           username: this.context.settings[0].turn.username,
           credential: this.context.settings[0].turn.password,
         },
@@ -103,7 +103,7 @@ export class PeerConnection {
   }
 
   public onIceCandidate(event: RTCPeerConnectionIceEvent) {
-    console.debug(`[${this.name}]`, 'receive ice candidate')
+    console.debug(`[${this.name}]`, 'on ice candidate')
     if (!event.candidate || !this.caller) return
     this.websocket?.send('ice-candidate', {
       id: this.id,

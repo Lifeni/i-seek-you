@@ -50,7 +50,7 @@ export const defaultSettings: Settings = [
     signaling: 'signaling.i-seek-you.dist.run',
     stun: 'stun.i-seek-you.dist.run:7201',
     turn: {
-      urls: 'turn.i-seek-you.dist.run:7202?transport=tcp',
+      urls: 'turn.i-seek-you.dist.run:7202',
       username: 'webrtc',
       password: 'webrtc',
     },

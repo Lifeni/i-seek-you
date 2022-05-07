@@ -66,6 +66,7 @@ export const Share = () => {
       </Show>
 
       <ActionLink
+        id="nav-share"
         href="/share"
         icon={RiDeviceQrCodeFill}
         name="Share Your Link"

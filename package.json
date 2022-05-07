@@ -15,7 +15,8 @@
     "cloc": "cloc src --exclude-ext=svg",
     "posttest": "npm run format",
     "check": "npx eslint .",
-    "test": "playwright test"
+    "test": "playwright test --config ./tests/playwright.config.ts",
+    "test:debug": "playwright test --config ./tests/playwright.config.debug.ts"
   },
   "author": {
     "name": "Lifeni",

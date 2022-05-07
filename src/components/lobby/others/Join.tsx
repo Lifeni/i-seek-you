@@ -24,8 +24,6 @@ export const Join = () => {
   const handleInput = (e: InputEvent) => {
     const value = (e.target as HTMLInputElement).value
     setId(value)
-    if (value.length !== 4) return
-    handleEnter()
   }
 
   return (
@@ -35,6 +33,7 @@ export const Join = () => {
       </Show>
 
       <ActionLink
+        id="nav-join"
         href="/+"
         icon={RiCommunicationChatNewFill}
         name="Join a Channel"
@@ -50,6 +49,7 @@ export const Join = () => {
         onCancel={handleClose}
       >
         <Input
+          id="join-input"
           type="text"
           name="connect-id"
           placeholder="Enter a 4-digit ID to Connect"

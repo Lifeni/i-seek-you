@@ -24,7 +24,11 @@ export const Settings = () => {
       </Show>
 
       <Tooltip name="Settings" position="bottom-left">
-        <NavLink href="/settings" icon={RiSystemSettingsFill}></NavLink>
+        <NavLink
+          id="nav-settings"
+          href="/settings"
+          icon={RiSystemSettingsFill}
+        />
       </Tooltip>
 
       <Modal

@@ -12,7 +12,7 @@ import {
   Switch,
   type JSX,
 } from 'solid-js'
-import { FileMessage, TextMessage } from '../../..'
+import { type FileMessage, type TextMessage } from '../../../index.d'
 import { useConnection } from '../../context/Connection'
 import { useServer } from '../../context/Server'
 import { useSettings } from '../../context/Settings'

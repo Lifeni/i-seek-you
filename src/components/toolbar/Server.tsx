@@ -42,6 +42,7 @@ export const Server = () => {
 
       <Tooltip name={statusText()} position="bottom-right">
         <SolidLink
+          id="nav-server"
           href="/server"
           flex="~"
           rounded="full"

@@ -20,6 +20,7 @@ export const Reload = () => {
       name="Update App"
       size="xs"
       isOpen={needRefresh()}
+      hasTitleBar
       hasActionBar
       actionText={['Cancel', 'Reload']}
       onConfirm={() => updateServiceWorker(true)}

@@ -18,7 +18,9 @@ export const Status = () => {
       <Switch
         fallback={
           <Subtle flex="~" items="center" gap="3">
-            <span font="bold">Connecting to Server...</span>
+            <span font="bold" id="device-status">
+              Connecting to Server...
+            </span>
             <RiSystemLoader2Fill w="4.5" h="4.5" animate="spin" />
           </Subtle>
         }
@@ -32,7 +34,9 @@ export const Status = () => {
             text="orange-500 dark:orange-400"
             leading="tight"
           >
-            <span font="bold">Server Connection Closed</span>
+            <span font="bold" id="device-status">
+              Server Connection Closed
+            </span>
             <RiSystemErrorWarningFill w="4.5" h="4.5" />
           </div>
           <Subtle>Refresh the page to try to reconnect.</Subtle>
@@ -46,7 +50,9 @@ export const Status = () => {
             text="green-500 dark:green-400"
             leading="tight"
           >
-            <span font="bold">Connected to Server</span>
+            <span font="bold" id="device-status">
+              Connected to Server
+            </span>
             <RiSystemCheckboxCircleFill w="4.5" h="4.5" />
           </div>
           <Subtle>
@@ -62,7 +68,9 @@ export const Status = () => {
             text="red-500 dark:red-400"
             leading="tight"
           >
-            <span font="bold">Error Connecting to Server</span>
+            <span font="bold" id="device-status">
+              Error Connecting to Server
+            </span>
             <RiSystemCloseCircleFill w="4.5" h="4.5" />
           </div>
           <Subtle>Please check the server or report this issue.</Subtle>
