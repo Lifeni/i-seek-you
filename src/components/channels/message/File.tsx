@@ -35,7 +35,7 @@ export const File = (props: FileProps) => {
       const id = props.message.file.id
       const blob = connection.files.find(file => file.id === id) || null
       setProgress(blob?.progress || 0)
-
+      if (blob?.progress === 0) props.onUpdate()
       if (blob?.progress !== 100) return
       setFile(blob)
       setTimeout(() => props.onUpdate(), 200)

@@ -48,9 +48,9 @@ export const defaultSettings: Settings = [
     name: '',
     password: '',
     signaling: 'signaling.i-seek-you.dist.run',
-    stun: 'stun.i-seek-you.dist.run:7201',
+    stun: 'stun.i-seek-you.dist.run',
     turn: {
-      urls: 'turn.i-seek-you.dist.run:7202',
+      urls: 'turn.i-seek-you.dist.run',
       username: 'webrtc',
       password: 'webrtc',
     },

@@ -42,7 +42,7 @@ export const Login = () => {
 
   const handleCancel = () => {
     const id = connection.id
-    navigate('/')
+    navigate('/', { replace: true })
     if (!id) return
     if (!isAuth() && !isError()) server.websocket?.send('disconnect', { id })
     resetConnection()

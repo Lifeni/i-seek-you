@@ -100,7 +100,7 @@ export const Channels = () => {
     const id = isMatch()
     if (!id) return
     server.websocket?.send('disconnect', { id })
-    navigate('/')
+    navigate('/', { replace: true })
     resetConnection()
   }
 

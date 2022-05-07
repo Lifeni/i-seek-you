@@ -139,7 +139,7 @@ export class Signaling {
       }
       case 'disconnect': {
         this.context.connection[1].resetConnection()
-        this.navigate('/')
+        this.navigate('/', { replace: true })
         break
       }
       case 'answer': {

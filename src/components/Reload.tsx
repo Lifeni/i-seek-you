@@ -26,7 +26,7 @@ export const Reload = () => {
       onConfirm={() => updateServiceWorker(true)}
       onCancel={() => setNeedRefresh(false)}
     >
-      <div p="6" flex="~ col" items="center" justify="center">
+      <div p="x-6 t-1 b-3" flex="~ col" items="center" justify="center">
         New content available, click on reload button to update.
       </div>
     </Modal>

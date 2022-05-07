@@ -104,7 +104,7 @@ export class PeerConnection {
 
   public onIceCandidate(event: RTCPeerConnectionIceEvent) {
     console.debug(`[${this.name}]`, 'on ice candidate')
-    if (!event.candidate || !this.caller) return
+    if (!event.candidate) return
     this.websocket?.send('ice-candidate', {
       id: this.id,
       candidate: event.candidate,

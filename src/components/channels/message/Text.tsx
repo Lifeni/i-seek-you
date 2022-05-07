@@ -14,8 +14,8 @@ export const Text = (props: TextProps) => {
       rounded="~"
       text={
         props.isAuthor
-          ? 'sm light-100 dark:light-600 break-all'
-          : 'sm gray-800 dark:gray-300 break-all'
+          ? 'light-100 dark:light-600 break-all'
+          : 'gray-800 dark:gray-300 break-all'
       }
       bg={props.isAuthor ? 'rose-500' : 'light-600 dark:dark-400'}
       font="sans"

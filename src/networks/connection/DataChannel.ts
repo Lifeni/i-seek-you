@@ -81,6 +81,7 @@ export class DataChannel extends PeerConnection {
 
   public onChannelOpen(event: RTCDataChannelEvent) {
     const channel = event.channel || event.target
+    channel.binaryType = 'arraybuffer'
     console.debug('[data-channel]', 'channel open ->', channel.label)
 
     switch (channel.label) {
