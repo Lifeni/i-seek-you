@@ -18,6 +18,7 @@ export type Settings = [
     signaling: string
     stun: string
     turn: TURN
+    e2ee: boolean
   },
   {
     setEmoji: (emoji: string, once?: boolean) => void
@@ -26,6 +27,7 @@ export type Settings = [
     setSignaling: (signaling: string) => void
     setSTUN: (stun: string) => void
     setTURN: (turn: TURN) => void
+    setE2EE: (e2ee: boolean) => void
   }
 ]
 
@@ -54,6 +56,7 @@ export const defaultSettings: Settings = [
       username: 'webrtc',
       password: 'webrtc',
     },
+    e2ee: true,
   },
   {
     setEmoji: () => {},
@@ -62,6 +65,7 @@ export const defaultSettings: Settings = [
     setSignaling: () => {},
     setSTUN: () => {},
     setTURN: () => {},
+    setE2EE: () => {},
   },
 ]
 
@@ -83,9 +87,9 @@ export const SettingsProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
     ...read(),
   })
 
-  const write = (name: keyof Settings[0], value: string | TURN) => {
+  const write = (name: keyof Settings[0], value: boolean | string | TURN) => {
     setSettings(name, () => value)
-    if (value) {
+    if (value !== '') {
       storage.set(name, value)
       if (!['signaling', 'stun', 'turn'].includes(name)) sendMessage()
     } else storage.remove(name)
@@ -100,6 +104,7 @@ export const SettingsProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
       setSignaling: (signaling: string) => write('signaling', signaling),
       setSTUN: (stun: string) => write('stun', stun),
       setTURN: (turn: TURN) => write('turn', turn),
+      setE2EE: (e2ee: boolean) => write('e2ee', e2ee),
     },
   ]
 
@@ -107,6 +112,7 @@ export const SettingsProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
     const data = untrack(() => ({
       name: settings.name,
       password: !!settings.password,
+      e2ee: settings.e2ee,
       emoji: settings.emoji,
     }))
 

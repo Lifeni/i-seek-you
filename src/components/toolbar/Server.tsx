@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { Link as SolidLink, useLocation, useNavigate } from 'solid-app-router'
 import {
   RiDeviceSignalWifiErrorFill,
@@ -16,16 +17,17 @@ import { Signaling, STUN, TURN } from './server/Address'
 import { Status } from './server/Status'
 
 export const Server = () => {
+  const [t] = useI18n()
   const [server] = useServer()
 
   const statusText = () =>
     server.status === 'closed'
-      ? 'Closed'
+      ? t('status_closed_tooltip')
       : server.status === 'connected'
       ? `${server.ping}ms`
       : server.status === 'error'
-      ? 'Error'
-      : 'Connecting'
+      ? t('status_error_tooltip')
+      : t('status_connecting_tooltip')
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -37,7 +39,7 @@ export const Server = () => {
   return (
     <>
       <Show when={isOpen()}>
-        <Title>Server - I Seek You</Title>
+        <Title>{t('server')} - I Seek You</Title>
       </Show>
 
       <Tooltip name={statusText()} position="bottom-right">
@@ -72,7 +74,7 @@ export const Server = () => {
       </Tooltip>
 
       <Modal
-        name="Server"
+        name={t('server')}
         size="sm"
         hasTitleBar
         isOpen={isOpen()}
@@ -80,14 +82,15 @@ export const Server = () => {
       >
         <div flex="~ col" p="x-3 y-2" gap="3">
           <Status />
-          <Field name="WebRTC Server" icon={RiDeviceSignalWifiFill}>
+          <Field name={t('server_webrtc')} icon={RiDeviceSignalWifiFill}>
             <Subtle>
-              You can deploy a WebRTC server of your own via Docker.
+              {t('server_description')}
               <Link
                 isExternal
                 href="https://github.com/Lifeni/i-seek-you-server#readme"
+                m="l-1"
               >
-                Read Docs
+                {t('read_docs')}
               </Link>
             </Subtle>
             <Signaling />

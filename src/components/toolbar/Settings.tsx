@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { useLocation, useNavigate } from 'solid-app-router'
 import { RiSystemSettingsFill } from 'solid-icons/ri'
 import { createEffect, createSignal, Show } from 'solid-js'
@@ -9,21 +10,21 @@ import { Password } from './settings/Password'
 import { Profile } from './settings/Profile'
 
 export const Settings = () => {
+  const [t] = useI18n()
   const navigate = useNavigate()
   const location = useLocation()
   const [open, setOpen] = createSignal(false)
 
   createEffect(() => setOpen(location.pathname === '/settings'))
-
   const handleClose = () => navigate('/')
 
   return (
     <>
       <Show when={open()}>
-        <Title>Settings - I Seek You</Title>
+        <Title>{t('settings')} - I Seek You</Title>
       </Show>
 
-      <Tooltip name="Settings" position="bottom-left">
+      <Tooltip name={t('settings')} position="bottom-left">
         <NavLink
           id="nav-settings"
           href="/settings"
@@ -32,7 +33,7 @@ export const Settings = () => {
       </Tooltip>
 
       <Modal
-        name="Settings"
+        name={t('settings')}
         size="sm"
         hasTitleBar
         isOpen={open()}

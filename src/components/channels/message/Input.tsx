@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import {
   RiBusinessSendPlaneFill,
   RiMediaImage2Fill,
@@ -12,6 +13,7 @@ import { useServer } from '../../../context/Server'
 import { IconButton } from '../../base/Button'
 
 export const Input = () => {
+  const [t] = useI18n()
   const [server] = useServer()
   const [connection, { setMode, addMessage, addFile, setProgress }] =
     useConnection()
@@ -155,13 +157,13 @@ export const Input = () => {
     <div w="full" flex="~" items="end" gap="3">
       <div flex="~" items="center" gap="1">
         <IconButton
-          name="Voice"
+          name={t('message_voice')}
           icon={RiMediaVidiconFill}
           onClick={() => setMode('voice')}
         />
         <IconButton
           display="hidden sm:flex"
-          name="File"
+          name={t('message_file')}
           icon={RiMediaImage2Fill}
           onClick={() => input()?.click()}
         />
@@ -177,10 +179,10 @@ export const Input = () => {
       <textarea
         ref={setTextarea}
         name="text"
-        placeholder="Type Here..."
+        placeholder={t('message_placeholder')}
         w="full"
         h="11"
-        max-h="200px"
+        max-h="100px"
         flex="~ 1"
         p="x-4 y-2.25"
         text="inherit"
@@ -195,13 +197,13 @@ export const Input = () => {
       <div flex="~" items="center">
         <IconButton
           display="flex sm:hidden"
-          name="File"
+          name={t('message_file')}
           icon={RiMediaImage2Fill}
           onClick={() => input()?.click()}
         />
         <IconButton
           display="hidden sm:flex"
-          name="Send"
+          name={t('message_send')}
           icon={RiBusinessSendPlaneFill}
           onClick={() => handleSend()}
         />

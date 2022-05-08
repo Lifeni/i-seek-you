@@ -158,7 +158,7 @@ export const Fold = (props: FoldProps) => {
         overflow="hidden"
         onClick={() => setOpen(v => !v)}
       >
-        <span flex="~" font="bold">
+        <span flex="~" font="bold" whitespace="nowrap">
           {props.name}
         </span>
         <span font="normal" w="36" text="truncate">

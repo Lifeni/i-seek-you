@@ -1,7 +1,7 @@
 // Import syntax currently does not work with Firefox
 // in development environment, so use Chromium.
 import { SM2, SM2ExchangeA, SM2ExchangeB, SM3, SM4 } from '@lifeni/libsm-js'
-import { fromHex, toHex, toUint8 } from '../libs/Utils'
+import { fromHex, toHex, toUint8 } from '../libs/utils'
 import init from '@lifeni/libsm-js'
 import wasm from '@lifeni/libsm-js/libsm_js_bg.wasm?url'
 

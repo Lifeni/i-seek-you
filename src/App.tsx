@@ -5,9 +5,10 @@ import { MetaProvider } from 'solid-meta'
 import 'windi.css'
 import { Reload } from './components/Reload'
 import { ConnectionProvider } from './context/Connection'
+import { I18nProvider } from './context/i18n/I18n'
 import { ServerProvider } from './context/Server'
 import { SettingsProvider } from './context/Settings'
-import './libs/Tooltip.css'
+import './libs/tooltip.css'
 
 const Home = lazy(() => import('./pages/Home'))
 const NotFound = lazy(() => import('./pages/NotFound'))
@@ -23,28 +24,30 @@ const App = () => (
     text="gray-800 dark:gray-300"
     overflow="hidden"
   >
-    <Reload />
-    <MetaProvider>
-      <ServerProvider>
-        <SettingsProvider>
-          <ConnectionProvider>
-            <Router>
-              <Routes>
-                <Route path="/" element={<Home />}>
-                  <Route path="/+" />
-                  <Route path="/channels/:id" />
-                  <Route path="/server" />
-                  <Route path="/settings" />
-                  <Route path="/share" />
-                  <Route path="/" />
-                </Route>
-                <Route path="/*all" element={<NotFound />} />
-              </Routes>
-            </Router>
-          </ConnectionProvider>
-        </SettingsProvider>
-      </ServerProvider>
-    </MetaProvider>
+    <I18nProvider>
+      <MetaProvider>
+        <ServerProvider>
+          <SettingsProvider>
+            <ConnectionProvider>
+              <Reload />
+              <Router>
+                <Routes>
+                  <Route path="/" element={<Home />}>
+                    <Route path="/+" />
+                    <Route path="/channels/:id" />
+                    <Route path="/server" />
+                    <Route path="/settings" />
+                    <Route path="/share" />
+                    <Route path="/" />
+                  </Route>
+                  <Route path="/*all" element={<NotFound />} />
+                </Routes>
+              </Router>
+            </ConnectionProvider>
+          </SettingsProvider>
+        </ServerProvider>
+      </MetaProvider>
+    </I18nProvider>
   </div>
 )
 

@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { RiSystemCloseFill, RiSystemCheckFill } from 'solid-icons/ri'
 import { createSignal, onCleanup, onMount, Show, type JSX } from 'solid-js'
 import { Portal } from 'solid-js/web'
@@ -18,6 +19,7 @@ interface ModalProps extends JSX.HTMLAttributes<HTMLDivElement> {
 }
 
 export const Modal = (props: ModalProps) => {
+  const [t] = useI18n()
   const [shake, setShake] = createSignal(false)
   const [modal, setModal] = createSignal<HTMLDivElement>()
 
@@ -113,7 +115,7 @@ export const Modal = (props: ModalProps) => {
                 isFocus={props.isOpen && !props.isBlur && !props.onConfirm}
                 onClick={() => props.onCancel()}
               >
-                {props.actionText?.[0] || 'Cancel'}
+                {props.actionText?.[0] || t('cancel')}
               </Button>
               <Show when={props.onConfirm}>
                 <Button
@@ -122,7 +124,7 @@ export const Modal = (props: ModalProps) => {
                   isPrimary
                   onClick={() => props.onConfirm?.()}
                 >
-                  {props.actionText?.[1] || 'Confirm'}
+                  {props.actionText?.[1] || t('confirm')}
                 </Button>
               </Show>
             </div>

@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { useNavigate } from 'solid-app-router'
 import { RiOthersPlugFill } from 'solid-icons/ri'
 import { useConnection } from '../../context/Connection'
@@ -5,6 +6,7 @@ import { useServer } from '../../context/Server'
 import { Modal } from '../base/Modal'
 
 export const Call = () => {
+  const [t] = useI18n()
   const navigate = useNavigate()
   const [server] = useServer()
   const [connection, { setConfirm, setSignal, resetConnection }] =
@@ -31,11 +33,11 @@ export const Call = () => {
 
   return (
     <Modal
-      name="Request"
+      name={t('call')}
       size="xs"
       isOpen={connection.confirm}
       hasActionBar
-      actionText={['Cancel', 'Connect']}
+      actionText={[t('cancel'), t('connect')]}
       onConfirm={handleConfirm}
       onCancel={handleCancel}
     >
@@ -63,7 +65,7 @@ export const Call = () => {
         <div flex="~" items="center" justify="center" gap="2">
           <RiOthersPlugFill w="4.5" h="4.5" text="green-500 dark:green-400" />
           <span p="y-2" text="sm center" font="bold">
-            Want to Connect
+            {t('call_description')}
           </span>
         </div>
       </div>

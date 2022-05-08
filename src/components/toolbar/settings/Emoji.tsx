@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { useNavigate } from 'solid-app-router'
 import { createResource, createSignal, For, Show, type JSX } from 'solid-js'
 import { useSettings } from '../../../context/Settings'
@@ -13,6 +14,7 @@ type Emojis = {
 }[]
 
 export const Emoji = () => {
+  const [t] = useI18n()
   const [settings, { setEmoji }] = useSettings()
   const navigate = useNavigate()
   const [container, setContainer] = createSignal<HTMLElement>()
@@ -36,7 +38,7 @@ export const Emoji = () => {
 
   return (
     <>
-      <Tooltip name="Select Your Emoji">
+      <Tooltip name={t('settings_profile_emoji_tooltip')}>
         <button
           pos="relative"
           font="emoji"

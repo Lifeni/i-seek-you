@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import {
   RiCommunicationVideoChatFill,
   RiSystemErrorWarningFill,
@@ -207,20 +208,28 @@ export const Voice = () => {
 }
 
 const Placeholder = () => {
+  const [t] = useI18n()
   const [connection] = useConnection()
 
   return (
-    <div w="full" min-h="60vh" flex="~ 1 col" items="center" justify="center">
+    <div
+      w="full"
+      min-h="60vh"
+      flex="~ 1 col"
+      items="center"
+      justify="center"
+      gap="1"
+    >
       <RiCommunicationVideoChatFill
         w="18"
         h="18"
-        m="t-12 b-6"
+        m="t-10 b-6"
         text="light-800 dark:dark-200"
       />
       <h1 text="lg" font="bold">
-        Connected to #{connection.id}
+        {t('connected_to')} #{connection.id}
       </h1>
-      <Subtle>You can send messages or video chat now.</Subtle>
+      <Subtle>{t('connected_to_description')}</Subtle>
     </div>
   )
 }

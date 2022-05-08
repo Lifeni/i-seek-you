@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { type IconTypes } from 'solid-icons'
 import { RiSystemCloseFill } from 'solid-icons/ri'
 import {
@@ -123,6 +124,7 @@ interface CloseButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
 
 export const CloseButton = (props: CloseButtonProps) => {
   const [local, others] = splitProps(props, ['isDanger', 'isFocus'])
+  const [t] = useI18n()
   const [button, setButton] = createSignal<HTMLButtonElement>()
 
   createEffect(() => {
@@ -132,7 +134,7 @@ export const CloseButton = (props: CloseButtonProps) => {
   })
 
   return (
-    <Tooltip name="Close">
+    <Tooltip name={t('close')}>
       <button
         ref={setButton}
         flex="~"

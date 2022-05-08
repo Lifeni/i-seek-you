@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { useLocation, useNavigate } from 'solid-app-router'
 import { batch, createEffect, createMemo, on, Show } from 'solid-js'
 import { Title } from 'solid-meta'
@@ -12,7 +13,7 @@ import { Voice } from './channels/Voice'
 export const Channels = () => {
   const servers = useServer()
   const connections = useConnection()
-
+  const [t] = useI18n()
   const [server] = servers
   const [connection, { setId, setSignal, setInfo, resetConnection }] =
     connections
@@ -108,14 +109,14 @@ export const Channels = () => {
     <>
       <Show when={isOpen()}>
         <Title>
-          {connection.peer.name || 'Channel'} #{connection.id} - I Seek You
+          {connection.peer.name || t('channel')} #{connection.id} - I Seek You
         </Title>
       </Show>
 
       <Login />
 
       <Modal
-        name={`${connection.peer.name || 'Channel'} #${connection.id}`}
+        name={`${connection.peer.name || t('channel')} #${connection.id}`}
         size="lg"
         hasTitleBar
         isDanger

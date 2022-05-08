@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { useNavigate } from 'solid-app-router'
 import {
   RiSystemErrorWarningFill,
@@ -10,6 +11,7 @@ import { Input } from '../base/Form'
 import { Modal } from '../base/Modal'
 
 export const Login = () => {
+  const [t] = useI18n()
   const navigate = useNavigate()
   const [server] = useServer()
   const [connection, { setSignal, resetConnection, setInfo }] = useConnection()
@@ -22,7 +24,7 @@ export const Login = () => {
   const handleAuth = async () => {
     batch(() => {
       setSignal('loading')
-      setInfo('Calling...')
+      setInfo('Calling')
     })
 
     const key = `${server.id}->${connection.id}:${password()}`
@@ -54,7 +56,7 @@ export const Login = () => {
       size="xs"
       isOpen={isOpen()}
       hasActionBar
-      actionText={[isError() ? 'Close' : 'Cancel', 'Connect']}
+      actionText={[isError() ? t('close') : t('cancel'), t('connect')]}
       isBlur={isAuth()}
       onConfirm={isAuth() ? handleAuth : undefined}
       onCancel={handleCancel}
@@ -96,14 +98,14 @@ export const Login = () => {
               <Input
                 type="text"
                 name="auth-password"
-                placeholder="Enter Password"
+                placeholder={t('login_placeholder')}
                 isFocus
                 text="center"
                 w="full"
                 m="t-2"
                 onInput={e => setPassword((e.target as HTMLInputElement).value)}
               />
-              <Label type="info">Password Required</Label>
+              <Label type="info">{t('login_description')}</Label>
             </Match>
             <Match when={isError()}>
               <Label type="error">{connection.error}</Label>

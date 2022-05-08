@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import {
   RiDeviceServerFill,
   RiSystemCheckboxCircleFill,
@@ -11,15 +12,16 @@ import { Field } from '../../base/Form'
 import { Subtle } from '../../base/Text'
 
 export const Status = () => {
+  const [t] = useI18n()
   const [server] = useServer()
 
   return (
-    <Field name="Server Status" icon={RiDeviceServerFill} gap="0">
+    <Field name={t('server_status')} icon={RiDeviceServerFill} gap="0">
       <Switch
         fallback={
           <Subtle flex="~" items="center" gap="3">
             <span font="bold" id="device-status">
-              Connecting to Server...
+              {t('server_status_connecting')}
             </span>
             <RiSystemLoader2Fill w="4.5" h="4.5" animate="spin" />
           </Subtle>
@@ -35,11 +37,11 @@ export const Status = () => {
             leading="tight"
           >
             <span font="bold" id="device-status">
-              Server Connection Closed
+              {t('server_status_closed')}
             </span>
             <RiSystemErrorWarningFill w="4.5" h="4.5" />
           </div>
-          <Subtle>Refresh the page to try to reconnect.</Subtle>
+          <Subtle>{t('server_status_closed_description')}</Subtle>
         </Match>
         <Match when={server.status === 'connected'}>
           <div
@@ -51,12 +53,13 @@ export const Status = () => {
             leading="tight"
           >
             <span font="bold" id="device-status">
-              Connected to Server
+              {t('server_status_connected')}
             </span>
             <RiSystemCheckboxCircleFill w="4.5" h="4.5" />
           </div>
           <Subtle>
-            Last Ping: <strong text="base">{server.ping}ms</strong>
+            {t('server_status_connected_ping')}
+            <strong text="base">{server.ping}ms</strong>
           </Subtle>
         </Match>
         <Match when={server.status === 'error'}>
@@ -69,11 +72,11 @@ export const Status = () => {
             leading="tight"
           >
             <span font="bold" id="device-status">
-              Error Connecting to Server
+              {t('server_status_error')}
             </span>
             <RiSystemCloseCircleFill w="4.5" h="4.5" />
           </div>
-          <Subtle>Please check the server or report this issue.</Subtle>
+          <Subtle>{t('server_status_error_description')}</Subtle>
         </Match>
       </Switch>
     </Field>

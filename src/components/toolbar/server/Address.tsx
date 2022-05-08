@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { useNavigate } from 'solid-app-router'
 import { createSignal, Show } from 'solid-js'
 import { defaultSettings, useSettings } from '../../../context/Settings'
@@ -6,13 +7,14 @@ import { Fold, Input } from '../../base/Form'
 import { Tooltip } from '../../base/Popover'
 
 export const Signaling = () => {
+  const [t] = useI18n()
   const navigate = useNavigate()
   const [settings, { setSignaling }] = useSettings()
   const [isChanged, setChanged] = createSignal(false)
 
   return (
-    <Fold name="Signaling" description={settings.signaling}>
-      <Tooltip name="Server URL">
+    <Fold name={t('server_signaling')} description={settings.signaling}>
+      <Tooltip name={t('server_url')}>
         <Input
           type="text"
           name="signaling-server"
@@ -33,13 +35,14 @@ export const Signaling = () => {
 }
 
 export const STUN = () => {
+  const [t] = useI18n()
   const navigate = useNavigate()
   const [settings, { setSTUN }] = useSettings()
   const [isChanged, setChanged] = createSignal(false)
 
   return (
     <Fold name="STUN" description={settings.stun}>
-      <Tooltip name="Server URL">
+      <Tooltip name={t('server_url')}>
         <Input
           type="text"
           name="stun-server"
@@ -60,13 +63,14 @@ export const STUN = () => {
 }
 
 export const TURN = () => {
+  const [t] = useI18n()
   const navigate = useNavigate()
   const [settings, { setTURN }] = useSettings()
   const [isChanged, setChanged] = createSignal(false)
 
   return (
     <Fold name="TURN" description={settings.turn.urls}>
-      <Tooltip name="Server URL">
+      <Tooltip name={t('server_url')}>
         <Input
           type="text"
           name="turn-urls"
@@ -83,7 +87,7 @@ export const TURN = () => {
         />
       </Tooltip>
       <div grid="~ cols-2" gap="2">
-        <Tooltip name="Username">
+        <Tooltip name={t('server_username')}>
           <Input
             type="text"
             name="turn-username"
@@ -100,7 +104,7 @@ export const TURN = () => {
           />
         </Tooltip>
 
-        <Tooltip name="Password">
+        <Tooltip name={t('server_password')}>
           <Input
             type="text"
             name="turn-password"

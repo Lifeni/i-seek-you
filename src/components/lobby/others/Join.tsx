@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { useLocation, useNavigate } from 'solid-app-router'
 import { RiCommunicationChatNewFill } from 'solid-icons/ri'
 import { createEffect, createSignal, Show } from 'solid-js'
@@ -8,7 +9,7 @@ import { ActionLink } from './Figure'
 
 export const Join = () => {
   const [id, setId] = createSignal('')
-
+  const [t] = useI18n()
   const navigate = useNavigate()
   const location = useLocation()
   const [isOpen, setOpen] = createSignal(false)
@@ -29,20 +30,20 @@ export const Join = () => {
   return (
     <>
       <Show when={isOpen()}>
-        <Title>Join - I Seek You</Title>
+        <Title>{t('join')} - I Seek You</Title>
       </Show>
 
       <ActionLink
         id="nav-join"
         href="/+"
         icon={RiCommunicationChatNewFill}
-        name="Join a Channel"
+        name={t('join_tooltip')}
       >
-        Join
+        {t('join')}
       </ActionLink>
 
       <Modal
-        name="Join"
+        name={t('join')}
         size="sm"
         isOpen={isOpen()}
         isBlur
@@ -52,7 +53,7 @@ export const Join = () => {
           id="join-input"
           type="text"
           name="connect-id"
-          placeholder="Enter a 4-digit ID to Connect"
+          placeholder={t('join_placeholder')}
           pattern="[0-9]{4}"
           inputMode="numeric"
           maxLength="4"

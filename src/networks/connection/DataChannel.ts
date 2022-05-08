@@ -1,5 +1,5 @@
 import { type FileBlob } from '../../../index.d'
-import { toJSON, toUint8 } from '../../libs/Utils'
+import { toJSON, toUint8 } from '../../libs/utils'
 import { PeerConnection, PeerConnectionProps } from '../PeerConnection'
 
 interface DataChannelProps extends Omit<PeerConnectionProps, 'name'> {}

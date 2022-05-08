@@ -1,12 +1,14 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { createSignal, onCleanup, onMount, Show } from 'solid-js'
 import colors from 'windicss/colors'
-import { useSettings } from '../../context/Settings'
 import { useServer } from '../../context/Server'
+import { useSettings } from '../../context/Settings'
 import { Tooltip } from '../base/Popover'
 
 export const You = () => {
   const [copied, setCopied] = createSignal(false)
   const [animate, setAnimate] = createSignal(false)
+  const [t] = useI18n()
   const [settings] = useSettings()
   const [server] = useServer()
 
@@ -25,12 +27,12 @@ export const You = () => {
 
   const statusText = () =>
     server.status === 'closed'
-      ? '🚫 Connection Closed'
+      ? t('status_closed')
       : server.status === 'connected'
-      ? 'Connected'
+      ? t('status_connected')
       : server.status === 'error'
-      ? '❌ Connection Error'
-      : 'Connecting...'
+      ? t('status_error')
+      : t('status_connecting')
 
   return (
     <div flex="~ col" items="center" justify="center" p="b-3" gap="8">
@@ -80,7 +82,7 @@ export const You = () => {
           z="1"
           onClick={handleCopyID}
         >
-          <Tooltip name={copied() ? '✅ Copied' : `Copy Your Link`}>
+          <Tooltip name={copied() ? t('copied_tooltip') : t('copy_tooltip')}>
             <span id="device-id">
               {settings.name || 'You'} #{server.id}
             </span>
@@ -114,7 +116,7 @@ const Ripple = () => {
       target.width = w
       target.height = h
       x = w / 2
-      y = h - 128
+      y = h - 124
       r = Math.min(w, h)
       draw()
     }

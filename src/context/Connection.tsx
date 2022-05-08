@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { cloneDeep } from 'lodash'
 import { createContext, untrack, useContext, type JSX } from 'solid-js'
 import { createStore } from 'solid-js/store'
@@ -106,6 +107,7 @@ export const ConnectionContext = createContext<Connection>(defaultConnection)
 export const useConnection = () => useContext(ConnectionContext)
 
 export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
+  const [t] = useI18n()
   const [server] = useServer()
   const [connection, setConnection] = createStore<Connection[0]>(
     cloneDeep(defaultConnection[0])
@@ -116,8 +118,21 @@ export const ConnectionProvider = (props: JSX.HTMLAttributes<HTMLElement>) => {
     {
       setMode: (mode: Mode) => setConnection('mode', () => mode),
       setSignal: (signal: Signal) => setConnection('signal', () => signal),
-      setInfo: (info: string) => setConnection('info', () => info),
-      setError: (error: string) => setConnection('error', () => error),
+      setInfo: (info: string) => {
+        if (info) {
+          const key = info
+            .toLowerCase()
+            .replaceAll(' ', '_')
+            .replaceAll('.', '')
+          setConnection('info', () => t(`info_${key}`) || info)
+        } else setConnection('info', () => info)
+      },
+      setError: (error: string) => {
+        if (error) {
+          const key = error.toLowerCase().replaceAll(' ', '_')
+          setConnection('error', () => t(`error_${key}`) || error)
+        } else setConnection('error', () => error)
+      },
       setChannel: (channel: InstanceType<typeof DataChannel>) =>
         setConnection('channel', () => channel),
       setId: (id: string) =>

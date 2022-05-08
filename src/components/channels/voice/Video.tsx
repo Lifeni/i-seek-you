@@ -6,12 +6,14 @@ import {
 import { createEffect, createSignal, onCleanup, Show, type JSX } from 'solid-js'
 import { useConnection } from '../../../context/Connection'
 import { useVoice } from '../../../context/channels/Voice'
+import { useI18n } from '@solid-primitives/i18n'
 
 interface VideoProps extends JSX.HTMLAttributes<HTMLDivElement> {
   isRemote?: boolean
 }
 
 export const Video = (props: VideoProps) => {
+  const [t] = useI18n()
   const [connection] = useConnection()
   const [voice] = useVoice()
   const [video, setVideo] = createSignal<HTMLVideoElement>()
@@ -87,8 +89,8 @@ export const Video = (props: VideoProps) => {
         gap="2"
         transition="opacity"
       >
-        <Show when={props.isRemote} fallback={<span>Local</span>}>
-          <span>Remote</span>
+        <Show when={props.isRemote} fallback={<span>{t('voice_local')}</span>}>
+          <span>{t('voice_remote')}</span>
         </Show>
 
         <Show
@@ -149,12 +151,12 @@ export const Video = (props: VideoProps) => {
             when={props.isRemote}
             fallback={
               <h1 text="lg inherit" font="bold">
-                You are Talking
+                {t('vocie_you_talking')}
               </h1>
             }
           >
             <h1 text="lg inherit" font="bold">
-              #{connection.id} is Talking
+              {t('voice_is_talking', { name: `#${connection.id}` })}
             </h1>
           </Show>
 

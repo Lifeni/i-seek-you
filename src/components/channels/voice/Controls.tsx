@@ -10,8 +10,10 @@ import {
 import { useConnection } from '../../../context/Connection'
 import { useVoice } from '../../../context/channels/Voice'
 import { IconButton } from '../../base/Button'
+import { useI18n } from '@solid-primitives/i18n'
 
 export const Controls = () => {
+  const [t] = useI18n()
   const [connection, { setMode, setMedia }] = useConnection()
   const [voice, { switchControls, resetVoice }] = useVoice()
 
@@ -31,28 +33,28 @@ export const Controls = () => {
     <div w="full" flex="~" items="end" gap="3">
       <div flex="~ 1" items="center" justify="start">
         <IconButton
-          name="Message"
+          name={t('voice_message')}
           icon={RiCommunicationMessage2Fill}
           onClick={() => setMode('message')}
         />
       </div>
       <div flex="~ 1" items="center" justify="center" gap="1">
         <IconButton
-          name="Camera"
+          name={t('voice_camera')}
           icon={isCamera() ? RiMediaCameraFill : RiMediaCameraOffFill}
           isPrimary={isCamera()}
           onClick={() => switchControls('camera')}
         />
 
         <IconButton
-          name="Voice"
+          name={t('voice_microphone')}
           icon={isMicrophone() ? RiMediaMicFill : RiMediaMicOffFill}
           isPrimary={isMicrophone()}
           onClick={() => switchControls('microphone')}
         />
 
         <IconButton
-          name="Share Screen"
+          name={t('voice_screen')}
           icon={RiDeviceComputerFill}
           isPrimary={isScreen()}
           onClick={() => switchControls('screen')}
@@ -60,7 +62,7 @@ export const Controls = () => {
       </div>
       <div flex="~ 1" items="center" justify="end">
         <IconButton
-          name="Hang Up"
+          name={t('voice_hang_up')}
           icon={RiDeviceShutDownFill}
           onClick={() => handleHangUp()}
         />

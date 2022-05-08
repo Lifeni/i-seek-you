@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { RiDevicePhoneFindFill } from 'solid-icons/ri'
 import { createSignal, For, onMount } from 'solid-js'
 import { useServer } from '../../context/Server'
@@ -24,6 +25,7 @@ export const Others = () => {
 }
 
 const Seeking = () => {
+  const [t] = useI18n()
   const [suffix, setSuffix] = createSignal('')
 
   onMount(() => {
@@ -34,13 +36,13 @@ const Seeking = () => {
 
   return (
     <ActionLink
-      name="Seeking Local Devices"
+      name={t('seeking_tooltip')}
       href="/"
       icon={RiDevicePhoneFindFill}
       isPrimary
     >
       <span pos="relative" font="bold" select="none">
-        Seeking
+        {t('seeking')}
         <span pos="absolute" left="full">
           {suffix()}
         </span>

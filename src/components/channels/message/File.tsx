@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import {
   RiSystemCheckboxCircleFill,
   RiSystemDownloadFill,
@@ -15,6 +16,7 @@ interface FileProps {
 }
 
 export const File = (props: FileProps) => {
+  const [t] = useI18n()
   const [server] = useServer()
   const [connection] = useConnection()
   const [file, setFile] = createSignal<FileBlob | null>(null)
@@ -131,7 +133,7 @@ export const File = (props: FileProps) => {
                 text="green-500 dark:green-400"
               />
 
-              <Subtle>File</Subtle>
+              <Subtle>{t('file')}</Subtle>
             </Show>
           </section>
 
