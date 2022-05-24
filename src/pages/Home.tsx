@@ -18,6 +18,10 @@ const Home: Component = () => {
     setWorker(worker)
     const signaling = new Signaling()
     setWebSocket(signaling)
+
+    if (!('Notification' in window)) return
+    if (Notification.permission === 'granted') return
+    await Notification.requestPermission()
   })
 
   return (

@@ -86,12 +86,53 @@ export const Input = () => {
         },
       })) as FileMessage[]
 
-    const sendFile = (message: FileMessage, file: File) => {
-      addMessage<FileMessage>(message)
-      addFile({ ...message.file, progress: 0, blob: file })
-      connection.channel?.sendMessage('file', message)
+    const sendFile = async (message: FileMessage, file: File) =>
+      new Promise<void>((resolve, reject) => {
+        const reader = new FileReader()
+        const handleError = (event: ProgressEvent<FileReader>) => {
+          console.debug('[file-reader]', 'read file error', event)
+          reject('read file error')
+        }
 
-      return new Promise<void>((resolve, reject) => {
+        const handleLoad = () => {
+          const result = reader.result as ArrayBuffer
+          if (!result) return
+
+          worker?.postMessage({
+            action: 'hash-file',
+            file: new Uint8Array(result),
+          })
+        }
+
+        const handleMessage = (event: MessageEvent) => {
+          const { type, hash } = event.data
+          if (type !== 'hash-file') return
+          addMessage<FileMessage>(message)
+          addFile({ ...message.file, progress: 0, blob: file })
+          connection.channel?.sendMessage('file', {
+            ...message,
+            file: { ...message.file, hash: hash },
+          })
+
+          console.debug('[file-message]', 'file message send')
+          reader.removeEventListener('error', handleError)
+          reader.removeEventListener('load', handleLoad)
+          reader.removeEventListener('abort', handleError)
+          worker?.removeEventListener('message', handleMessage)
+
+          resolve()
+        }
+
+        const worker = server.worker
+        worker?.addEventListener('message', handleMessage)
+        reader.addEventListener('load', handleLoad)
+        reader.addEventListener('error', handleError)
+        reader.addEventListener('abort', handleError)
+        reader.readAsArrayBuffer(file)
+      })
+
+    const sendBuffer = (message: FileMessage, file: File) =>
+      new Promise<void>((resolve, reject) => {
         const chunk = 32 * 1024
         const reader = new FileReader()
         let offset = 0
@@ -146,10 +187,14 @@ export const Input = () => {
 
         slice(0)
       })
-    }
 
     for (const [i, message] of messages.entries()) {
+      if (message.file.size > 512 * 1024 * 1024) {
+        alert(t('file_limit', { name: message.file.name }))
+        continue
+      }
       await sendFile(message, files[i])
+      await sendBuffer(message, files[i])
     }
   }
 

@@ -26,7 +26,6 @@ const defaultVoice: Voice = [
       microphone: false,
       screen: false,
     },
-
     stream: null,
   },
   {

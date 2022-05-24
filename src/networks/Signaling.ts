@@ -1,3 +1,4 @@
+import { useI18n } from '@solid-primitives/i18n'
 import { useNavigate, type Navigator } from 'solid-app-router'
 import { batch } from 'solid-js'
 import { type WebSocketType } from '../../index.d'
@@ -17,6 +18,7 @@ export class Signaling {
     settings: Readonly<Settings>
     server: Readonly<Server>
     connection: Readonly<Connection>
+    i18n: Readonly<ReturnType<typeof useI18n>>
   }
 
   public start: number
@@ -27,6 +29,7 @@ export class Signaling {
       settings: useSettings(),
       server: useServer(),
       connection: useConnection(),
+      i18n: useI18n(),
     }
 
     const protocol = this.context.settings[0].signaling.includes('localhost')
@@ -117,12 +120,22 @@ export class Signaling {
               message: 'Authentication Failed',
             })
           else {
-            if (this.context.connection[0].signal === 'idle')
+            if (this.context.connection[0].signal === 'idle') {
+              if (document.hidden && Notification.permission === 'granted') {
+                new Notification(
+                  `${peer.emoji} ${peer.name} #${
+                    peer.id
+                  } ${this.context.i18n[0]('call_description')}`,
+                  {
+                    lang: this.context.i18n[1].locale(),
+                  }
+                )
+              }
               batch(() => {
                 this.context.connection[1].setConfirm(true)
                 this.context.connection[1].setPeer(peer)
               })
-            else
+            } else
               this.send('error', {
                 id: peer.id,
                 message: 'Peer is Busy',

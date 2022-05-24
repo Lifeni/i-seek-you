@@ -1,9 +1,10 @@
 import { useI18n } from '@solid-primitives/i18n'
 import {
   RiSystemCheckboxCircleFill,
+  RiSystemCloseCircleFill,
   RiSystemDownloadFill,
 } from 'solid-icons/ri'
-import { createEffect, createSignal, on, Show } from 'solid-js'
+import { createEffect, createSignal, Match, on, Show, Switch } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import { FileBlob, FileMessage } from '../../../../index.d'
 import { useConnection } from '../../../context/Connection'
@@ -29,6 +30,7 @@ export const File = (props: FileProps) => {
   const isDownloaded = () => file()?.progress === 100
   const isAuthor = () => server.id === props.message.from
   const isDownloadable = () => file()?.blob && isDownloaded()
+  const isError = () => file()?.progress === -1
 
   const isImage = () => url() && props.message.file.type.startsWith('image/')
 
@@ -112,9 +114,32 @@ export const File = (props: FileProps) => {
 
         <div w="full" flex="~" items="center" justify="between" gap="3">
           <section flex="~ 1" items="center" gap="2">
-            <Show
-              when={isDownloaded()}
-              fallback={
+            <Switch>
+              <Match when={isError()}>
+                <RiSystemCloseCircleFill
+                  min-w="4"
+                  min-h="4"
+                  text="red-500 dark:red-400"
+                />
+                <Subtle>{t('file_error')}</Subtle>
+              </Match>
+              <Match when={isDownloaded() && isAuthor()}>
+                <RiSystemCheckboxCircleFill
+                  min-w="4"
+                  min-h="4"
+                  text="green-500 dark:green-400"
+                />
+                <Subtle>{t('file')}</Subtle>
+              </Match>
+              <Match when={isDownloaded() && !isAuthor()}>
+                <RiSystemDownloadFill
+                  min-w="4"
+                  min-h="4"
+                  text="green-500 dark:green-400"
+                />
+                <Subtle>{t('file')}</Subtle>
+              </Match>
+              <Match when={!isDownloaded()}>
                 <span
                   aria-label="Downloading"
                   min-w="4"
@@ -122,19 +147,9 @@ export const File = (props: FileProps) => {
                   border="3 light-800 dark:dark-200 !t-rose-500 rounded-full"
                   animate="spin"
                 />
-              }
-            >
-              <Dynamic
-                component={
-                  isAuthor() ? RiSystemCheckboxCircleFill : RiSystemDownloadFill
-                }
-                min-w="4"
-                min-h="4"
-                text="green-500 dark:green-400"
-              />
-
-              <Subtle>{t('file')}</Subtle>
-            </Show>
+                <Subtle>{t('file_downloading')}</Subtle>
+              </Match>
+            </Switch>
           </section>
 
           <Subtle whitespace="nowrap">

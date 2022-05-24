@@ -12,7 +12,7 @@
     "prepare": "husky install",
     "cz": "cz",
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
-    "cloc": "cloc src --exclude-ext=svg",
+    "cloc": "cloc . --include-ext=ts,tsx,css --exclude-dir=node_modules",
     "posttest": "npm run format",
     "check": "npx eslint .",
     "test": "playwright test --config ./tests/playwright.config.ts",

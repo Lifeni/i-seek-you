@@ -76,6 +76,7 @@ export type FileMessage = {
     name: string
     size: number
     type: string
+    hash: string
   }
 }
 
@@ -85,6 +86,7 @@ export type FileBlob = {
   size: number
   type: string
   progress: number
+  hash: string
   blob: Blob | null
 }
 

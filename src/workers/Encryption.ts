@@ -24,6 +24,12 @@ addEventListener('message', event => {
       postMessage({ type: 'hash', hash: toHex(hash) })
       break
     }
+    case 'hash-file': {
+      const sm3 = new SM3(props.file)
+      const hash = sm3.get_hash()
+      postMessage({ type: 'hash-file', hash: toHex(hash) })
+      break
+    }
     case 'keypair': {
       const sm2 = new SM2()
       const pair = sm2.new_keypair()

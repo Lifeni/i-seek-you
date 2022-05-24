@@ -96,6 +96,10 @@ export const dict = {
     vocie_you_talking: 'You are Talking',
     connected_to: 'Connected to',
     connected_to_description: 'You can send messages or video chat now.',
+    file_limit:
+      'The {{name}} file size exceeds the limit and cannot be sent. (up to 512MB)',
+    file_error: 'Transfer Failed',
+    file_downloading: 'Transferring...',
   },
   'zh-CN': {
     confirm: '确认',
@@ -190,5 +194,8 @@ export const dict = {
     vocie_you_talking: '你正在说话',
     connected_to: '已连接到',
     connected_to_description: '你现在可以发送消息或者进行视频通话。',
+    file_limit: '{{name}} 文件大小超过限制，无法发送。（最大 512MB）',
+    file_error: '传输失败',
+    file_downloading: '传输中...',
   },
 }

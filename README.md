@@ -4,6 +4,10 @@
 
 A WebRTC-based cross-platform data transfer application.
 
+## Demo
+
+https://i-seek-you.dist.run/
+
 ## Development
 
 ```sh

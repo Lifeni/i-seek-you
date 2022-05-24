@@ -156,7 +156,7 @@ export class DataChannel extends PeerConnection {
   public onFileChannelMessage(event: MessageEvent) {
     if (!this.worker) {
       this.worker = this.context.server[0].worker
-      this.worker?.addEventListener('message', this.handleFileDecrypt)
+      this.worker?.addEventListener('message', this.handleFileMessage)
     }
     this.worker?.postMessage({
       action: 'decrypt',
@@ -165,37 +165,65 @@ export class DataChannel extends PeerConnection {
     })
   }
 
-  public handleFileDecrypt = (event: MessageEvent) => {
-    const { type, decrypt, id } = event.data
-    if (type !== 'decrypt' || id !== 'file') return
+  public handleFileMessage = async (event: MessageEvent) => {
+    const { type } = event.data
+    switch (type) {
+      case 'decrypt': {
+        const { decrypt, id } = event.data
+        if (id !== 'file') return
+        this.buffer.push(decrypt)
+        this.size += decrypt.byteLength
 
-    this.buffer.push(decrypt)
-    this.size += decrypt.byteLength
+        const file = this.file[0]
+        if (!file) return
+        const progress = (this.size / file.size) * 100
+        this.context.connection[1].setProgress(file.id, progress)
+        console.debug('[file-channel]', 'receive buffer ->', progress)
 
-    const file = this.file[0]
-    if (!file) return
-    const progress = (this.size / file.size) * 100
-    this.context.connection[1].setProgress(file.id, progress)
-    console.debug('[file-channel]', 'receive buffer ->', progress)
+        if (file.size === this.size) {
+          console.debug('[file-channel]', 'receive file ->', file.name)
+          const blob = new Blob(this.buffer, { type: file.type })
+          this.worker?.postMessage({
+            action: 'hash-file',
+            file: new Uint8Array(await blob.arrayBuffer()),
+          })
+        }
+        break
+      }
+      case 'hash-file': {
+        const { hash } = event.data
+        const file = this.file[0]
+        if (!file) return
+        if (hash === file.hash) {
+          const blob = new Blob(this.buffer, { type: file.type })
+          this.context.connection[1].setBlob(file.id, blob)
+          console.debug('[file-channel]', 'file loaded')
+        } else {
+          this.context.connection[1].setProgress(file.id, -1)
+          console.debug(
+            '[file-channel]',
+            'file load failed ->',
+            file.hash,
+            hash
+          )
+        }
+        this.buffer = []
+        this.size = 0
+        this.file.shift()
 
-    if (file.size === this.size) {
-      console.debug('[file-channel]', 'receive file ->', file.name)
-      const blob = new Blob(this.buffer, { type: file.type })
-      this.context.connection[1].setBlob(file.id, blob)
-      this.buffer = []
-      this.size = 0
-      this.file.shift()
+        break
+      }
     }
   }
 
   public onChannelClose() {
     console.debug('[data-channel]', 'channel close')
-    this.worker?.removeEventListener('message', this.handleFileDecrypt)
+    this.worker?.removeEventListener('message', this.handleFileMessage)
   }
 
   public onChannelError(event: Event) {
     console.debug('[data-channel]', 'channel error')
     console.error((event as ErrorEvent).error)
-    this.worker?.removeEventListener('message', this.handleFileDecrypt)
+    this.worker?.removeEventListener('message', this.handleFileMessage)
   }
 }
