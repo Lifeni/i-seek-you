@@ -9,8 +9,10 @@ test('join channel', async ({ page }) => {
   expect(page.url()).toBe(`${host}+`)
 
   const input = page.locator('#join-input')
-  await input.type('0000')
-  await page.keyboard.press('Enter')
+  await input.type('0000', { delay: 500 })
+  await page.waitForTimeout(500)
+  await input.press('Enter')
+
   await page.waitForTimeout(2000)
   expect(page.url()).toBe(`${host}channels/0000`)
 })

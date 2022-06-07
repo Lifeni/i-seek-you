@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('website loaded', async ({ page }) => {
+test('check device list', async ({ page }) => {
   await page.goto('/')
   const title = page.locator('title')
   await expect(title).toHaveText('I Seek You')

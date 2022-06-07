@@ -1,9 +1,8 @@
-import { version } from '../../../package.json'
 import { Tooltip } from '../base/Popover'
 import { Link } from '../base/Text'
 
 export const Heading = () => (
-  <Tooltip name={`GitHub v${version}`} position="bottom">
+  <Tooltip name="GitHub" position="bottom">
     <h1 text="xl" font="bold" select="none">
       <Link
         href="https://github.com/Lifeni/i-seek-you"
