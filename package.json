@@ -14,9 +14,7 @@
     "format": "prettier --loglevel warn --write \"**/*.{ts,tsx,css,md}\"",
     "cloc": "cloc . --include-ext=ts,tsx,css --exclude-dir=node_modules",
     "posttest": "npm run format",
-    "check": "npx eslint .",
-    "test": "playwright test --config ./tests/playwright.config.ts",
-    "test:debug": "playwright test --config ./tests/playwright.config.debug.ts"
+    "check": "npx eslint ."
   },
   "author": {
     "name": "Lifeni",
